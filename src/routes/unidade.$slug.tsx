@@ -5,6 +5,8 @@ import { useState } from "react";
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { DesvioBar } from "@/components/desvio-bar";
 import { KpiCard } from "@/components/kpi-card";
+import { ParecerAnalise } from "@/components/parecer-analise";
+
 import { ParallaxHero } from "@/components/parallax-hero";
 import {
   CICLO_LABEL,
@@ -192,11 +194,17 @@ function UnidadePage() {
           </p>
         )}
 
+        <p className="mt-2 text-xs text-muted-foreground">
+          Clique em uma conta para abrir a composição de sub-contas (nível SAP) do Actual e do
+          Forecast.
+        </p>
+
         <div className="mt-4 divide-y divide-border rounded-xl border border-border bg-card px-5">
           {linhas.map(({ item, nota }) => (
-            <DesvioBar key={item.conta} item={item} maxPct={maxPct} nota={nota} />
+            <DesvioBar key={item.conta} item={item} maxPct={maxPct} nota={nota} slug={u.slug} />
           ))}
         </div>
+
       </section>
 
       {u.administrativoGG || u.laboratorio || u.qualidade ? (
@@ -222,6 +230,9 @@ function UnidadePage() {
           {u.leituraTexto ?? u.tagLeitura}
         </p>
       </section>
+
+      <ParecerAnalise unidade={u} />
+
 
       <section className="mx-auto max-w-6xl px-6 pb-10">
         <h2 className="text-xl font-bold">Rode o roteiro de 6 perguntas</h2>
