@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource-variable/nunito";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -64,9 +65,11 @@
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-favorable: var(--favorable);
+  --color-brand-light: var(--brand-light);
+  --color-brand-light-foreground: var(--brand-light-foreground);
   --color-unfavorable: var(--unfavorable);
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Nunito Variable", "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Nunito Variable", "Nunito", ui-sans-serif, system-ui, sans-serif;
 }
 
 
@@ -104,14 +107,29 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
-  --navy: oklch(0.24 0.045 258);
-  --navy-foreground: oklch(0.97 0.005 250);
-  --brand: oklch(0.66 0.115 250);
-  --brand-foreground: oklch(0.16 0.03 258);
-  --favorable: oklch(0.58 0.14 155);
-  --unfavorable: oklch(0.56 0.19 27);
-  --primary: oklch(0.24 0.045 258);
-  --ring: oklch(0.66 0.115 250);
+  /* Chlorum Solutions — tokens da marca (azul da gota #2a4999, navy #202848) */
+  --navy: oklch(0.287 0.06 271.6);
+  --navy-foreground: oklch(1 0 0);
+  --brand: oklch(0.429 0.136 265.2);
+  --brand-foreground: oklch(1 0 0);
+  --brand-light: oklch(0.755 0.092 241.6);
+  --brand-light-foreground: oklch(0.287 0.06 271.6);
+  --favorable: oklch(0.62 0.14 155);
+  --unfavorable: oklch(0.58 0.19 25);
+  --primary: oklch(0.429 0.136 265.2);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.975 0.011 234.8);
+  --secondary-foreground: oklch(0.429 0.136 265.2);
+  --accent: oklch(0.975 0.011 234.8);
+  --accent-foreground: oklch(0.429 0.136 265.2);
+  --muted: oklch(0.98 0.003 265);
+  --muted-foreground: oklch(0.40 0.018 265);
+  --foreground: oklch(0 0 0);
+  --card-foreground: oklch(0 0 0);
+  --border: oklch(0.87 0.008 265);
+  --input: oklch(0.87 0.008 265);
+  --ring: oklch(0.429 0.136 265.2);
+  --radius: 1rem;
 }
 
 @layer base {
@@ -120,18 +138,34 @@
   h3,
   h4 {
     font-family: var(--font-sans);
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    letter-spacing: -0.01em;
   }
 
   body {
     font-family: var(--font-body);
+    font-weight: 300;
+  }
+
+  strong,
+  b {
+    font-weight: 700;
   }
 }
 
 @utility eyebrow {
   font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand-light);
+}
+
+/* Rótulo em caixa alta sobre fundo claro (usa o azul institucional). */
+@utility eyebrow-light {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--brand);
 }
