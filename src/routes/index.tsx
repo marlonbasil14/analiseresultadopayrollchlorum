@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3 } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X } from "lucide-react";
+import { useState } from "react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
+import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import { CICLO_LABEL, desvioResumo, isFavoravel, unidadesOrdenadas } from "@/data/payroll";
 import { pct, seta } from "@/lib/format";
 
-const TEAMS_URL =
-  "https://teams.microsoft.com/l/message/19:4d0de316-0dba-446f-8b3e-972bb1622989_d59a099b-91af-4b87-8871-594af74dd422@unq.gbl.spaces/1786029882842?context=%7B%22contextType%22%3A%22chat%22%7D";
 
 export const Route = createFileRoute("/")({
   head: () => ({
