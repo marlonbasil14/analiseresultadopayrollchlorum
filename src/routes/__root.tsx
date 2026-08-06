@@ -77,12 +77,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
-      { property: "og:type", content: "website" },
+      { title: "Payroll Intelligence — Chlorum Solutions" },
+      {
+        name: "description",
+        content:
+          "Análise de desvios orçamentários de payroll (Actual vs. Forecast) por unidade de negócio.",
+      },
+      { name: "author", content: "Gente & Remuneração — Chlorum Solutions" },
+      { property: "og:title", content: "Payroll Intelligence — Chlorum Solutions" },
+      {
+        property: "og:description",
+        content:
+          "Análise de desvios orçamentários de payroll (Actual vs. Forecast) por unidade de negócio.",
+      },
+
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
     ],
