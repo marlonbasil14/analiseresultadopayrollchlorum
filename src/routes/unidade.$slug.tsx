@@ -229,6 +229,9 @@ function UnidadePage() {
         </p>
       </section>
 
+      <ParecerAnalise unidade={u} />
+
+
       <section className="mx-auto max-w-6xl px-6 pb-10">
         <h2 className="text-xl font-bold">Rode o roteiro de 6 perguntas</h2>
         <ul className="mt-4 space-y-2">
