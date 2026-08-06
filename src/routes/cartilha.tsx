@@ -169,7 +169,7 @@ function Secao({
 }) {
   return (
     <section id={id} className="scroll-mt-24 border-t border-border py-12 first:border-t-0">
-      <p className="eyebrow">{numero}</p>
+      <p className="eyebrow-light">{numero}</p>
       <h2 className="mt-2 text-2xl font-bold md:text-3xl">{titulo}</h2>
       {subtitulo ? (
         <p className="mt-2 text-base font-medium text-muted-foreground">{subtitulo}</p>
@@ -455,7 +455,7 @@ function Cartilha() {
           </Secao>
 
           <section className="border-t border-border py-12">
-            <p className="eyebrow">Em resumo</p>
+            <p className="eyebrow-light">Em resumo</p>
             <h2 className="mt-2 text-2xl font-bold">
               Um desvio de payroll raramente tem uma causa única
             </h2>

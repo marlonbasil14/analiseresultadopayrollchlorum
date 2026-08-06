@@ -35,7 +35,7 @@ function Index() {
   return (
     <main className="min-h-screen bg-background">
       <section className="relative overflow-hidden bg-navy text-navy-foreground">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-brand/20 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-brand-light/20 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-6 py-8">
           <ChlorumLogo className="text-navy-foreground" />
 
@@ -54,9 +54,9 @@ function Index() {
                 href={TEAMS_URL}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="group rounded-2xl border border-brand/40 bg-brand/10 p-6 transition-colors hover:bg-brand/20"
+                className="group rounded-2xl border border-brand-light/40 bg-brand-light/10 p-6 transition-colors hover:bg-brand-light/20"
               >
-                <PlayCircle className="h-8 w-8 text-brand" />
+                <PlayCircle className="h-8 w-8 text-brand-light" />
                 <p className="mt-4 text-lg font-semibold">Assistir à visão geral animada</p>
                 <p className="mt-1 text-xs text-navy-foreground/60">
                   Vídeo explicativo do ciclo de julho — Microsoft Teams
@@ -67,7 +67,7 @@ function Index() {
                 to="/cartilha"
                 className="group rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 transition-colors hover:bg-navy-foreground/10"
               >
-                <BookOpen className="h-8 w-8 text-brand" />
+                <BookOpen className="h-8 w-8 text-brand-light" />
                 <p className="mt-4 text-lg font-semibold">
                   Abrir a Cartilha de Leitura Orçamentária
                 </p>
@@ -83,7 +83,7 @@ function Index() {
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="eyebrow">Unidades de negócio</p>
+            <p className="eyebrow-light">Unidades de negócio</p>
             <h2 className="mt-2 text-2xl font-bold">Oito unidades no ciclo {CICLO_LABEL}</h2>
           </div>
           <Link
@@ -130,7 +130,7 @@ function Index() {
                         Aguardando dados
                       </span>
                     )}
-                    <ArrowRight className="h-4 w-4 text-brand transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="h-4 w-4 text-brand-light transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
               </Link>
