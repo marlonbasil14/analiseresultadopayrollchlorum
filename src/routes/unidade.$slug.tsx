@@ -85,7 +85,7 @@ function UnidadePage() {
   const [ytd, setYtd] = useState(false);
   const dados = janela(u, ytd);
 
-  const linhas: { item: DesvioConta; nota?: string }[] = dados.desvioPorConta.map(
+  const linhas: { item: DesvioConta; nota?: string | undefined }[] = dados.desvioPorConta.map(
     (item: DesvioConta) => {
       if (!ytd && CONTAS_SAZONAIS.includes(item.conta)) {
         const alvo = u.ytd.desvioPorConta.find((c) => c.conta === item.conta) ?? item;

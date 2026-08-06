@@ -8,7 +8,7 @@ export function DesvioBar({
 }: {
   item: DesvioConta;
   maxPct: number;
-  nota?: string;
+  nota?: string | undefined;
 }) {
   const largura = Math.max(4, Math.min(100, (Math.abs(item.percentual) / maxPct) * 100));
   const efeito = classificarEfeito(item.conta);
