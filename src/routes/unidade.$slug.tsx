@@ -47,7 +47,7 @@ const PERGUNTAS = [
 function UnidadePage() {
   const { unidade } = Route.useLoaderData();
   const u = unidade as Unidade;
-  const completo = u.statusDados === "completo" && u.desvioPorConta;
+  const completo = u.statusDados === "completo" && !!u.desvioPorConta;
   const maxPct = completo ? Math.max(...u.desvioPorConta!.map((c: DesvioConta) => Math.abs(c.percentual))) : 100;
 
   const prechecked = [
@@ -55,7 +55,7 @@ function UnidadePage() {
     true,
     false,
     false,
-    completo ?? false,
+    completo,
     false,
   ];
   const [checks, setChecks] = useState<boolean[]>(prechecked);
