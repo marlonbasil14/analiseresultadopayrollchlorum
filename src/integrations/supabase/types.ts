@@ -20,6 +20,7 @@ export type Database = {
           acoes_recomendadas_diretoria: Json
           atualizado_em: string
           autor: string | null
+          autor_id: string | null
           ciclo: string
           id: string
           justificativa_bp: string | null
@@ -34,6 +35,7 @@ export type Database = {
           acoes_recomendadas_diretoria?: Json
           atualizado_em?: string
           autor?: string | null
+          autor_id?: string | null
           ciclo: string
           id?: string
           justificativa_bp?: string | null
@@ -48,6 +50,7 @@ export type Database = {
           acoes_recomendadas_diretoria?: Json
           atualizado_em?: string
           autor?: string | null
+          autor_id?: string | null
           ciclo?: string
           id?: string
           justificativa_bp?: string | null
