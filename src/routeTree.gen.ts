@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConsolidadoRouteImport } from './routes/consolidado'
+import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsolidadoRoute = ConsolidadoRouteImport.update({
+  id: '/consolidado',
+  path: '/consolidado',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnidadeSlugRoute = UnidadeSlugRouteImport.update({
+  id: '/unidade/$slug',
+  path: '/unidade/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/consolidado': typeof ConsolidadoRoute
+  '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/consolidado': typeof ConsolidadoRoute
+  '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/consolidado': typeof ConsolidadoRoute
+  '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/consolidado' | '/unidade/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/consolidado' | '/unidade/$slug'
+  id: '__root__' | '/' | '/consolidado' | '/unidade/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConsolidadoRoute: typeof ConsolidadoRoute
+  UnidadeSlugRoute: typeof UnidadeSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consolidado': {
+      id: '/consolidado'
+      path: '/consolidado'
+      fullPath: '/consolidado'
+      preLoaderRoute: typeof ConsolidadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unidade/$slug': {
+      id: '/unidade/$slug'
+      path: '/unidade/$slug'
+      fullPath: '/unidade/$slug'
+      preLoaderRoute: typeof UnidadeSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConsolidadoRoute: ConsolidadoRoute,
+  UnidadeSlugRoute: UnidadeSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

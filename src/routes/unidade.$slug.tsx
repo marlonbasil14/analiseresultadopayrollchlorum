@@ -6,7 +6,7 @@ import { ChlorumLogo } from "@/components/chlorum-logo";
 import { DesvioBar } from "@/components/desvio-bar";
 import { KpiCard } from "@/components/kpi-card";
 import { ParallaxHero } from "@/components/parallax-hero";
-import { CICLO_LABEL, getUnidade, unidades } from "@/data/payroll";
+import { CICLO_LABEL, getUnidade, unidades, type DesvioConta, type Unidade } from "@/data/payroll";
 import { brl, brlCompacto, pct, seta } from "@/lib/format";
 
 export const Route = createFileRoute("/unidade/$slug")({
@@ -45,9 +45,10 @@ const PERGUNTAS = [
 ];
 
 function UnidadePage() {
-  const { unidade: u } = Route.useLoaderData();
+  const { unidade } = Route.useLoaderData();
+  const u = unidade as Unidade;
   const completo = u.statusDados === "completo" && u.desvioPorConta;
-  const maxPct = completo ? Math.max(...u.desvioPorConta!.map((c) => Math.abs(c.percentual))) : 100;
+  const maxPct = completo ? Math.max(...u.desvioPorConta!.map((c: DesvioConta) => Math.abs(c.percentual))) : 100;
 
   const prechecked = [
     completo ? u.headcountReal === u.headcountOrcado : false,
@@ -61,7 +62,7 @@ function UnidadePage() {
   const [ytd, setYtd] = useState(false);
 
   const idx = unidades.findIndex((x) => x.slug === u.slug);
-  const proxima = unidades[(idx + 1) % unidades.length];
+  const proxima = unidades[(idx + 1) % unidades.length]!;
 
   return (
     <main className="min-h-screen bg-background">
@@ -171,7 +172,7 @@ function UnidadePage() {
 
         {completo ? (
           <div className="mt-4 divide-y divide-border rounded-xl border border-border bg-card px-5">
-            {u.desvioPorConta!.map((item) => (
+            {u.desvioPorConta!.map((item: DesvioConta) => (
               <DesvioBar key={item.conta} item={item} maxPct={maxPct} />
             ))}
           </div>
