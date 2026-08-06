@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CartilhaRouteImport } from './routes/cartilha'
+import { Route as ConsolidadoRouteImport } from './routes/consolidado'
+import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CartilhaRoute = CartilhaRouteImport.update({
+  id: '/cartilha',
+  path: '/cartilha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsolidadoRoute = ConsolidadoRouteImport.update({
+  id: '/consolidado',
+  path: '/consolidado',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnidadeSlugRoute = UnidadeSlugRouteImport.update({
+  id: '/unidade/$slug',
+  path: '/unidade/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cartilha': typeof CartilhaRoute
+  '/consolidado': typeof ConsolidadoRoute
+  '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cartilha': typeof CartilhaRoute
+  '/consolidado': typeof ConsolidadoRoute
+  '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cartilha': typeof CartilhaRoute
+  '/consolidado': typeof ConsolidadoRoute
+  '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/cartilha' | '/consolidado' | '/unidade/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/cartilha' | '/consolidado' | '/unidade/$slug'
+  id: '__root__' | '/' | '/cartilha' | '/consolidado' | '/unidade/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CartilhaRoute: typeof CartilhaRoute
+  ConsolidadoRoute: typeof ConsolidadoRoute
+  UnidadeSlugRoute: typeof UnidadeSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +78,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cartilha': {
+      id: '/cartilha'
+      path: '/cartilha'
+      fullPath: '/cartilha'
+      preLoaderRoute: typeof CartilhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consolidado': {
+      id: '/consolidado'
+      path: '/consolidado'
+      fullPath: '/consolidado'
+      preLoaderRoute: typeof ConsolidadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unidade/$slug': {
+      id: '/unidade/$slug'
+      path: '/unidade/$slug'
+      fullPath: '/unidade/$slug'
+      preLoaderRoute: typeof UnidadeSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CartilhaRoute: CartilhaRoute,
+  ConsolidadoRoute: ConsolidadoRoute,
+  UnidadeSlugRoute: UnidadeSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
