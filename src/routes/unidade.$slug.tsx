@@ -192,11 +192,17 @@ function UnidadePage() {
           </p>
         )}
 
+        <p className="mt-2 text-xs text-muted-foreground">
+          Clique em uma conta para abrir a composição de sub-contas (nível SAP) do Actual e do
+          Forecast.
+        </p>
+
         <div className="mt-4 divide-y divide-border rounded-xl border border-border bg-card px-5">
           {linhas.map(({ item, nota }) => (
-            <DesvioBar key={item.conta} item={item} maxPct={maxPct} nota={nota} />
+            <DesvioBar key={item.conta} item={item} maxPct={maxPct} nota={nota} slug={u.slug} />
           ))}
         </div>
+
       </section>
 
       {u.administrativoGG || u.laboratorio || u.qualidade ? (
