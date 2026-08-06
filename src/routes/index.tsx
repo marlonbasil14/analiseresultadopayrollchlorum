@@ -82,18 +82,18 @@ function Index() {
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
-              <a
-                href={TEAMS_URL}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="group rounded-2xl border border-brand-light/40 bg-brand-light/10 p-6 transition-colors hover:bg-brand-light/20"
+              <button
+                type="button"
+                onClick={() => setVideoAberto(true)}
+                className="group rounded-2xl border border-brand-light/40 bg-brand-light/10 p-6 text-left transition-colors hover:bg-brand-light/20"
               >
                 <PlayCircle className="h-8 w-8 text-brand-light" />
                 <p className="mt-4 text-lg font-semibold">Assistir à visão geral animada</p>
                 <p className="mt-1 text-xs text-navy-foreground/60">
-                  Vídeo explicativo do ciclo de julho — Microsoft Teams
+                  Vídeo explicativo do ciclo de julho · 1min47s
                 </p>
-              </a>
+              </button>
+
 
               <Link
                 to="/cartilha"
