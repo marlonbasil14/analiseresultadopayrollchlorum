@@ -5,6 +5,8 @@ import { useState } from "react";
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { DesvioBar } from "@/components/desvio-bar";
 import { KpiCard } from "@/components/kpi-card";
+import { ParecerAnalise } from "@/components/parecer-analise";
+
 import { ParallaxHero } from "@/components/parallax-hero";
 import {
   CICLO_LABEL,
