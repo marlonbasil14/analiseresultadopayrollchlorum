@@ -121,12 +121,11 @@ function Consolidado() {
                       {d === undefined ? "—" : `${seta(fav)} ${pct(d)}`}
                     </td>
                     <td className="px-4 py-3 tabular-nums">
-                      {u.headcountReal !== undefined
-                        ? `${u.headcountReal} / ${u.headcountOrcado}`
-                        : `${u.dadosParciais?.hcAdmReal ?? "—"} / ${u.dadosParciais?.hcAdmOrcado ?? "—"} (adm.)`}
+                      {`${u.headcountReal} / ${u.headcountOrcado}`}
                     </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">
-                      {u.statusDados === "completo" ? "Completo" : "Parcial"}
+                    <td className="px-4 py-3 text-xs font-semibold tabular-nums text-muted-foreground">
+                      {u.headcountDelta > 0 ? "+" : ""}
+                      {u.headcountDelta}
                     </td>
                   </tr>
                 );
