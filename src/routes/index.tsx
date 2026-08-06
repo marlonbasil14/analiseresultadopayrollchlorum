@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3 } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X } from "lucide-react";
+import { useState } from "react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
+import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import { CICLO_LABEL, desvioResumo, isFavoravel, unidadesOrdenadas } from "@/data/payroll";
 import { pct, seta } from "@/lib/format";
 
-const TEAMS_URL =
-  "https://teams.microsoft.com/l/message/19:4d0de316-0dba-446f-8b3e-972bb1622989_d59a099b-91af-4b87-8871-594af74dd422@unq.gbl.spaces/1786029882842?context=%7B%22contextType%22%3A%22chat%22%7D";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,8 +32,40 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [videoAberto, setVideoAberto] = useState(false);
   return (
     <main className="min-h-screen bg-background">
+      {videoAberto ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Vídeo explicativo do ciclo de julho"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-navy/90 p-4"
+          onClick={() => setVideoAberto(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setVideoAberto(false)}
+              aria-label="Fechar vídeo"
+              className="absolute -top-11 right-0 flex items-center gap-2 rounded-full border border-navy-foreground/30 px-3 py-1.5 text-sm text-navy-foreground hover:bg-navy-foreground/10"
+            >
+              <X className="h-4 w-4" /> Fechar
+            </button>
+            <video
+              controls
+              autoPlay
+              preload="metadata"
+              className="w-full rounded-xl shadow-2xl"
+              src={videoAsset.url}
+            />
+          </div>
+        </div>
+      ) : null}
+
       <section className="relative overflow-hidden bg-navy text-navy-foreground">
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-brand-light/20 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-6 py-8">
@@ -50,18 +82,18 @@ function Index() {
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
-              <a
-                href={TEAMS_URL}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="group rounded-2xl border border-brand-light/40 bg-brand-light/10 p-6 transition-colors hover:bg-brand-light/20"
+              <button
+                type="button"
+                onClick={() => setVideoAberto(true)}
+                className="group rounded-2xl border border-brand-light/40 bg-brand-light/10 p-6 text-left transition-colors hover:bg-brand-light/20"
               >
                 <PlayCircle className="h-8 w-8 text-brand-light" />
                 <p className="mt-4 text-lg font-semibold">Assistir à visão geral animada</p>
                 <p className="mt-1 text-xs text-navy-foreground/60">
-                  Vídeo explicativo do ciclo de julho — Microsoft Teams
+                  Vídeo explicativo do ciclo de julho · 1min47s
                 </p>
-              </a>
+              </button>
+
 
               <Link
                 to="/cartilha"
