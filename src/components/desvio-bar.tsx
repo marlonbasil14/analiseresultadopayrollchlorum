@@ -1,7 +1,15 @@
 import { brl, pct, seta } from "@/lib/format";
 import { classificarEfeito, EFEITO_LABEL, type DesvioConta } from "@/data/payroll";
 
-export function DesvioBar({ item, maxPct }: { item: DesvioConta; maxPct: number }) {
+export function DesvioBar({
+  item,
+  maxPct,
+  nota,
+}: {
+  item: DesvioConta;
+  maxPct: number;
+  nota?: string | undefined;
+}) {
   const largura = Math.max(4, Math.min(100, (Math.abs(item.percentual) / maxPct) * 100));
   const efeito = classificarEfeito(item.conta);
   const cor = item.favoravel ? "bg-favorable" : "bg-unfavorable";
@@ -15,6 +23,11 @@ export function DesvioBar({ item, maxPct }: { item: DesvioConta; maxPct: number 
           <span className="rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
             {EFEITO_LABEL[efeito]}
           </span>
+          {nota ? (
+            <span className="rounded-full bg-brand/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
+              {nota}
+            </span>
+          ) : null}
         </div>
         <div className={`flex items-baseline gap-3 tabular-nums ${texto}`}>
           <span className="text-sm font-semibold">{brl(item.valor)}</span>

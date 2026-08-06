@@ -6,7 +6,16 @@ import { ChlorumLogo } from "@/components/chlorum-logo";
 import { DesvioBar } from "@/components/desvio-bar";
 import { KpiCard } from "@/components/kpi-card";
 import { ParallaxHero } from "@/components/parallax-hero";
-import { CICLO_LABEL, getUnidade, unidades, type DesvioConta, type Unidade } from "@/data/payroll";
+import {
+  CICLO_LABEL,
+  CONTAS_SAZONAIS,
+  getUnidade,
+  janela,
+  unidadesOrdenadas,
+  type BlocoArea,
+  type DesvioConta,
+  type Unidade,
+} from "@/data/payroll";
 import { brl, brlCompacto, pct, seta } from "@/lib/format";
 
 export const Route = createFileRoute("/unidade/$slug")({
@@ -44,25 +53,61 @@ const PERGUNTAS = [
   "O que sobra é o desvio operacional real.",
 ];
 
+function AreaCard({ titulo, bloco }: { titulo: string; bloco: BlocoArea }) {
+  const fav = (bloco.percentual ?? 0) < 0;
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{titulo}</p>
+      {bloco.diretoria ? (
+        <p className="mt-0.5 text-[11px] text-muted-foreground">{bloco.diretoria}</p>
+      ) : null}
+      <p className="mt-3 text-lg font-bold tabular-nums">
+        HC {bloco.real} / {bloco.orcado}
+      </p>
+      <p className="mt-1 text-xs tabular-nums text-muted-foreground">
+        {brlCompacto(bloco.actual)} vs. {brlCompacto(bloco.forecast)}
+      </p>
+      {bloco.percentual !== undefined ? (
+        <p className={`mt-2 text-sm font-bold tabular-nums ${fav ? "text-favorable" : "text-unfavorable"}`}>
+          {seta(fav)} {pct(bloco.percentual)}
+        </p>
+      ) : (
+        <p className="mt-2 text-xs font-semibold text-unfavorable">Custo real sem orçamento</p>
+      )}
+    </div>
+  );
+}
+
 function UnidadePage() {
   const { unidade } = Route.useLoaderData();
   const u = unidade as Unidade;
-  const completo = u.statusDados === "completo" && !!u.desvioPorConta;
-  const maxPct = completo ? Math.max(...u.desvioPorConta!.map((c: DesvioConta) => Math.abs(c.percentual))) : 100;
+
+  const [ytd, setYtd] = useState(false);
+  const dados = janela(u, ytd);
+
+  const linhas: { item: DesvioConta; nota?: string | undefined }[] = dados.desvioPorConta.map(
+    (item: DesvioConta) => {
+      if (!ytd && CONTAS_SAZONAIS.includes(item.conta)) {
+        const alvo = u.ytd.desvioPorConta.find((c) => c.conta === item.conta) ?? item;
+        return { item: alvo, nota: "Lido em YTD" };
+      }
+      return { item };
+    },
+  );
+  const maxPct = Math.max(...linhas.map((l) => Math.abs(l.item.percentual)), 1);
 
   const prechecked = [
-    completo ? u.headcountReal === u.headcountOrcado : false,
+    u.headcountReal === u.headcountOrcado,
     true,
     false,
-    false,
-    completo,
+    Math.sign(u.desvioPercentual) === Math.sign(u.headcountDelta || 0),
+    true,
     false,
   ];
   const [checks, setChecks] = useState<boolean[]>(prechecked);
-  const [ytd, setYtd] = useState(false);
 
-  const idx = unidades.findIndex((x) => x.slug === u.slug);
-  const proxima = unidades[(idx + 1) % unidades.length]!;
+  const idx = unidadesOrdenadas.findIndex((x) => x.slug === u.slug);
+  const proxima = unidadesOrdenadas[(idx + 1) % unidadesOrdenadas.length]!;
 
   return (
     <main className="min-h-screen bg-background">
@@ -90,117 +135,93 @@ function UnidadePage() {
       </ParallaxHero>
 
       <section className="mx-auto max-w-6xl px-6 py-10">
-        {completo ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <KpiCard rotulo="Payroll Actual" valor={brlCompacto(u.payrollActual!)} />
-            <KpiCard rotulo="Payroll Forecast" valor={brlCompacto(u.payrollForecast!)} />
-            <KpiCard
-              rotulo="Desvio"
-              valor={`${seta(u.desvioPercentual! < 0)} ${pct(u.desvioPercentual!)}`}
-              detalhe={brl(u.desvioValor!)}
-              tom={u.desvioPercentual! < 0 ? "favoravel" : "desfavoravel"}
-            />
-            <KpiCard
-              rotulo="Headcount Real / Orç."
-              valor={`${u.headcountReal} / ${u.headcountOrcado}`}
-              detalhe={`Delta ${u.headcountDelta! > 0 ? "+" : ""}${u.headcountDelta}`}
-            />
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-bold">
+            Indicadores · {ytd ? "Acumulado do ano (YTD)" : "Mês isolado"}
+          </h2>
+          <div className="inline-flex rounded-lg border border-border p-1 text-xs font-semibold">
+            {[
+              [false, "Mês"],
+              [true, "YTD"],
+            ].map(([valor, label]) => (
+              <button
+                key={String(valor)}
+                type="button"
+                onClick={() => setYtd(valor as boolean)}
+                className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 ${
+                  ytd === valor ? "bg-brand text-brand-foreground" : "hover:bg-accent"
+                }`}
+              >
+                <CalendarClock className="h-3.5 w-3.5" />
+                {label as string}
+              </button>
+            ))}
           </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <KpiCard
-              rotulo="Desvio Payroll"
-              valor={pct(u.dadosParciais?.desvioPayrollPercentual ?? 0, 0)}
-              tom={(u.dadosParciais?.desvioPayrollPercentual ?? 0) < 0 ? "favoravel" : "desfavoravel"}
-            />
-            <KpiCard
-              rotulo="HC Administrativo Real / Orç."
-              valor={`${u.dadosParciais?.hcAdmReal ?? "—"} / ${u.dadosParciais?.hcAdmOrcado ?? "—"}`}
-              detalhe={`Delta ${u.dadosParciais?.hcAdmDelta ?? "—"}`}
-            />
-            <KpiCard
-              rotulo="Férias (Actual vs. Forecast)"
-              valor={
-                u.dadosParciais?.feriasActual
-                  ? `${brlCompacto(u.dadosParciais.feriasActual)}`
-                  : "Aguardando dados"
-              }
-              detalhe={
-                u.dadosParciais?.feriasForecast
-                  ? `Forecast ${brlCompacto(u.dadosParciais.feriasForecast)} · ${pct(u.dadosParciais.feriasDesvioPercentual ?? 0, 0)}`
-                  : undefined
-              }
-            />
-            <KpiCard
-              rotulo="Qualidade sem orçamento"
-              valor={
-                u.dadosParciais?.qualidadeCustoRealSemOrcamento
-                  ? brlCompacto(u.dadosParciais.qualidadeCustoRealSemOrcamento)
-                  : "—"
-              }
-              detalhe="Custo real com orçamento zerado"
-            />
-          </div>
-        )}
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <KpiCard rotulo="Payroll Actual" valor={brlCompacto(dados.payrollActual)} />
+          <KpiCard rotulo="Payroll Forecast" valor={brlCompacto(dados.payrollForecast)} />
+          <KpiCard
+            rotulo="Desvio"
+            valor={`${seta(dados.desvioPercentual < 0)} ${pct(dados.desvioPercentual)}`}
+            detalhe={brl(dados.desvioValor)}
+            tom={dados.desvioPercentual < 0 ? "favoravel" : "desfavoravel"}
+          />
+          <KpiCard
+            rotulo="Headcount Real / Orç."
+            valor={`${u.headcountReal} / ${u.headcountOrcado}`}
+            detalhe={`Delta ${u.headcountDelta > 0 ? "+" : ""}${u.headcountDelta} · Total com CAPEX`}
+          />
+        </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-10">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-xl font-bold">Desvio por conta</h2>
-          <button
-            type="button"
-            onClick={() => setYtd((v) => !v)}
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold hover:bg-accent"
-          >
-            <CalendarClock className="h-4 w-4" />
-            {ytd ? "Visualizando: YTD" : "Visualizando: Mês isolado"}
-          </button>
-        </div>
+        <h2 className="text-xl font-bold">Desvio por conta</h2>
 
         {ytd ? (
-          <p className="mt-3 rounded-lg border border-brand/40 bg-brand/10 p-3 text-xs">
-            O acumulado do ano (YTD) ainda não está disponível neste ciclo. Ao avaliar Férias,
-            Rescisão e ICP, use o YTD da planilha de origem antes de reagir ao mês.
+          <p className="mt-3 flex items-start gap-2 rounded-lg border border-brand/40 bg-brand/10 p-3 text-xs">
+            <Info className="mt-0.5 h-4 w-4 shrink-0" />
+            Acumulado do ano: é esta a janela correta para julgar Férias, Rescisão e ICP.
           </p>
         ) : (
           <p className="mt-3 flex items-start gap-2 rounded-lg border border-border bg-muted/60 p-3 text-xs text-muted-foreground">
             <Info className="mt-0.5 h-4 w-4 shrink-0" />
-            Você está olhando o mês isolado. Férias, Rescisão e ICP são contas sazonais — não julgue
-            pelo mês.
+            Você está olhando o mês isolado. Férias, Rescisão e ICP são sazonais — por isso já vêm
+            exibidas em YTD nesta lista.
           </p>
         )}
 
-        {completo ? (
-          <div className="mt-4 divide-y divide-border rounded-xl border border-border bg-card px-5">
-            {u.desvioPorConta!.map((item: DesvioConta) => (
-              <DesvioBar key={item.conta} item={item} maxPct={maxPct} />
-            ))}
-          </div>
-        ) : (
-          <div className="mt-4 rounded-xl border border-dashed border-border bg-muted/40 p-8 text-center">
-            <p className="text-sm font-semibold">Aguardando dados completos do ciclo</p>
-            <p className="mx-auto mt-2 max-w-xl text-xs text-muted-foreground">
-              O breakdown das 7 contas desta unidade ainda não foi carregado. Complete pelo upload do
-              relatório individual da unidade no ciclo {CICLO_LABEL}.
-            </p>
-            <button
-              type="button"
-              className="mt-4 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-            >
-              Completar via upload do relatório
-            </button>
-          </div>
-        )}
+        <div className="mt-4 divide-y divide-border rounded-xl border border-border bg-card px-5">
+          {linhas.map(({ item, nota }) => (
+            <DesvioBar key={item.conta} item={item} maxPct={maxPct} nota={nota} />
+          ))}
+        </div>
       </section>
 
-      {u.leituraTexto || u.dadosParciais?.leitura ? (
+      {u.administrativoGG || u.laboratorio || u.qualidade ? (
         <section className="mx-auto max-w-6xl px-6 pb-10">
-          <h2 className="text-xl font-bold">Leitura da unidade</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-            {u.leituraTexto ?? u.dadosParciais?.leitura}
+          <h2 className="text-xl font-bold">Áreas de atenção</h2>
+          <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
+            Centros de custo que costumam explicar “endereços trocados” e o custo corporativo de
+            Gente &amp; Gestão concentrado em um único endereço.
           </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {u.administrativoGG ? (
+              <AreaCard titulo="Administrativo / G&G" bloco={u.administrativoGG} />
+            ) : null}
+            {u.laboratorio ? <AreaCard titulo="Laboratório" bloco={u.laboratorio} /> : null}
+            {u.qualidade ? <AreaCard titulo="Qualidade" bloco={u.qualidade} /> : null}
+          </div>
         </section>
       ) : null}
+
+      <section className="mx-auto max-w-6xl px-6 pb-10">
+        <h2 className="text-xl font-bold">Leitura da unidade</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+          {u.leituraTexto ?? u.tagLeitura}
+        </p>
+      </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-10">
         <h2 className="text-xl font-bold">Rode o roteiro de 6 perguntas</h2>
