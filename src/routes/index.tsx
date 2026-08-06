@@ -32,8 +32,40 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [videoAberto, setVideoAberto] = useState(false);
   return (
     <main className="min-h-screen bg-background">
+      {videoAberto ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Vídeo explicativo do ciclo de julho"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-navy/90 p-4"
+          onClick={() => setVideoAberto(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setVideoAberto(false)}
+              aria-label="Fechar vídeo"
+              className="absolute -top-11 right-0 flex items-center gap-2 rounded-full border border-navy-foreground/30 px-3 py-1.5 text-sm text-navy-foreground hover:bg-navy-foreground/10"
+            >
+              <X className="h-4 w-4" /> Fechar
+            </button>
+            <video
+              controls
+              autoPlay
+              preload="metadata"
+              className="w-full rounded-xl shadow-2xl"
+              src={videoAsset.url}
+            />
+          </div>
+        </div>
+      ) : null}
+
       <section className="relative overflow-hidden bg-navy text-navy-foreground">
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-brand-light/20 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-6 py-8">
