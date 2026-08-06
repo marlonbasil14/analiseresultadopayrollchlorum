@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, PlayCircle, ArrowRight, BarChart3 } from "lucide-react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
-import { CICLO_LABEL, desvioResumo, isFavoravel, unidades } from "@/data/payroll";
+import { CICLO_LABEL, desvioResumo, isFavoravel, unidadesOrdenadas } from "@/data/payroll";
 import { pct, seta } from "@/lib/format";
 
 const TEAMS_URL =
@@ -95,7 +95,7 @@ function Index() {
         </div>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {unidades.map((u) => {
+          {unidadesOrdenadas.map((u) => {
             const d = desvioResumo(u);
             const fav = isFavoravel(u);
             return (

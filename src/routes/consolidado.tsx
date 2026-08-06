@@ -90,7 +90,7 @@ function Consolidado() {
                 <th className="px-4 py-3">Desvio R$</th>
                 <th className="px-4 py-3">Desvio %</th>
                 <th className="px-4 py-3">HC Real / Orç.</th>
-                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Gap HC</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
