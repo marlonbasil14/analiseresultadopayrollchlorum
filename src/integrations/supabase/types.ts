@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      unit_monthly_review: {
+        Row: {
+          acoes_recomendadas_bp: Json
+          acoes_recomendadas_diretoria: Json
+          atualizado_em: string
+          autor: string | null
+          ciclo: string
+          id: string
+          justificativa_bp: string | null
+          ofensores_diretoria: Json
+          parecer_diretoria: string | null
+          plano_de_acao: Json
+          status: string
+          unit_slug: string
+        }
+        Insert: {
+          acoes_recomendadas_bp?: Json
+          acoes_recomendadas_diretoria?: Json
+          atualizado_em?: string
+          autor?: string | null
+          ciclo: string
+          id?: string
+          justificativa_bp?: string | null
+          ofensores_diretoria?: Json
+          parecer_diretoria?: string | null
+          plano_de_acao?: Json
+          status?: string
+          unit_slug: string
+        }
+        Update: {
+          acoes_recomendadas_bp?: Json
+          acoes_recomendadas_diretoria?: Json
+          atualizado_em?: string
+          autor?: string | null
+          ciclo?: string
+          id?: string
+          justificativa_bp?: string | null
+          ofensores_diretoria?: Json
+          parecer_diretoria?: string | null
+          plano_de_acao?: Json
+          status?: string
+          unit_slug?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
