@@ -129,7 +129,7 @@ function UnidadePage() {
         {u.observacao ? (
           <p className="mt-1 text-sm text-navy-foreground/70">{u.observacao}</p>
         ) : null}
-        <span className="mt-4 inline-block rounded-full border border-brand/50 bg-brand/15 px-4 py-1.5 text-xs font-semibold text-navy-foreground">
+        <span className="mt-4 inline-block rounded-full border border-brand-light/50 bg-brand-light/20 px-4 py-1.5 text-xs font-semibold text-navy-foreground">
           {u.tagLeitura}
         </span>
       </ParallaxHero>
@@ -255,7 +255,7 @@ function UnidadePage() {
             <Link
               to="/cartilha"
               hash="07-roteiro-6-perguntas"
-              className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground"
+              className="rounded-lg bg-brand-light px-4 py-2 text-sm font-semibold text-brand-light-foreground"
             >
               Abrir a Cartilha
             </Link>
