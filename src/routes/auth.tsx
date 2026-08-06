@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
@@ -104,15 +103,6 @@ function AuthPage() {
         </button>
       </form>
 
-      <button
-        type="button"
-        onClick={() =>
-          lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin })
-        }
-        className="mt-3 w-full rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-accent"
-      >
-        Continuar com Google
-      </button>
 
       <button
         type="button"
