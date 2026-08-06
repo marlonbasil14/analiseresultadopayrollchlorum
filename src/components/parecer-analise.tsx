@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
