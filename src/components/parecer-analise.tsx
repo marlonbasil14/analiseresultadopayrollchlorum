@@ -56,8 +56,20 @@ const inputCls =
 export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const qc = useQueryClient();
   const [ciclo] = useState(CICLO);
+  const [userId, setUserId] = useState<string | null | undefined>(undefined);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUserId(data.session?.user.id ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) =>
+      setUserId(session?.user.id ?? null),
+    );
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const autenticado = Boolean(userId);
 
   const { data, isLoading } = useQuery({
+    enabled: autenticado,
     queryKey: ["review", unidade.slug, ciclo],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -89,6 +101,9 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
 
   const salvar = useMutation({
     mutationFn: async () => {
+      const { data: sessao } = await supabase.auth.getSession();
+      const uid = sessao.session?.user.id;
+      if (!uid) throw new Error("Sessão expirada. Entre novamente para salvar.");
       const { error } = await supabase.from("unit_monthly_review").upsert(
         {
           unit_slug: unidade.slug,
@@ -98,6 +113,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
           plano_de_acao: plano,
           status,
           autor: autor || null,
+          autor_id: uid,
           atualizado_em: new Date().toISOString(),
         },
         { onConflict: "unit_slug,ciclo" },
@@ -110,6 +126,27 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
     },
     onError: (e: Error) => setSalvo(`Não foi possível salvar: ${e.message}`),
   });
+
+  if (userId === null) {
+    return (
+      <section className="mx-auto max-w-6xl px-6 pb-10">
+        <div className="rounded-xl border border-border bg-card p-6">
+          <h2 className="text-xl font-bold">Parecer da Diretoria &amp; sua análise</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Conteúdo interno restrito. Entre com seu e-mail corporativo para consultar o parecer da
+            diretoria e registrar a análise do ciclo.
+          </p>
+          <Link
+            to="/auth"
+            className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
+          >
+            Entrar para ver
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
 
   const parecer = data?.parecer_diretoria ?? null;
   const ofensores = parecer
