@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CartilhaRouteImport } from './routes/cartilha'
 import { Route as ConsolidadoRouteImport } from './routes/consolidado'
+import { Route as RelatorioSlugRouteImport } from './routes/relatorio.$slug'
 import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const ConsolidadoRoute = ConsolidadoRouteImport.update({
   path: '/consolidado',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RelatorioSlugRoute = RelatorioSlugRouteImport.update({
+  id: '/relatorio/$slug',
+  path: '/relatorio/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnidadeSlugRoute = UnidadeSlugRouteImport.update({
   id: '/unidade/$slug',
   path: '/unidade/$slug',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRoutesById {
@@ -61,15 +69,34 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/cartilha' | '/consolidado' | '/unidade/$slug'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/cartilha'
+    | '/consolidado'
+    | '/relatorio/$slug'
+    | '/unidade/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cartilha' | '/consolidado' | '/unidade/$slug'
+  to:
+    | '/'
+    | '/auth'
+    | '/cartilha'
+    | '/consolidado'
+    | '/relatorio/$slug'
+    | '/unidade/$slug'
   id:
-    '__root__' | '/' | '/auth' | '/cartilha' | '/consolidado' | '/unidade/$slug'
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/cartilha'
+    | '/consolidado'
+    | '/relatorio/$slug'
+    | '/unidade/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +104,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CartilhaRoute: typeof CartilhaRoute
   ConsolidadoRoute: typeof ConsolidadoRoute
+  RelatorioSlugRoute: typeof RelatorioSlugRoute
   UnidadeSlugRoute: typeof UnidadeSlugRoute
 }
 
@@ -110,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsolidadoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/relatorio/$slug': {
+      id: '/relatorio/$slug'
+      path: '/relatorio/$slug'
+      fullPath: '/relatorio/$slug'
+      preLoaderRoute: typeof RelatorioSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unidade/$slug': {
       id: '/unidade/$slug'
       path: '/unidade/$slug'
@@ -125,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CartilhaRoute: CartilhaRoute,
   ConsolidadoRoute: ConsolidadoRoute,
+  RelatorioSlugRoute: RelatorioSlugRoute,
   UnidadeSlugRoute: UnidadeSlugRoute,
 }
 export const routeTree = rootRouteImport
