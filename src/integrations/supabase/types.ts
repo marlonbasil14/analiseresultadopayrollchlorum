@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      login_otps: {
+        Row: {
+          codigo: string
+          criado_em: string
+          email: string
+          expira_em: string
+          id: string
+          tentativas: number
+          usado: boolean
+        }
+        Insert: {
+          codigo: string
+          criado_em?: string
+          email: string
+          expira_em: string
+          id?: string
+          tentativas?: number
+          usado?: boolean
+        }
+        Update: {
+          codigo?: string
+          criado_em?: string
+          email?: string
+          expira_em?: string
+          id?: string
+          tentativas?: number
+          usado?: boolean
+        }
+        Relationships: []
+      }
       review_audit_log: {
         Row: {
           acao: string
