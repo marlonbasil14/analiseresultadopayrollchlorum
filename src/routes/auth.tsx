@@ -34,6 +34,8 @@ const inputCls =
 
 function AuthPage() {
   const navigate = useNavigate();
+  const enviar = useServerFn(enviarCodigoAcesso);
+  const verificar = useServerFn(verificarCodigoAcesso);
   const [etapa, setEtapa] = useState<"email" | "codigo">("email");
   const [email, setEmail] = useState("");
   const [digitos, setDigitos] = useState<string[]>(["", "", "", "", "", ""]);
@@ -41,6 +43,7 @@ function AuthPage() {
   const [carregando, setCarregando] = useState(false);
   const [reenviarEm, setReenviarEm] = useState(0);
   const refs = useRef<Array<HTMLInputElement | null>>([]);
+
 
   useEffect(() => {
     if (reenviarEm <= 0) return;
