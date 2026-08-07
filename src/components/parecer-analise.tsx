@@ -202,14 +202,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const reabrir = useMutation({
     mutationFn: async (motivo: string) => {
       await gravar({ fluxo_status: "rascunho", motivo_reabertura: motivo });
-      await registrarAuditoria({
-        unitSlug: unidade.slug,
-        ciclo,
-        acao: "reaberto",
-        detalhe: motivo,
-        userId: userId!,
-        email,
-      });
+      await auditar("reaberto", motivo);
     },
     onSuccess: async () => {
       setSalvo("Análise reaberta para edição — registro gravado na auditoria.");
