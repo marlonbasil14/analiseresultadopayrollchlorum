@@ -315,7 +315,10 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
           className="rounded-xl border border-border bg-card p-5 disabled:opacity-70"
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Sua análise ({perfil.role === "lider" ? "líder de operação" : perfil.role.toUpperCase()})
+            Sua análise
+            {perfil
+              ? ` (${perfil.role === "lider" ? "líder de operação" : perfil.role.toUpperCase()})`
+              : ""}
           </p>
 
           {/* Justificativas obrigatórias por conta */}
