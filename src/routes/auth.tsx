@@ -1,9 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { supabase } from "@/integrations/supabase/client";
 import { DOMINIO_PERMITIDO, emailAutorizado } from "@/lib/acesso";
+import { enviarCodigoAcesso, verificarCodigoAcesso } from "@/lib/otp.functions";
+
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
