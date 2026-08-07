@@ -94,7 +94,7 @@ function AdminPage() {
       if (error) throw error;
     },
     onSuccess: async () => {
-      setMsg("Acesso liberado. A pessoa entra com o Google e o papel é vinculado automaticamente.");
+      setMsg("Acesso liberado. A pessoa entra pelo link enviado ao e-mail e o papel é vinculado automaticamente.");
       setNovoEmail("");
       setNovoNome("");
       setNovasUnidades([]);
