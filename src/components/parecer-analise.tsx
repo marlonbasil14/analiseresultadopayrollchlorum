@@ -131,8 +131,12 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const fluxo = data?.fluxo_status ?? "rascunho";
   const bloqueado = fluxo === "enviado" || fluxo === "consolidado";
 
+  const auditar = async (acao: string, detalhe?: string) => {
+    if (!userId) return;
+    await registrarAuditoria({ unitSlug: unidade.slug, ciclo, acao, detalhe, userId, email });
+  };
+
   const gravar = async (extra: Record<string, unknown>) => {
-    if (!userId) throw new Error("Sessão expirada. Entre novamente para salvar.");
     const { error } = await supabase.from("unit_monthly_review").upsert(
       {
         unit_slug: unidade.slug,
