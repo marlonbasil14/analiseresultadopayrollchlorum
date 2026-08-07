@@ -68,12 +68,9 @@ const inputCls =
 export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const qc = useQueryClient();
   const [ciclo] = useState(CICLO);
-  const { carregando, autenticado, perfil, podeUnidade, email, userId } = useAcesso();
-
-  const temAcesso = podeUnidade(unidade.slug);
+  const { perfil, email, userId } = useAcesso();
 
   const { data, isLoading } = useQuery({
-    enabled: temAcesso,
     queryKey: ["review", unidade.slug, ciclo],
     queryFn: async () => {
       const { data, error } = await supabase
