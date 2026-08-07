@@ -607,14 +607,3 @@ function ReabrirForm({
     </div>
   );
 }
-
-function Bloco({ children }: { children: React.ReactNode }) {
-  return (
-    <section className="mx-auto max-w-6xl px-6 pb-10">
-      <div className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-xl font-bold">Parecer da Diretoria &amp; sua análise</h2>
-        {children}
-      </div>
-    </section>
-  );
-}
