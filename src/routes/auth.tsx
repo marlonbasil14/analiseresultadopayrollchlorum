@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+import { DOMINIO_PERMITIDO, emailAutorizado } from "@/lib/acesso";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
@@ -17,7 +19,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Acesso restrito · Payroll Intelligence Chlorum" },
       {
         property: "og:description",
-        content: "Entre para registrar e consultar as análises mensais de folha das unidades.",
+        content: "Entre com sua conta Chlorum para registrar e consultar as análises mensais de folha.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -25,43 +27,45 @@ export const Route = createFileRoute("/auth")({
   }),
 });
 
-const inputCls =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand";
-
 function AuthPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [modo, setModo] = useState<"entrar" | "criar">("entrar");
   const [msg, setMsg] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/" });
+    supabase.auth.getSession().then(async ({ data }) => {
+      const email = data.session?.user.email ?? null;
+      if (!data.session) return;
+      if (!emailAutorizado(email)) {
+        await supabase.auth.signOut();
+        setMsg(`Acesso restrito a colaboradores Chlorum (${DOMINIO_PERMITIDO}).`);
+        return;
+      }
+      navigate({ to: "/" });
     });
   }, [navigate]);
 
-  async function submeter(e: React.FormEvent) {
-    e.preventDefault();
+  async function entrarComGoogle() {
     setMsg(null);
     setCarregando(true);
     try {
-      if (modo === "entrar") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
-        if (error) throw error;
-        navigate({ to: "/" });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password: senha,
-          options: { emailRedirectTo: window.location.origin },
-        });
-        if (error) throw error;
-        setMsg("Cadastro criado. Confirme o e-mail para entrar.");
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+        extraParams: { hd: DOMINIO_PERMITIDO.replace("@", ""), prompt: "select_account" },
+      });
+      if (result.error) {
+        setMsg("Não foi possível entrar com o Google. Tente novamente.");
+        return;
       }
-    } catch (err) {
-      setMsg(err instanceof Error ? err.message : "Não foi possível concluir.");
+      if (result.redirected) return;
+
+      const { data } = await supabase.auth.getSession();
+      if (!emailAutorizado(data.session?.user.email)) {
+        await supabase.auth.signOut();
+        setMsg(`Acesso restrito a colaboradores Chlorum (${DOMINIO_PERMITIDO}).`);
+        return;
+      }
+      navigate({ to: "/" });
     } finally {
       setCarregando(false);
     }
@@ -73,46 +77,23 @@ function AuthPage() {
       <h1 className="mt-6 text-2xl font-extrabold">Acesso interno</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         As análises mensais de folha são restritas ao time de Gente &amp; Remuneração e às BPs das
-        unidades.
+        unidades. Entre com sua conta corporativa Google ({DOMINIO_PERMITIDO}).
       </p>
-
-      <form onSubmit={submeter} className="mt-6 space-y-3">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="E-mail corporativo"
-          className={inputCls}
-        />
-        <input
-          type="password"
-          required
-          minLength={8}
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          placeholder="Senha"
-          className={inputCls}
-        />
-        <button
-          type="submit"
-          disabled={carregando}
-          className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground disabled:opacity-60"
-        >
-          {modo === "entrar" ? "Entrar" : "Criar acesso"}
-        </button>
-      </form>
-
 
       <button
         type="button"
-        onClick={() => setModo((m) => (m === "entrar" ? "criar" : "entrar"))}
-        className="mt-4 text-xs font-semibold text-brand"
+        onClick={entrarComGoogle}
+        disabled={carregando}
+        className="mt-6 w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground disabled:opacity-60"
       >
-        {modo === "entrar" ? "Não tenho acesso ainda" : "Já tenho acesso"}
+        {carregando ? "Abrindo o Google…" : "Entrar com Google Chlorum"}
       </button>
 
-      {msg ? <p className="mt-3 text-xs text-muted-foreground">{msg}</p> : null}
+      <p className="mt-3 text-xs text-muted-foreground">
+        Contas de outros domínios são bloqueadas automaticamente.
+      </p>
+
+      {msg ? <p className="mt-3 text-xs font-semibold text-unfavorable">{msg}</p> : null}
     </main>
   );
 }
