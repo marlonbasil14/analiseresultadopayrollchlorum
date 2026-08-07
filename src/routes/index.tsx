@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3, X } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText } from "lucide-react";
 import { useState } from "react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
+import relatorioAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import { CICLO_LABEL, desvioResumo, isFavoravel, unidadesOrdenadas } from "@/data/payroll";
 import { pct, seta } from "@/lib/format";
 
