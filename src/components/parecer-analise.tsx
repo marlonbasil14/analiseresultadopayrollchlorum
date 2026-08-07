@@ -190,13 +190,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
         enviado_em: new Date().toISOString(),
         enviado_por: email,
       });
-      await registrarAuditoria({
-        unitSlug: unidade.slug,
-        ciclo,
-        acao: "enviado para consolidação",
-        userId: userId!,
-        email,
-      });
+      await auditar("enviado para consolidação");
     },
     onSuccess: async () => {
       setSalvo("Análise enviada para consolidação do admin.");
