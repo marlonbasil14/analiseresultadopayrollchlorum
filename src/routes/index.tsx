@@ -108,6 +108,21 @@ function Index() {
                   Guia prático para investigar e explicar desvios, em 8 passos
                 </p>
               </Link>
+
+              <a
+                href={relatorioAsset.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 transition-colors hover:bg-navy-foreground/10 sm:col-span-2"
+              >
+                <FileText className="h-8 w-8 text-brand-light" />
+                <p className="mt-4 text-lg font-semibold">
+                  Ler o relatório de Análise Orçamentária — Julho/2026
+                </p>
+                <p className="mt-1 text-xs text-navy-foreground/60">
+                  Documento completo em PDF · abre em nova aba
+                </p>
+              </a>
             </div>
           </div>
         </div>
