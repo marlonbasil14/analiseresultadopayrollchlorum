@@ -1,15 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Send, Unlock } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CICLO, CICLO_LABEL, type Unidade } from "@/data/payroll";
 import { subcontasDe } from "@/data/subcontas";
 import { supabase } from "@/integrations/supabase/client";
 import { brl } from "@/lib/format";
+import { FLUXO_LABEL, THRESHOLD_JUSTIFICATIVA, registrarAuditoria, useAcesso } from "@/lib/acesso";
 
 type Ofensor = { conta: string; resumo: string };
 type AcaoBP = { acao: string; responsavel: string; prazo: string };
+type Justificativa = { conta: string; ofensor: string; criticidade: string; texto: string };
 type PlanoItem = {
   item: string;
   responsavel: string;
@@ -28,6 +30,16 @@ const STATUS_CLASSE: Record<PlanoItem["status"], string> = {
   em_andamento: "bg-brand/15 text-brand",
   concluido: "bg-favorable/15 text-favorable",
 };
+
+const OFENSORES_SUGERIDOS = [
+  "Headcount acima do orçado",
+  "Hora extra",
+  "Efeito calendário",
+  "Erro de mapeamento",
+  "Rescisões não previstas",
+  "Dissídio / reajuste",
+  "Provisão de férias",
+];
 
 function asArray<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
@@ -56,20 +68,12 @@ const inputCls =
 export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const qc = useQueryClient();
   const [ciclo] = useState(CICLO);
-  const [userId, setUserId] = useState<string | null | undefined>(undefined);
+  const { carregando, autenticado, perfil, podeUnidade, email, userId } = useAcesso();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setUserId(data.session?.user.id ?? null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) =>
-      setUserId(session?.user.id ?? null),
-    );
-    return () => sub.subscription.unsubscribe();
-  }, []);
-
-  const autenticado = Boolean(userId);
+  const temAcesso = podeUnidade(unidade.slug);
 
   const { data, isLoading } = useQuery({
-    enabled: autenticado,
+    enabled: temAcesso,
     queryKey: ["review", unidade.slug, ciclo],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -83,70 +87,186 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
     },
   });
 
+  // Contas que exigem justificativa: desvio desfavorável acima do threshold (5%).
+  const contasCriticas = unidade.desvioPorConta.filter(
+    (c) => !c.favoravel && Math.abs(c.percentual) >= THRESHOLD_JUSTIFICATIVA,
+  );
+
   const [justificativa, setJustificativa] = useState("");
   const [autor, setAutor] = useState("");
   const [status, setStatus] = useState("aberto");
   const [acoes, setAcoes] = useState<AcaoBP[]>([]);
   const [plano, setPlano] = useState<PlanoItem[]>([]);
+  const [justificativas, setJustificativas] = useState<Justificativa[]>([]);
   const [salvo, setSalvo] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!data) return;
+    if (perfil?.nome && !autor) setAutor(perfil.nome);
+  }, [perfil, autor]);
+
+  useEffect(() => {
+    if (!data) {
+      setJustificativas(
+        contasCriticas.map((c) => ({ conta: c.conta, ofensor: "", criticidade: "alta", texto: "" })),
+      );
+      return;
+    }
     setJustificativa(data.justificativa_bp ?? "");
     setAutor(data.autor ?? "");
     setStatus(data.status ?? "aberto");
     setAcoes(asArray<AcaoBP>(data.acoes_recomendadas_bp));
     setPlano(asArray<PlanoItem>(data.plano_de_acao));
+    const gravadas = asArray<Justificativa>(data.justificativas);
+    setJustificativas(
+      contasCriticas.map(
+        (c) =>
+          gravadas.find((g) => g.conta === c.conta) ?? {
+            conta: c.conta,
+            ofensor: "",
+            criticidade: "alta",
+            texto: "",
+          },
+      ),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  const fluxo = data?.fluxo_status ?? "rascunho";
+  const bloqueado = fluxo === "enviado" || fluxo === "consolidado";
+
+  const gravar = async (extra: Record<string, unknown>) => {
+    if (!userId) throw new Error("Sessão expirada. Entre novamente para salvar.");
+    const { error } = await supabase.from("unit_monthly_review").upsert(
+      {
+        unit_slug: unidade.slug,
+        ciclo,
+        justificativa_bp: justificativa,
+        acoes_recomendadas_bp: acoes,
+        plano_de_acao: plano,
+        justificativas,
+        status,
+        autor: autor || null,
+        autor_email: email,
+        autor_id: userId,
+        atualizado_em: new Date().toISOString(),
+        ...extra,
+      },
+      { onConflict: "unit_slug,ciclo" },
+    );
+    if (error) throw error;
+  };
+
+  const faltando = justificativas.filter((j) => !j.texto.trim()).map((j) => j.conta);
 
   const salvar = useMutation({
     mutationFn: async () => {
-      const { data: sessao } = await supabase.auth.getSession();
-      const uid = sessao.session?.user.id;
-      if (!uid) throw new Error("Sessão expirada. Entre novamente para salvar.");
-      const { error } = await supabase.from("unit_monthly_review").upsert(
-        {
-          unit_slug: unidade.slug,
-          ciclo,
-          justificativa_bp: justificativa,
-          acoes_recomendadas_bp: acoes,
-          plano_de_acao: plano,
-          status,
-          autor: autor || null,
-          autor_id: uid,
-          atualizado_em: new Date().toISOString(),
-        },
-        { onConflict: "unit_slug,ciclo" },
-      );
-      if (error) throw error;
+      await gravar({ fluxo_status: bloqueado ? fluxo : "rascunho" });
+      await registrarAuditoria({
+        unitSlug: unidade.slug,
+        ciclo,
+        acao: "rascunho salvo",
+        userId: userId!,
+        email,
+      });
     },
     onSuccess: async () => {
-      setSalvo("Análise do ciclo salva.");
+      setSalvo("Análise do ciclo salva como rascunho.");
       await qc.invalidateQueries({ queryKey: ["review", unidade.slug, ciclo] });
     },
     onError: (e: Error) => setSalvo(`Não foi possível salvar: ${e.message}`),
   });
 
-  if (userId === null) {
+  const enviar = useMutation({
+    mutationFn: async () => {
+      if (faltando.length > 0) {
+        throw new Error(
+          `Justificativa obrigatória para desvios acima de ${THRESHOLD_JUSTIFICATIVA}%: ${faltando.join(", ")}.`,
+        );
+      }
+      await gravar({
+        fluxo_status: "enviado",
+        enviado_em: new Date().toISOString(),
+        enviado_por: email,
+      });
+      await registrarAuditoria({
+        unitSlug: unidade.slug,
+        ciclo,
+        acao: "enviado para consolidação",
+        userId: userId!,
+        email,
+      });
+    },
+    onSuccess: async () => {
+      setSalvo("Análise enviada para consolidação do admin.");
+      await qc.invalidateQueries({ queryKey: ["review", unidade.slug, ciclo] });
+    },
+    onError: (e: Error) => setSalvo(e.message),
+  });
+
+  const reabrir = useMutation({
+    mutationFn: async (motivo: string) => {
+      await gravar({ fluxo_status: "rascunho", motivo_reabertura: motivo });
+      await registrarAuditoria({
+        unitSlug: unidade.slug,
+        ciclo,
+        acao: "reaberto",
+        detalhe: motivo,
+        userId: userId!,
+        email,
+      });
+    },
+    onSuccess: async () => {
+      setSalvo("Análise reaberta para edição — registro gravado na auditoria.");
+      await qc.invalidateQueries({ queryKey: ["review", unidade.slug, ciclo] });
+    },
+    onError: (e: Error) => setSalvo(`Não foi possível reabrir: ${e.message}`),
+  });
+
+  if (carregando) return null;
+
+  if (!autenticado) {
     return (
-      <section className="mx-auto max-w-6xl px-6 pb-10">
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h2 className="text-xl font-bold">Parecer da Diretoria &amp; sua análise</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Conteúdo interno restrito. Entre com seu e-mail corporativo para consultar o parecer da
-            diretoria e registrar a análise do ciclo.
-          </p>
-          <Link
-            to="/auth"
-            className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-          >
-            Entrar para ver
-          </Link>
-        </div>
-      </section>
+      <Bloco>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Conteúdo interno restrito. Entre com sua conta Google Chlorum para consultar o parecer da
+          diretoria e registrar a análise do ciclo.
+        </p>
+        <Link
+          to="/auth"
+          className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
+        >
+          Entrar para ver
+        </Link>
+      </Bloco>
     );
   }
 
+  if (!perfil) {
+    return (
+      <Bloco>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Sua conta ainda não tem papel atribuído no Payroll Intelligence.
+        </p>
+        <Link
+          to="/aguardando"
+          className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
+        >
+          Ver status da liberação
+        </Link>
+      </Bloco>
+    );
+  }
+
+  if (!temAcesso) {
+    return (
+      <Bloco>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Você não é responsável por esta unidade. Fale com Gente &amp; Remuneração se precisar de
+          acesso.
+        </p>
+      </Bloco>
+    );
+  }
 
   const parecer = data?.parecer_diretoria ?? null;
   const ofensores = parecer
@@ -158,9 +278,21 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
     <section className="mx-auto max-w-6xl px-6 pb-10">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h2 className="text-xl font-bold">Parecer da Diretoria &amp; sua análise</h2>
-        <span className="rounded-full border border-border px-3 py-1 text-xs font-semibold text-muted-foreground">
-          Ciclo {CICLO_LABEL}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
+            {FLUXO_LABEL[fluxo]}
+          </span>
+          <Link
+            to="/relatorio/$slug"
+            params={{ slug: unidade.slug }}
+            className="rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-accent"
+          >
+            Relatório padrão
+          </Link>
+          <span className="rounded-full border border-border px-3 py-1 text-xs font-semibold text-muted-foreground">
+            Ciclo {CICLO_LABEL}
+          </span>
+        </div>
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -213,13 +345,75 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
         </div>
 
         {/* Formulário da BP */}
-        <div className="rounded-xl border border-border bg-card p-5">
+        <fieldset
+          disabled={bloqueado}
+          className="rounded-xl border border-border bg-card p-5 disabled:opacity-70"
+        >
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Sua análise (BP / líder de operação)
+            Sua análise ({perfil.role === "lider" ? "líder de operação" : perfil.role.toUpperCase()})
           </p>
 
-          <label className="mt-3 block text-sm font-semibold" htmlFor="justificativa">
-            O que você encontrou
+          {/* Justificativas obrigatórias por conta */}
+          <p className="mt-4 text-sm font-semibold">
+            Justificativas obrigatórias (desvio ≥ {THRESHOLD_JUSTIFICATIVA}%)
+          </p>
+          <div className="mt-2 space-y-2">
+            {justificativas.map((j, i) => (
+              <div key={j.conta} className="rounded-lg border border-border p-3">
+                <p className="text-sm font-semibold">{j.conta}</p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  <select
+                    value={j.ofensor}
+                    onChange={(e) =>
+                      setJustificativas((p) =>
+                        p.map((x, k) => (k === i ? { ...x, ofensor: e.target.value } : x)),
+                      )
+                    }
+                    className={inputCls}
+                  >
+                    <option value="">Ofensor…</option>
+                    {OFENSORES_SUGERIDOS.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={j.criticidade}
+                    onChange={(e) =>
+                      setJustificativas((p) =>
+                        p.map((x, k) => (k === i ? { ...x, criticidade: e.target.value } : x)),
+                      )
+                    }
+                    className={inputCls}
+                  >
+                    <option value="alta">Criticidade alta</option>
+                    <option value="media">Criticidade média</option>
+                    <option value="baixa">Criticidade baixa</option>
+                  </select>
+                </div>
+                <textarea
+                  rows={2}
+                  value={j.texto}
+                  onChange={(e) =>
+                    setJustificativas((p) =>
+                      p.map((x, k) => (k === i ? { ...x, texto: e.target.value } : x)),
+                    )
+                  }
+                  placeholder="Justificativa do desvio (obrigatória)"
+                  className={`mt-2 ${inputCls}`}
+                />
+              </div>
+            ))}
+            {justificativas.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Nenhuma conta ultrapassou o limite de {THRESHOLD_JUSTIFICATIVA}% neste ciclo.
+              </p>
+            ) : null}
+          </div>
+
+          <label className="mt-5 block text-sm font-semibold" htmlFor="justificativa">
+            Parecer geral da unidade
           </label>
           <textarea
             id="justificativa"
@@ -291,10 +485,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
             <button
               type="button"
               onClick={() =>
-                setPlano((p) => [
-                  ...p,
-                  { item: "", responsavel: "", prazo: "", status: "pendente" },
-                ])
+                setPlano((p) => [...p, { item: "", responsavel: "", prazo: "", status: "pendente" }])
               }
               className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-semibold hover:bg-accent"
             >
@@ -383,26 +574,97 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
             </select>
           </div>
 
-          <button
-            type="button"
-            disabled={salvar.isPending || isLoading}
-            onClick={() => {
-              setSalvo(null);
-              salvar.mutate();
-            }}
-            className="mt-4 w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground disabled:opacity-60"
-          >
-            {salvar.isPending ? "Salvando…" : "Salvar análise do ciclo"}
-          </button>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              disabled={salvar.isPending || isLoading}
+              onClick={() => {
+                setSalvo(null);
+                salvar.mutate();
+              }}
+              className="rounded-lg border border-brand px-4 py-2.5 text-sm font-semibold text-brand disabled:opacity-60"
+            >
+              {salvar.isPending ? "Salvando…" : "Salvar rascunho"}
+            </button>
+            <button
+              type="button"
+              disabled={enviar.isPending || isLoading}
+              onClick={() => {
+                setSalvo(null);
+                enviar.mutate();
+              }}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground disabled:opacity-60"
+            >
+              <Send className="h-4 w-4" />
+              {enviar.isPending ? "Enviando…" : "Enviar para consolidação"}
+            </button>
+          </div>
+        </fieldset>
+      </div>
 
-          {salvo ? <p className="mt-2 text-xs text-muted-foreground">{salvo}</p> : null}
-          {data?.atualizado_em ? (
-            <p className="mt-1 text-xs text-muted-foreground">
-              Última atualização por {data.autor ?? "—"} em{" "}
-              {new Date(data.atualizado_em).toLocaleString("pt-BR")}
-            </p>
-          ) : null}
+      {bloqueado ? (
+        <div className="mt-4 rounded-xl border border-border bg-muted/40 p-4">
+          <p className="text-sm font-semibold">
+            Análise {FLUXO_LABEL[fluxo]?.toLowerCase()} — edição bloqueada
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Para editar novamente, registre o motivo da reabertura (fica gravado na auditoria).
+          </p>
+          <ReabrirForm
+            pendente={reabrir.isPending}
+            onReabrir={(motivo) => {
+              setSalvo(null);
+              reabrir.mutate(motivo);
+            }}
+          />
         </div>
+      ) : null}
+
+      {salvo ? <p className="mt-2 text-xs text-muted-foreground">{salvo}</p> : null}
+      {data?.atualizado_em ? (
+        <p className="mt-1 text-xs text-muted-foreground">
+          Última atualização por {data.autor ?? "—"} ({data.autor_email ?? "—"}) em{" "}
+          {new Date(data.atualizado_em).toLocaleString("pt-BR")}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
+function ReabrirForm({
+  pendente,
+  onReabrir,
+}: {
+  pendente: boolean;
+  onReabrir: (motivo: string) => void;
+}) {
+  const [motivo, setMotivo] = useState("");
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      <input
+        value={motivo}
+        onChange={(e) => setMotivo(e.target.value)}
+        placeholder="Motivo da reabertura"
+        className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand"
+      />
+      <button
+        type="button"
+        disabled={!motivo.trim() || pendente}
+        onClick={() => onReabrir(motivo.trim())}
+        className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold hover:bg-accent disabled:opacity-60"
+      >
+        <Unlock className="h-4 w-4" /> Reabrir edição
+      </button>
+    </div>
+  );
+}
+
+function Bloco({ children }: { children: React.ReactNode }) {
+  return (
+    <section className="mx-auto max-w-6xl px-6 pb-10">
+      <div className="rounded-xl border border-border bg-card p-6">
+        <h2 className="text-xl font-bold">Parecer da Diretoria &amp; sua análise</h2>
+        {children}
       </div>
     </section>
   );

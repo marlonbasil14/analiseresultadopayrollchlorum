@@ -14,16 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      review_audit_log: {
+        Row: {
+          acao: string
+          ciclo: string
+          criado_em: string
+          detalhe: string | null
+          email: string | null
+          id: string
+          unit_slug: string
+          user_id: string
+        }
+        Insert: {
+          acao: string
+          ciclo: string
+          criado_em?: string
+          detalhe?: string | null
+          email?: string | null
+          id?: string
+          unit_slug: string
+          user_id: string
+        }
+        Update: {
+          acao?: string
+          ciclo?: string
+          criado_em?: string
+          detalhe?: string | null
+          email?: string | null
+          id?: string
+          unit_slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       unit_monthly_review: {
         Row: {
           acoes_recomendadas_bp: Json
           acoes_recomendadas_diretoria: Json
           atualizado_em: string
           autor: string | null
+          autor_email: string | null
           autor_id: string | null
           ciclo: string
+          consolidado_em: string | null
+          consolidado_por: string | null
+          enviado_em: string | null
+          enviado_por: string | null
+          fluxo_status: string
           id: string
           justificativa_bp: string | null
+          justificativas: Json
+          motivo_reabertura: string | null
           ofensores_diretoria: Json
           parecer_diretoria: string | null
           plano_de_acao: Json
@@ -35,10 +76,18 @@ export type Database = {
           acoes_recomendadas_diretoria?: Json
           atualizado_em?: string
           autor?: string | null
+          autor_email?: string | null
           autor_id?: string | null
           ciclo: string
+          consolidado_em?: string | null
+          consolidado_por?: string | null
+          enviado_em?: string | null
+          enviado_por?: string | null
+          fluxo_status?: string
           id?: string
           justificativa_bp?: string | null
+          justificativas?: Json
+          motivo_reabertura?: string | null
           ofensores_diretoria?: Json
           parecer_diretoria?: string | null
           plano_de_acao?: Json
@@ -50,10 +99,18 @@ export type Database = {
           acoes_recomendadas_diretoria?: Json
           atualizado_em?: string
           autor?: string | null
+          autor_email?: string | null
           autor_id?: string | null
           ciclo?: string
+          consolidado_em?: string | null
+          consolidado_por?: string | null
+          enviado_em?: string | null
+          enviado_por?: string | null
+          fluxo_status?: string
           id?: string
           justificativa_bp?: string | null
+          justificativas?: Json
+          motivo_reabertura?: string | null
           ofensores_diretoria?: Json
           parecer_diretoria?: string | null
           plano_de_acao?: Json
@@ -62,15 +119,96 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          nome: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          unidades: string[]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          nome?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          unidades?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          unidades?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      bootstrap_admin: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          id: string
+          nome: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          unidades: string[]
+          updated_at: string
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "user_roles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      claim_my_role: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          id: string
+          nome: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          unidades: string[]
+          updated_at: string
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "user_roles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      pode_unidade: {
+        Args: { _slug: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "bp" | "lider" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -197,6 +335,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["bp", "lider", "admin"],
+    },
   },
 } as const
