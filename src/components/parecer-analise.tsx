@@ -68,12 +68,9 @@ const inputCls =
 export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const qc = useQueryClient();
   const [ciclo] = useState(CICLO);
-  const { carregando, autenticado, perfil, podeUnidade, email, userId } = useAcesso();
-
-  const temAcesso = podeUnidade(unidade.slug);
+  const { perfil, email, userId } = useAcesso();
 
   const { data, isLoading } = useQuery({
-    enabled: temAcesso,
     queryKey: ["review", unidade.slug, ciclo],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -134,8 +131,19 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const fluxo = data?.fluxo_status ?? "rascunho";
   const bloqueado = fluxo === "enviado" || fluxo === "consolidado";
 
+  const auditar = async (acao: string, detalhe?: string) => {
+    if (!userId) return;
+    await registrarAuditoria({
+      unitSlug: unidade.slug,
+      ciclo,
+      acao,
+      detalhe: detalhe ?? null,
+      userId,
+      email,
+    });
+  };
+
   const gravar = async (extra: Record<string, unknown>) => {
-    if (!userId) throw new Error("Sessão expirada. Entre novamente para salvar.");
     const { error } = await supabase.from("unit_monthly_review").upsert(
       {
         unit_slug: unidade.slug,
@@ -161,13 +169,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const salvar = useMutation({
     mutationFn: async () => {
       await gravar({ fluxo_status: bloqueado ? fluxo : "rascunho" });
-      await registrarAuditoria({
-        unitSlug: unidade.slug,
-        ciclo,
-        acao: "rascunho salvo",
-        userId: userId!,
-        email,
-      });
+      await auditar("rascunho salvo");
     },
     onSuccess: async () => {
       setSalvo("Análise do ciclo salva como rascunho.");
@@ -188,13 +190,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
         enviado_em: new Date().toISOString(),
         enviado_por: email,
       });
-      await registrarAuditoria({
-        unitSlug: unidade.slug,
-        ciclo,
-        acao: "enviado para consolidação",
-        userId: userId!,
-        email,
-      });
+      await auditar("enviado para consolidação");
     },
     onSuccess: async () => {
       setSalvo("Análise enviada para consolidação do admin.");
@@ -206,14 +202,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const reabrir = useMutation({
     mutationFn: async (motivo: string) => {
       await gravar({ fluxo_status: "rascunho", motivo_reabertura: motivo });
-      await registrarAuditoria({
-        unitSlug: unidade.slug,
-        ciclo,
-        acao: "reaberto",
-        detalhe: motivo,
-        userId: userId!,
-        email,
-      });
+      await auditar("reaberto", motivo);
     },
     onSuccess: async () => {
       setSalvo("Análise reaberta para edição — registro gravado na auditoria.");
@@ -222,51 +211,8 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
     onError: (e: Error) => setSalvo(`Não foi possível reabrir: ${e.message}`),
   });
 
-  if (carregando) return null;
 
-  if (!autenticado) {
-    return (
-      <Bloco>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Conteúdo interno restrito. Entre com seu e-mail Chlorum para consultar o parecer da
-          diretoria e registrar a análise do ciclo.
-        </p>
-        <Link
-          to="/auth"
-          className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-        >
-          Entrar para ver
-        </Link>
-      </Bloco>
-    );
-  }
 
-  if (!perfil) {
-    return (
-      <Bloco>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Sua conta ainda não tem papel atribuído no Payroll Intelligence.
-        </p>
-        <Link
-          to="/aguardando"
-          className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-        >
-          Ver status da liberação
-        </Link>
-      </Bloco>
-    );
-  }
-
-  if (!temAcesso) {
-    return (
-      <Bloco>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Você não é responsável por esta unidade. Fale com Gente &amp; Remuneração se precisar de
-          acesso.
-        </p>
-      </Bloco>
-    );
-  }
 
   const parecer = data?.parecer_diretoria ?? null;
   const ofensores = parecer
@@ -350,7 +296,10 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
           className="rounded-xl border border-border bg-card p-5 disabled:opacity-70"
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Sua análise ({perfil.role === "lider" ? "líder de operação" : perfil.role.toUpperCase()})
+            Sua análise
+            {perfil
+              ? ` (${perfil.role === "lider" ? "líder de operação" : perfil.role.toUpperCase()})`
+              : ""}
           </p>
 
           {/* Justificativas obrigatórias por conta */}
@@ -656,16 +605,5 @@ function ReabrirForm({
         <Unlock className="h-4 w-4" /> Reabrir edição
       </button>
     </div>
-  );
-}
-
-function Bloco({ children }: { children: React.ReactNode }) {
-  return (
-    <section className="mx-auto max-w-6xl px-6 pb-10">
-      <div className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-xl font-bold">Parecer da Diretoria &amp; sua análise</h2>
-        {children}
-      </div>
-    </section>
   );
 }
