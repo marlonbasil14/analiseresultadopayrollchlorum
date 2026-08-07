@@ -228,7 +228,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
     return (
       <Bloco>
         <p className="mt-2 text-sm text-muted-foreground">
-          Conteúdo interno restrito. Entre com sua conta Google Chlorum para consultar o parecer da
+          Conteúdo interno restrito. Entre com seu e-mail Chlorum para consultar o parecer da
           diretoria e registrar a análise do ciclo.
         </p>
         <Link
