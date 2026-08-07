@@ -226,7 +226,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
 
   if (!autenticado) {
     return (
-      <Bloco titulo="Parecer da Diretoria &amp; sua análise">
+      <Bloco>
         <p className="mt-2 text-sm text-muted-foreground">
           Conteúdo interno restrito. Entre com sua conta Google Chlorum para consultar o parecer da
           diretoria e registrar a análise do ciclo.
@@ -243,7 +243,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
 
   if (!perfil) {
     return (
-      <Bloco titulo="Parecer da Diretoria &amp; sua análise">
+      <Bloco>
         <p className="mt-2 text-sm text-muted-foreground">
           Sua conta ainda não tem papel atribuído no Payroll Intelligence.
         </p>
@@ -259,7 +259,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
 
   if (!temAcesso) {
     return (
-      <Bloco titulo="Parecer da Diretoria &amp; sua análise">
+      <Bloco>
         <p className="mt-2 text-sm text-muted-foreground">
           Você não é responsável por esta unidade. Fale com Gente &amp; Remuneração se precisar de
           acesso.
@@ -659,11 +659,11 @@ function ReabrirForm({
   );
 }
 
-function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Bloco({ children }: { children: React.ReactNode }) {
   return (
     <section className="mx-auto max-w-6xl px-6 pb-10">
       <div className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-xl font-bold" dangerouslySetInnerHTML={{ __html: titulo }} />
+        <h2 className="text-xl font-bold">Parecer da Diretoria &amp; sua análise</h2>
         {children}
       </div>
     </section>
