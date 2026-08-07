@@ -169,13 +169,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const salvar = useMutation({
     mutationFn: async () => {
       await gravar({ fluxo_status: bloqueado ? fluxo : "rascunho" });
-      await registrarAuditoria({
-        unitSlug: unidade.slug,
-        ciclo,
-        acao: "rascunho salvo",
-        userId: userId!,
-        email,
-      });
+      await auditar("rascunho salvo");
     },
     onSuccess: async () => {
       setSalvo("Análise do ciclo salva como rascunho.");
