@@ -223,51 +223,8 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
     onError: (e: Error) => setSalvo(`Não foi possível reabrir: ${e.message}`),
   });
 
-  if (carregando) return null;
 
-  if (!autenticado) {
-    return (
-      <Bloco>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Conteúdo interno restrito. Entre com seu e-mail Chlorum para consultar o parecer da
-          diretoria e registrar a análise do ciclo.
-        </p>
-        <Link
-          to="/auth"
-          className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-        >
-          Entrar para ver
-        </Link>
-      </Bloco>
-    );
-  }
 
-  if (!perfil) {
-    return (
-      <Bloco>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Sua conta ainda não tem papel atribuído no Payroll Intelligence.
-        </p>
-        <Link
-          to="/aguardando"
-          className="mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-        >
-          Ver status da liberação
-        </Link>
-      </Bloco>
-    );
-  }
-
-  if (!temAcesso) {
-    return (
-      <Bloco>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Você não é responsável por esta unidade. Fale com Gente &amp; Remuneração se precisar de
-          acesso.
-        </p>
-      </Bloco>
-    );
-  }
 
   const parecer = data?.parecer_diretoria ?? null;
   const ofensores = parecer
