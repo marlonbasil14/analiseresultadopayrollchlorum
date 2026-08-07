@@ -121,7 +121,7 @@ function AuthPage() {
 
     const { error } = await supabase.auth.verifyOtp({
       token_hash: res.tokenHash,
-      type: "email",
+      type: "magiclink",
     });
     setCarregando(false);
     if (error) {
