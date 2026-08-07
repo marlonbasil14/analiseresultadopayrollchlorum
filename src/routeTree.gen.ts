@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CartilhaRouteImport } from './routes/cartilha'
 import { Route as ConsolidadoRouteImport } from './routes/consolidado'
+import { Route as RelatorioConsolidadoRouteImport } from './routes/relatorio-consolidado'
 import { Route as RelatorioSlugRouteImport } from './routes/relatorio.$slug'
 import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
 
@@ -36,6 +37,11 @@ const ConsolidadoRoute = ConsolidadoRouteImport.update({
   path: '/consolidado',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RelatorioConsolidadoRoute = RelatorioConsolidadoRouteImport.update({
+  id: '/relatorio-consolidado',
+  path: '/relatorio-consolidado',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RelatorioSlugRoute = RelatorioSlugRouteImport.update({
   id: '/relatorio/$slug',
   path: '/relatorio/$slug',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cartilha'
     | '/consolidado'
+    | '/relatorio-consolidado'
     | '/relatorio/$slug'
     | '/unidade/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cartilha'
     | '/consolidado'
+    | '/relatorio-consolidado'
     | '/relatorio/$slug'
     | '/unidade/$slug'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cartilha'
     | '/consolidado'
+    | '/relatorio-consolidado'
     | '/relatorio/$slug'
     | '/unidade/$slug'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CartilhaRoute: typeof CartilhaRoute
   ConsolidadoRoute: typeof ConsolidadoRoute
+  RelatorioConsolidadoRoute: typeof RelatorioConsolidadoRoute
   RelatorioSlugRoute: typeof RelatorioSlugRoute
   UnidadeSlugRoute: typeof UnidadeSlugRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsolidadoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/relatorio-consolidado': {
+      id: '/relatorio-consolidado'
+      path: '/relatorio-consolidado'
+      fullPath: '/relatorio-consolidado'
+      preLoaderRoute: typeof RelatorioConsolidadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/relatorio/$slug': {
       id: '/relatorio/$slug'
       path: '/relatorio/$slug'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CartilhaRoute: CartilhaRoute,
   ConsolidadoRoute: ConsolidadoRoute,
+  RelatorioConsolidadoRoute: RelatorioConsolidadoRoute,
   RelatorioSlugRoute: RelatorioSlugRoute,
   UnidadeSlugRoute: UnidadeSlugRoute,
 }
