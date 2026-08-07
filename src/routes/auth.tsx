@@ -1,9 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { supabase } from "@/integrations/supabase/client";
 import { DOMINIO_PERMITIDO, emailAutorizado } from "@/lib/acesso";
+import { enviarCodigoAcesso, verificarCodigoAcesso } from "@/lib/otp.functions";
+
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
@@ -31,6 +34,8 @@ const inputCls =
 
 function AuthPage() {
   const navigate = useNavigate();
+  const enviar = useServerFn(enviarCodigoAcesso);
+  const verificar = useServerFn(verificarCodigoAcesso);
   const [etapa, setEtapa] = useState<"email" | "codigo">("email");
   const [email, setEmail] = useState("");
   const [digitos, setDigitos] = useState<string[]>(["", "", "", "", "", ""]);
@@ -38,6 +43,7 @@ function AuthPage() {
   const [carregando, setCarregando] = useState(false);
   const [reenviarEm, setReenviarEm] = useState(0);
   const refs = useRef<Array<HTMLInputElement | null>>([]);
+
 
   useEffect(() => {
     if (reenviarEm <= 0) return;
@@ -78,13 +84,14 @@ function AuthPage() {
       return;
     }
     setCarregando(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email: alvo,
-      options: { shouldCreateUser: true },
-    });
+    const res = await enviar({ data: { email: alvo } }).catch(() => null);
     setCarregando(false);
-    if (error) {
-      setErro("Não foi possível enviar o código agora. Tente novamente em alguns instantes.");
+    if (!res?.ok) {
+      setErro(
+        res?.erro === "dominio"
+          ? `Acesso restrito a colaboradores Chlorum (${DOMINIO_PERMITIDO}).`
+          : "Não foi possível enviar o código agora. Tente novamente em alguns instantes.",
+      );
       return;
     }
     setDigitos(["", "", "", "", "", ""]);
@@ -96,23 +103,34 @@ function AuthPage() {
   async function confirmar(codigo: string) {
     setErro(null);
     setCarregando(true);
+    const res = await verificar({
+      data: { email: email.trim().toLowerCase(), codigo },
+    }).catch(() => null);
+
+    if (!res?.ok) {
+      setCarregando(false);
+      setErro(
+        res?.erro === "expirado"
+          ? "Esse código expirou. Clique em 'Reenviar código' para receber um novo."
+          : res?.erro === "tentativas"
+            ? "Muitas tentativas com esse código. Peça um novo código."
+            : "Código inválido. Verifique os números e tente novamente.",
+      );
+      return;
+    }
+
     const { error } = await supabase.auth.verifyOtp({
-      email: email.trim().toLowerCase(),
-      token: codigo,
-      type: "email",
+      token_hash: res.tokenHash,
+      type: "magiclink",
     });
     setCarregando(false);
     if (error) {
-      const expirado = /expired/i.test(error.message);
-      setErro(
-        expirado
-          ? "Esse código expirou. Clique em 'Reenviar código' para receber um novo."
-          : "Código inválido. Verifique os números e tente novamente.",
-      );
+      setErro("Não foi possível concluir o login. Peça um novo código e tente novamente.");
       return;
     }
     navigate({ to: "/" });
   }
+
 
   function aplicarDigito(i: number, valor: string) {
     const limpo = valor.replace(/\D/g, "");
