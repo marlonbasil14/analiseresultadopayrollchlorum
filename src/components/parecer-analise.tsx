@@ -133,7 +133,14 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
 
   const auditar = async (acao: string, detalhe?: string) => {
     if (!userId) return;
-    await registrarAuditoria({ unitSlug: unidade.slug, ciclo, acao, detalhe, userId, email });
+    await registrarAuditoria({
+      unitSlug: unidade.slug,
+      ciclo,
+      acao,
+      detalhe: detalhe ?? null,
+      userId,
+      email,
+    });
   };
 
   const gravar = async (extra: Record<string, unknown>) => {
