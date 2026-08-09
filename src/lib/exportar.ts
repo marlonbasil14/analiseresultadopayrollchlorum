@@ -710,7 +710,8 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     s.addText("PARECER", {
       ...F,
       x: 0.5,
-      y: 3.15,
+      y: 3.05,
+      h: 0.25,
       fontSize: 10,
       bold: true,
       charSpacing: 1.6,
@@ -723,9 +724,9 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     s.addText(parecer, {
       ...F,
       x: 0.5,
-      y: 3.45,
+      y: 3.75,
       w: 6.1,
-      h: 2.6,
+      h: 2.3,
       fontSize: 13,
       color: hexPuro(CHL.gray700),
       valign: "top",
@@ -735,7 +736,8 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     s.addText("PRINCIPAIS OFENSORES", {
       ...F,
       x: 6.9,
-      y: 3.15,
+      y: 3.05,
+      h: 0.25,
       fontSize: 10,
       bold: true,
       charSpacing: 1.6,
@@ -755,7 +757,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
           breakLine: true,
 },
       })),
-      { x: 6.9, y: 3.45, w: 5.9, h: 2.6, valign: "top" },
+      { x: 6.9, y: 3.75, w: 5.9, h: 2.3, valign: "top" },
     );
 
 
