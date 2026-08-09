@@ -7,8 +7,20 @@ import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import { CICLO_LABEL, desvioResumo, isFavoravel, unidadesOrdenadas } from "@/data/payroll";
 import { pct, seta } from "@/lib/format";
-import { supabase } from "@/integrations/supabase/client";
-import { useAcesso } from "@/lib/acesso";
+import { IdentificacaoTela } from "@/components/identificacao-tela";
+import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
+
+/** BP responsável por cada card do painel. */
+export const BP_RESPONSAVEL: Record<string, string> = {
+  codo: "Vitória",
+  bahia: "Vitória",
+  pacatuba: "Vitória",
+  igarassu: "Patrícia",
+  uberlandia: "Bianca",
+  palmeira: "Bianca",
+  distribuicao: "Remuneração e Orçamento",
+  solutions: "Remuneração e Orçamento",
+};
 
 
 export const Route = createFileRoute("/")({
@@ -36,9 +48,12 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [videoAberto, setVideoAberto] = useState(false);
-  const { autenticado, perfil, isAdmin, podeUnidade, email } = useAcesso();
-  const visiveis =
-    perfil && !isAdmin ? unidadesOrdenadas.filter((u) => podeUnidade(u.slug)) : unidadesOrdenadas;
+  const { pronto, identidade, limpar } = useIdentidade();
+  const visiveis = unidadesOrdenadas;
+
+  if (!pronto) return null;
+  if (!identidade) return <IdentificacaoTela />;
+
   return (
     <main className="min-h-screen bg-background">
       {videoAberto ? (
@@ -77,45 +92,23 @@ function Index() {
         <div className="relative mx-auto max-w-6xl px-6 py-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <ChlorumLogo className="text-navy-foreground" />
-            <div className="flex items-center gap-2 text-xs font-semibold">
-              {autenticado ? (
-                <>
-                  <span className="text-navy-foreground/70">{perfil?.nome ?? email}</span>
-                  {isAdmin ? (
-                    <Link
-                      to="/admin"
-                      className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
-                    >
-                      Painel admin
-                    </Link>
-                  ) : null}
-                  {autenticado && !perfil ? (
-                    <Link
-                      to="/aguardando"
-                      className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
-                    >
-                      Aguardando liberação
-                    </Link>
-                  ) : null}
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await supabase.auth.signOut();
-                      window.location.href = "/auth";
-                    }}
-                    className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
-                  >
-                    Sair
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/auth"
-                  className="rounded-lg bg-brand-light/20 px-3 py-1.5 hover:bg-brand-light/30"
-                >
-                  Entrar
-                </Link>
-              )}
+            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+              <span className="text-navy-foreground/70">
+                {identidade.nome} · {rotuloEscopo(identidade.escopo)}
+              </span>
+              <Link
+                to="/admin"
+                className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
+              >
+                Painel admin
+              </Link>
+              <button
+                type="button"
+                onClick={limpar}
+                className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
+              >
+                Trocar identificação
+              </button>
             </div>
           </div>
 
@@ -179,11 +172,7 @@ function Index() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow-light">Unidades de negócio</p>
-            <h2 className="mt-2 text-2xl font-bold">
-              {perfil && !isAdmin
-                ? `Suas unidades no ciclo ${CICLO_LABEL}`
-                : `Oito unidades no ciclo ${CICLO_LABEL}`}
-            </h2>
+            <h2 className="mt-2 text-2xl font-bold">Oito unidades no ciclo {CICLO_LABEL}</h2>
           </div>
           <Link
             to="/consolidado"
@@ -215,6 +204,9 @@ function Index() {
                 <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-4">
                   <p className="text-lg font-bold">{u.nome}</p>
+                  <p className="text-xs text-navy-foreground/60">
+                    BP: {BP_RESPONSAVEL[u.slug] ?? "—"}
+                  </p>
                   <div className="mt-2 flex items-center justify-between gap-2">
                     {d !== undefined ? (
                       <span
