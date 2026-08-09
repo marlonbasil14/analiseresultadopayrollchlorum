@@ -141,21 +141,46 @@ const cacheLogos: Record<string, LogoCarregado> = {};
 /** Proporção oficial do lockup (largura:altura). */
 export const LOGO_PROPORCAO = 3.57;
 
+/** Reduz o PNG mantendo a proporção — evita arquivos gigantes no PDF/PPTX. */
+function redimensionar(dataUrl: string, larguraAlvo: number): Promise<LogoCarregado> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const escala = Math.min(1, larguraAlvo / img.width);
+      const largura = Math.round(img.width * escala);
+      const altura = Math.round(img.height * escala);
+      const canvas = document.createElement("canvas");
+      canvas.width = largura;
+      canvas.height = altura;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("Canvas indisponível"));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, largura, altura);
+      resolve({
+        dataUrl: canvas.toDataURL("image/png"),
+        largura,
+        altura,
+        proporcao: largura / altura,
+      });
+    };
+    img.onerror = () => reject(new Error("Falha ao decodificar o logo"));
+    img.src = dataUrl;
+  });
+}
+
 export async function carregarLogo(
   variante: "positivo" | "negativo" = "positivo",
+  larguraAlvo = 480,
 ): Promise<LogoCarregado> {
-  const cache = cacheLogos[variante];
+  const chave = `${variante}:${larguraAlvo}`;
+  const cache = cacheLogos[chave];
   if (cache) return cache;
   const asset = variante === "positivo" ? logoPositivo : logoNegativo;
   const base64 = await comoBase64(asset.url);
-  const largura = variante === "positivo" ? 3178 : 1553;
-  const altura = variante === "positivo" ? 888 : 391;
-  const logo: LogoCarregado = {
-    dataUrl: `data:image/png;base64,${base64}`,
-    largura,
-    altura,
-    proporcao: largura / altura,
-  };
-  cacheLogos[variante] = logo;
+  const logo = await redimensionar(`data:image/png;base64,${base64}`, larguraAlvo);
+  cacheLogos[chave] = logo;
   return logo;
 }
+
