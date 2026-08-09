@@ -114,14 +114,13 @@ let cacheFontes: ArquivoFonte[] | null = null;
  */
 export async function carregarFontesNunito(): Promise<ArquivoFonte[]> {
   if (cacheFontes) return cacheFontes;
-  const defs: Omit<ArquivoFonte, "base64">[] & { url: string }[] = [] as never;
   const origem = [
     { url: nunito300.url, arquivo: "Nunito-Light.ttf", familia: "Nunito", estilo: "normal" as const, peso: 300 },
     { url: nunito700.url, arquivo: "Nunito-Bold.ttf", familia: "Nunito", estilo: "bold" as const, peso: 700 },
     { url: nunito600.url, arquivo: "Nunito-SemiBold.ttf", familia: "NunitoSemi", estilo: "normal" as const, peso: 600 },
     { url: nunito800.url, arquivo: "Nunito-ExtraBold.ttf", familia: "NunitoX", estilo: "normal" as const, peso: 800 },
   ];
-  void defs;
+
   const carregadas = await Promise.all(
     origem.map(async (f) => ({
       arquivo: f.arquivo,
