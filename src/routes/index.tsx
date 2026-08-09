@@ -174,12 +174,21 @@ function Index() {
             <p className="eyebrow-light">Unidades de negócio</p>
             <h2 className="mt-2 text-2xl font-bold">Oito unidades no ciclo {CICLO_LABEL}</h2>
           </div>
-          <Link
-            to="/consolidado"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-accent"
-          >
-            <BarChart3 className="h-4 w-4" /> Ver consolidado
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              to="/diretoria"
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-accent"
+            >
+              <BarChart3 className="h-4 w-4" /> Visão Diretoria
+            </Link>
+            <Link
+              to="/consolidado"
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-accent"
+            >
+              <BarChart3 className="h-4 w-4" /> Ver consolidado
+            </Link>
+          </div>
+
         </div>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
