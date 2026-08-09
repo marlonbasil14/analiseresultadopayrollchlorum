@@ -6,7 +6,7 @@ import { ChlorumLogo } from "@/components/chlorum-logo";
 import { RelatorioUnidade, type ReviewRow } from "@/components/relatorio-unidade";
 import { CICLO, CICLO_LABEL, getUnidade } from "@/data/payroll";
 import { supabase } from "@/integrations/supabase/client";
-import { useAcesso } from "@/lib/acesso";
+import { BotoesExportar } from "@/components/botoes-exportar";
 
 export const Route = createFileRoute("/relatorio/$slug")({
   component: RelatorioPage,
@@ -33,10 +33,9 @@ export const Route = createFileRoute("/relatorio/$slug")({
 function RelatorioPage() {
   const { slug } = Route.useParams();
   const unidade = getUnidade(slug);
-  const { carregando, autenticado, podeUnidade, perfil } = useAcesso();
 
   const { data } = useQuery({
-    enabled: Boolean(unidade) && Boolean(perfil),
+    enabled: Boolean(unidade),
     queryKey: ["review", slug, CICLO],
     queryFn: async () => {
       const { data } = await supabase
@@ -50,9 +49,6 @@ function RelatorioPage() {
   });
 
   if (!unidade) return <Aviso texto="Unidade não encontrada." />;
-  if (carregando) return <Aviso texto="Carregando…" />;
-  if (!autenticado) return <Aviso texto="Entre com sua conta Chlorum para ver o relatório." login />;
-  if (!podeUnidade(slug)) return <Aviso texto="Você não tem acesso a esta unidade." />;
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
@@ -69,16 +65,22 @@ function RelatorioPage() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold hover:bg-accent"
           >
-            <Printer className="h-4 w-4" /> Exportar PDF
+            <Printer className="h-4 w-4" /> Imprimir
           </button>
         </div>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground print:hidden">
-        Salve como <code>Relatorio-Payroll-{unidade.nome.replace(/\s+/g, "")}-{CICLO}.pdf</code> · ciclo{" "}
-        {CICLO_LABEL}
-      </p>
+      <div className="mt-4 print:hidden">
+        <BotoesExportar
+          compacto
+          pacote={[{ unidade, review: data ?? null }]}
+          nomeBase={`Relatorio-Payroll-${unidade.nome.replace(/\s+/g, "")}`}
+          titulo={`Relatório de Payroll — ${unidade.nome}`}
+          autor={data?.autor ?? null}
+        />
+        <p className="mt-2 text-xs text-muted-foreground">Ciclo {CICLO_LABEL}</p>
+      </div>
       <div className="mt-4">
         <RelatorioUnidade unidade={unidade} review={data ?? null} />
       </div>
@@ -86,18 +88,10 @@ function RelatorioPage() {
   );
 }
 
-function Aviso({ texto, login }: { texto: string; login?: boolean }) {
+function Aviso({ texto }: { texto: string }) {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
       <p className="text-sm text-muted-foreground">{texto}</p>
-      {login ? (
-        <Link
-          to="/auth"
-          className="mt-4 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-        >
-          Entrar
-        </Link>
-      ) : null}
     </main>
   );
 }
