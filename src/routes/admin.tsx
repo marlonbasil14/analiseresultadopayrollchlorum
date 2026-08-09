@@ -1,13 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { AlarmClock, FileText, ShieldCheck } from "lucide-react";
+import { AlarmClock, FileText, History } from "lucide-react";
 
+import { BotoesExportar } from "@/components/botoes-exportar";
 import { ChlorumLogo } from "@/components/chlorum-logo";
+import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { CICLO, CICLO_LABEL, unidadesOrdenadas } from "@/data/payroll";
 import { supabase } from "@/integrations/supabase/client";
 import { pct } from "@/lib/format";
-import { FLUXO_LABEL, diasAteVencimento, useAcesso, type Papel } from "@/lib/acesso";
+import { FLUXO_LABEL, diasAteVencimento } from "@/lib/acesso";
+import { useIdentidade } from "@/lib/identificacao";
+import type { ReviewLike } from "@/lib/exportar";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -17,7 +21,7 @@ export const Route = createFileRoute("/admin")({
       {
         name: "description",
         content:
-          "Consolidação das 8 unidades, status do fluxo, papéis de acesso e auditoria das análises mensais de payroll.",
+          "Consolidação das 8 unidades, status do fluxo, prazo do 7º dia útil e exportação do pacote para o FP&A.",
       },
       { property: "og:title", content: "Painel do admin · Payroll Intelligence Chlorum" },
       {
@@ -31,9 +35,6 @@ export const Route = createFileRoute("/admin")({
   }),
 });
 
-const inputCls =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand";
-
 const BADGE: Record<string, string> = {
   pendente: "bg-muted text-muted-foreground",
   rascunho: "bg-brand/15 text-brand",
@@ -41,31 +42,41 @@ const BADGE: Record<string, string> = {
   consolidado: "bg-favorable/15 text-favorable",
 };
 
+type Review = {
+  unit_slug: string;
+  ciclo: string;
+  fluxo_status: string;
+  autor: string | null;
+  enviado_em: string | null;
+} & ReviewLike;
+
 function AdminPage() {
   const qc = useQueryClient();
-  const { carregando, autenticado, isAdmin, perfil, email, userId } = useAcesso();
+  const { pronto, identidade, limpar } = useIdentidade();
   const prazo = diasAteVencimento(CICLO);
+  const [confirmando, setConfirmando] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
 
   const reviews = useQuery({
-    enabled: Boolean(perfil?.role === "admin"),
     queryKey: ["reviews", CICLO],
     queryFn: async () => {
       const { data } = await supabase.from("unit_monthly_review").select("*").eq("ciclo", CICLO);
-      return data ?? [];
+      return (data ?? []) as unknown as Review[];
     },
   });
 
-  const papeis = useQuery({
-    enabled: Boolean(perfil?.role === "admin"),
-    queryKey: ["papeis"],
+  const historico = useQuery({
+    queryKey: ["historico-ciclos"],
     queryFn: async () => {
-      const { data } = await supabase.from("user_roles").select("*").order("email");
+      const { data } = await supabase
+        .from("unit_monthly_review")
+        .select("ciclo, fluxo_status")
+        .order("ciclo", { ascending: false });
       return data ?? [];
     },
   });
 
   const auditoria = useQuery({
-    enabled: Boolean(perfil?.role === "admin"),
     queryKey: ["auditoria"],
     queryFn: async () => {
       const { data } = await supabase
@@ -77,71 +88,69 @@ function AdminPage() {
     },
   });
 
-  const [novoEmail, setNovoEmail] = useState("");
-  const [novoNome, setNovoNome] = useState("");
-  const [novoPapel, setNovoPapel] = useState<Papel>("bp");
-  const [novasUnidades, setNovasUnidades] = useState<string[]>([]);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  const salvarPapel = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.from("user_roles").insert({
-        email: novoEmail.trim().toLowerCase(),
-        nome: novoNome || null,
-        role: novoPapel,
-        unidades: novoPapel === "admin" ? ["*"] : novasUnidades,
-      });
-      if (error) throw error;
-    },
-    onSuccess: async () => {
-      setMsg("Acesso liberado. A pessoa entra pelo link enviado ao e-mail e o papel é vinculado automaticamente.");
-      setNovoEmail("");
-      setNovoNome("");
-      setNovasUnidades([]);
-      await qc.invalidateQueries({ queryKey: ["papeis"] });
-    },
-    onError: (e: Error) => setMsg(`Não foi possível salvar: ${e.message}`),
+  const porSlug = (slug: string) => reviews.data?.find((r) => r.unit_slug === slug) ?? null;
+  const prontas = unidadesOrdenadas.filter((u) => {
+    const st = porSlug(u.slug)?.fluxo_status;
+    return st === "enviado" || st === "consolidado";
   });
+  const todasProntas = prontas.length === unidadesOrdenadas.length;
 
-  const consolidar = useMutation({
-    mutationFn: async (slug: string) => {
-      const { error } = await supabase
-        .from("unit_monthly_review")
-        .update({
-          fluxo_status: "consolidado",
-          consolidado_em: new Date().toISOString(),
-          consolidado_por: email,
-          autor_id: userId,
-        })
-        .eq("unit_slug", slug)
-        .eq("ciclo", CICLO);
-      if (error) throw error;
-      await supabase.from("review_audit_log").insert({
-        unit_slug: slug,
-        ciclo: CICLO,
-        acao: "consolidado",
-        user_id: userId!,
-        email,
-      });
+  const pacote = unidadesOrdenadas.map((u) => ({ unidade: u, review: porSlug(u.slug) }));
+
+  const consolidarTudo = useMutation({
+    mutationFn: async () => {
+      const agora = new Date().toISOString();
+      for (const u of unidadesOrdenadas) {
+        const { error } = await supabase
+          .from("unit_monthly_review")
+          .update({
+            fluxo_status: "consolidado",
+            consolidado_em: agora,
+            consolidado_por: identidade?.nome ?? null,
+          })
+          .eq("unit_slug", u.slug)
+          .eq("ciclo", CICLO);
+        if (error) throw error;
+        await supabase.from("review_audit_log").insert({
+          unit_slug: u.slug,
+          ciclo: CICLO,
+          acao: "consolidado",
+          autor_nome: identidade?.nome ?? null,
+        });
+      }
     },
     onSuccess: async () => {
+      setConfirmando(false);
+      setMsg("Relatório consolidado gerado — as 8 unidades foram marcadas como consolidadas.");
       await qc.invalidateQueries({ queryKey: ["reviews", CICLO] });
       await qc.invalidateQueries({ queryKey: ["auditoria"] });
     },
+    onError: (e: Error) => setMsg(`Não foi possível consolidar: ${e.message}`),
   });
 
-  if (carregando) return <Aviso texto="Carregando…" />;
-  if (!autenticado) return <Aviso texto="Entre com sua conta Chlorum." login />;
-  if (!isAdmin) return <Aviso texto="Área restrita ao perfil admin." />;
+  if (!pronto) return null;
+  if (!identidade) return <IdentificacaoTela />;
+
+  const ciclosHistorico = Array.from(new Set((historico.data ?? []).map((h) => h.ciclo)));
 
   return (
     <main className="min-h-screen bg-background">
       <header className="bg-navy text-navy-foreground">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
           <ChlorumLogo className="text-navy-foreground" />
-          <Link to="/" className="text-xs font-semibold uppercase tracking-widest text-navy-foreground/80">
-            Voltar
-          </Link>
+          <div className="flex items-center gap-2 text-xs font-semibold">
+            <span className="text-navy-foreground/70">{identidade.nome}</span>
+            <button
+              type="button"
+              onClick={limpar}
+              className="rounded-lg border border-navy-foreground/30 px-3 py-1.5"
+            >
+              Trocar identificação
+            </button>
+            <Link to="/" className="uppercase tracking-widest text-navy-foreground/80">
+              Voltar
+            </Link>
+          </div>
         </div>
         <div className="mx-auto max-w-6xl px-6 pb-10">
           <p className="eyebrow">Consolidação · {CICLO_LABEL}</p>
@@ -162,12 +171,20 @@ function AdminPage() {
       <section className="mx-auto max-w-6xl px-6 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-bold">Status das 8 unidades</h2>
-          <Link
-            to="/relatorio-consolidado"
-            className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground"
+          <button
+            type="button"
+            disabled={!todasProntas}
+            onClick={() => {
+              setMsg(null);
+              setConfirmando(true);
+            }}
+            className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground disabled:opacity-50"
           >
-            <FileText className="h-4 w-4" /> Gerar relatório consolidado
-          </Link>
+            <FileText className="h-4 w-4" />
+            {todasProntas
+              ? "Gerar relatório consolidado"
+              : `Gerar relatório consolidado (${prontas.length}/8 unidades prontas)`}
+          </button>
         </div>
 
         <div className="mt-4 overflow-x-auto rounded-xl border border-border">
@@ -183,7 +200,7 @@ function AdminPage() {
             </thead>
             <tbody>
               {unidadesOrdenadas.map((u) => {
-                const r = reviews.data?.find((x) => x.unit_slug === u.slug);
+                const r = porSlug(u.slug);
                 const st = r?.fluxo_status ?? "pendente";
                 const atrasado = prazo.atrasado && st !== "enviado" && st !== "consolidado";
                 return (
@@ -202,7 +219,9 @@ function AdminPage() {
                     </td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">
                       {r?.autor ?? "—"}
-                      {r?.enviado_em ? ` · enviado ${new Date(r.enviado_em).toLocaleDateString("pt-BR")}` : ""}
+                      {r?.enviado_em
+                        ? ` · enviado ${new Date(r.enviado_em).toLocaleDateString("pt-BR")}`
+                        : ""}
                     </td>
                     <td className="px-4 py-2 text-right">
                       <Link
@@ -212,15 +231,6 @@ function AdminPage() {
                       >
                         Relatório
                       </Link>
-                      {st === "enviado" ? (
-                        <button
-                          type="button"
-                          onClick={() => consolidar.mutate(u.slug)}
-                          className="ml-2 rounded-lg bg-brand px-2 py-1 text-xs font-semibold text-brand-foreground"
-                        >
-                          Consolidar
-                        </button>
-                      ) : null}
                     </td>
                   </tr>
                 );
@@ -228,89 +238,95 @@ function AdminPage() {
             </tbody>
           </table>
         </div>
+        {msg ? <p className="mt-3 text-xs text-muted-foreground">{msg}</p> : null}
+      </section>
+
+      {confirmando ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirmar geração do relatório consolidado"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-navy/80 p-4"
+        >
+          <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-card p-6">
+            <h3 className="text-lg font-bold">Confirmar e gerar consolidado</h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Ao confirmar, as 8 unidades passam para o status consolidado.
+            </p>
+            <ul className="mt-4 space-y-1 text-sm">
+              {unidadesOrdenadas.map((u) => {
+                const r = porSlug(u.slug);
+                const st = r?.fluxo_status ?? "pendente";
+                const atrasado = prazo.atrasado && st !== "enviado" && st !== "consolidado";
+                return (
+                  <li key={u.slug} className="flex justify-between border-b border-border py-1">
+                    <span>
+                      {u.nome} — {r?.autor ?? "sem autor"}
+                    </span>
+                    <span className={atrasado ? "text-unfavorable font-semibold" : ""}>
+                      {atrasado ? "Atrasado" : FLUXO_LABEL[st]}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setConfirmando(false)}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={consolidarTudo.isPending}
+                onClick={() => consolidarTudo.mutate()}
+                className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground disabled:opacity-60"
+              >
+                {consolidarTudo.isPending ? "Gerando…" : "Confirmar e gerar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <section className="mx-auto max-w-6xl px-6 pb-8">
+        <h2 className="text-xl font-bold">Pacote para o FP&amp;A</h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Mesmos dados estruturados nos três formatos · Material-FPeA-Payroll-{CICLO}
+        </p>
+        <div className="mt-3">
+          <BotoesExportar
+            pacote={pacote}
+            nomeBase="Material-FPeA-Payroll"
+            titulo="Material FP&A — Payroll Chlorum"
+            autor={identidade.nome}
+          />
+        </div>
+        <Link
+          to="/relatorio-consolidado"
+          className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand"
+        >
+          Abrir relatório consolidado na tela
+        </Link>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-8">
         <h2 className="flex items-center gap-2 text-xl font-bold">
-          <ShieldCheck className="h-5 w-5 text-brand" /> Papéis de acesso
+          <History className="h-5 w-5 text-brand" /> Histórico de ciclos
         </h2>
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-sm font-semibold">Liberar acesso</p>
-            <div className="mt-3 space-y-2">
-              <input
-                value={novoEmail}
-                onChange={(e) => setNovoEmail(e.target.value)}
-                placeholder="e-mail @chlorumsolutions.com"
-                className={inputCls}
-              />
-              <input
-                value={novoNome}
-                onChange={(e) => setNovoNome(e.target.value)}
-                placeholder="Nome de exibição"
-                className={inputCls}
-              />
-              <select
-                value={novoPapel}
-                onChange={(e) => setNovoPapel(e.target.value as Papel)}
-                className={inputCls}
-              >
-                <option value="bp">BP</option>
-                <option value="lider">Líder da operação</option>
-                <option value="admin">Admin (todas as unidades)</option>
-              </select>
-              {novoPapel !== "admin" ? (
-                <div className="grid grid-cols-2 gap-1 rounded-lg border border-border p-3 text-xs">
-                  {unidadesOrdenadas.map((u) => (
-                    <label key={u.slug} className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={novasUnidades.includes(u.slug)}
-                        onChange={(e) =>
-                          setNovasUnidades((p) =>
-                            e.target.checked ? [...p, u.slug] : p.filter((s) => s !== u.slug),
-                          )
-                        }
-                      />
-                      {u.nome}
-                    </label>
-                  ))}
-                </div>
-              ) : null}
-              <button
-                type="button"
-                disabled={!novoEmail || salvarPapel.isPending}
-                onClick={() => {
-                  setMsg(null);
-                  salvarPapel.mutate();
-                }}
-                className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground disabled:opacity-60"
-              >
-                Liberar acesso
-              </button>
-              {msg ? <p className="text-xs text-muted-foreground">{msg}</p> : null}
-            </div>
-          </div>
-
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-sm font-semibold">Pessoas com acesso</p>
-            <ul className="mt-3 space-y-2 text-sm">
-              {papeis.data?.map((p) => (
-                <li key={p.id} className="rounded-lg border border-border p-3">
-                  <span className="font-semibold">{p.nome || p.email}</span>{" "}
-                  <span className="text-xs uppercase text-brand">{p.role}</span>
-                  <p className="text-xs text-muted-foreground">
-                    {p.email} · {p.unidades.includes("*") ? "todas as unidades" : p.unidades.join(", ") || "sem unidade"}
-                    {p.user_id ? "" : " · aguardando 1º login"}
-                  </p>
-                </li>
-              ))}
-              {papeis.data?.length === 0 ? (
-                <li className="text-xs text-muted-foreground">Nenhum acesso cadastrado ainda.</li>
-              ) : null}
-            </ul>
-          </div>
-        </div>
+        <ul className="mt-3 flex flex-wrap gap-2 text-xs">
+          {ciclosHistorico.map((c) => (
+            <li key={c} className="rounded-full border border-border px-3 py-1 font-semibold">
+              {c}
+              {c === CICLO ? " · atual" : ""}
+            </li>
+          ))}
+          {ciclosHistorico.length === 0 ? (
+            <li className="text-muted-foreground">Nenhum ciclo registrado ainda.</li>
+          ) : null}
+        </ul>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-16">
@@ -318,29 +334,13 @@ function AdminPage() {
         <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
           {auditoria.data?.map((a) => (
             <li key={a.id} className="border-b border-border py-1">
-              {new Date(a.criado_em).toLocaleString("pt-BR")} · {a.email ?? "—"} · {a.acao} ·{" "}
-              {a.unit_slug} ({a.ciclo}) {a.detalhe ? `· ${a.detalhe}` : ""}
+              {new Date(a.criado_em).toLocaleString("pt-BR")} · {a.autor_nome ?? a.email ?? "—"} ·{" "}
+              {a.acao} · {a.unit_slug} ({a.ciclo}) {a.detalhe ? `· ${a.detalhe}` : ""}
             </li>
           ))}
           {auditoria.data?.length === 0 ? <li>Nenhum registro ainda.</li> : null}
         </ul>
       </section>
-    </main>
-  );
-}
-
-function Aviso({ texto, login }: { texto: string; login?: boolean }) {
-  return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
-      <p className="text-sm text-muted-foreground">{texto}</p>
-      {login ? (
-        <Link
-          to="/auth"
-          className="mt-4 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-        >
-          Entrar
-        </Link>
-      ) : null}
     </main>
   );
 }
