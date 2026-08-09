@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CartilhaRouteImport } from './routes/cartilha'
 import { Route as ConsolidadoRouteImport } from './routes/consolidado'
+import { Route as DiretoriaRouteImport } from './routes/diretoria'
 import { Route as RelatorioConsolidadoRouteImport } from './routes/relatorio-consolidado'
 import { Route as RelatorioSlugRouteImport } from './routes/relatorio.$slug'
 import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
@@ -37,6 +38,11 @@ const ConsolidadoRoute = ConsolidadoRouteImport.update({
   path: '/consolidado',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiretoriaRoute = DiretoriaRouteImport.update({
+  id: '/diretoria',
+  path: '/diretoria',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RelatorioConsolidadoRoute = RelatorioConsolidadoRouteImport.update({
   id: '/relatorio-consolidado',
   path: '/relatorio-consolidado',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/diretoria': typeof DiretoriaRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/diretoria': typeof DiretoriaRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
+  '/diretoria': typeof DiretoriaRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/cartilha'
     | '/consolidado'
+    | '/diretoria'
     | '/relatorio-consolidado'
     | '/relatorio/$slug'
     | '/unidade/$slug'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/cartilha'
     | '/consolidado'
+    | '/diretoria'
     | '/relatorio-consolidado'
     | '/relatorio/$slug'
     | '/unidade/$slug'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/cartilha'
     | '/consolidado'
+    | '/diretoria'
     | '/relatorio-consolidado'
     | '/relatorio/$slug'
     | '/unidade/$slug'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   CartilhaRoute: typeof CartilhaRoute
   ConsolidadoRoute: typeof ConsolidadoRoute
+  DiretoriaRoute: typeof DiretoriaRoute
   RelatorioConsolidadoRoute: typeof RelatorioConsolidadoRoute
   RelatorioSlugRoute: typeof RelatorioSlugRoute
   UnidadeSlugRoute: typeof UnidadeSlugRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsolidadoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diretoria': {
+      id: '/diretoria'
+      path: '/diretoria'
+      fullPath: '/diretoria'
+      preLoaderRoute: typeof DiretoriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/relatorio-consolidado': {
       id: '/relatorio-consolidado'
       path: '/relatorio-consolidado'
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   CartilhaRoute: CartilhaRoute,
   ConsolidadoRoute: ConsolidadoRoute,
+  DiretoriaRoute: DiretoriaRoute,
   RelatorioConsolidadoRoute: RelatorioConsolidadoRoute,
   RelatorioSlugRoute: RelatorioSlugRoute,
   UnidadeSlugRoute: UnidadeSlugRoute,
@@ -187,13 +208,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
