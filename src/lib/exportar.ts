@@ -316,7 +316,7 @@ export async function exportarPdf(
 
   if (logoNeg) {
     const larguraLogo = 150;
-    doc.addImage(logoNeg.dataUrl, "PNG", m + 36, m + 34, larguraLogo, larguraLogo / logoNeg.proporcao);
+    doc.addImage(logoNeg.dataUrl, "PNG", m + 36, m + 34, larguraLogo, larguraLogo / logoNeg.proporcao, "chl-neg", "FAST");
   }
 
   texto(EYEBROW, m + 36, m + 130, { peso: 700, tamanho: 11, cor: CHL.blue300, espaco: 2 });
@@ -380,7 +380,7 @@ export async function exportarPdf(
   function cabecalhoInterno(rotulo: string, indice?: number, total?: number) {
     if (logoPos) {
       const w = 92;
-      doc.addImage(logoPos.dataUrl, "PNG", largura - m - 12 - w, 30, w, w / logoPos.proporcao);
+      doc.addImage(logoPos.dataUrl, "PNG", largura - m - 12 - w, 30, w, w / logoPos.proporcao, "chl-pos", "FAST");
     }
     texto(
       indice && total ? `UNIDADE ${indice} DE ${total}` : rotulo.toUpperCase(),
