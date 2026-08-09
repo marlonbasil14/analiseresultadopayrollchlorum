@@ -753,7 +753,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
           fontSize: 13,
           color: hexPuro(corDesvio(c.percentual <= 0)),
           breakLine: true,
-ротив        },
+},
       })),
       { x: 6.9, y: 3.45, w: 5.9, h: 2.6, valign: "top" },
     );
