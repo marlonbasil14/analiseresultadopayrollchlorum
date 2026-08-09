@@ -398,7 +398,7 @@ export async function exportarPdf(
     doc.line(m + 12, 76, largura - m - 12, 76);
   }
 
-  function cardKpi(x: number, y: number, w: number, rotulo: string, valor: string, cor = CHL.ink) {
+  function cardKpi(x: number, y: number, w: number, rotulo: string, valor: string, cor: string = CHL.ink) {
     doc.setFillColor(...rgb(CHL.gray50));
     doc.roundedRect(x, y, w, 62, 10, 10, "F");
     texto(rotulo.toUpperCase(), x + 14, y + 22, {
