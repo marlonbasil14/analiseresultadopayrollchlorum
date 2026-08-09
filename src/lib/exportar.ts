@@ -187,7 +187,7 @@ export async function exportarExcel(pacote: PacoteUnidade[], nomeBase: string) {
       const row = ws.getRow(linhaAtual + i);
       row.values = comUnidade ? [l.unidade, ...valores] : valores;
       const zebra = i % 2 === 1;
-      const desfavoravel = l.desvioValor > 0;
+      const desfavoravel = l.desvioPercentual > 0;
       const corStatus = desfavoravel ? CHL.danger : CHL.success;
       row.eachCell({ includeEmpty: true }, (c, col) => {
         c.font = { name: FONTE, size: 10, color: { argb: argb(CHL.gray900) } };
@@ -308,6 +308,7 @@ export async function exportarPdf(
   const totalReal = pacote.reduce((s, p) => s + p.unidade.payrollActual, 0);
   const totalOrc = pacote.reduce((s, p) => s + p.unidade.payrollForecast, 0);
   const desvioTotal = totalReal - totalOrc;
+  const percentualTotal = totalOrc !== 0 ? (-desvioTotal / Math.abs(totalOrc)) * 100 : 0;
 
   // ------------------------------ Capa ------------------------------
   const m = 24;
@@ -336,10 +337,10 @@ export async function exportarPdf(
       cor: CHL.blue300,
       espaco: 1.6,
     });
-    texto(`${brl(desvioTotal)} (${pct((desvioTotal / totalOrc) * 100)})`, m + 56, m + 294, {
+    texto(`${brl(desvioTotal)} (${pct(percentualTotal)})`, m + 56, m + 294, {
       peso: 800,
       tamanho: 22,
-      cor: desvioTotal > 0 ? tint(CHL.danger, 0.35) : tint(CHL.success, 0.35),
+      cor: percentualTotal > 0 ? tint(CHL.danger, 0.35) : tint(CHL.success, 0.35),
     });
     texto(
       `Real ${brl(totalReal)}  ·  Orçado ${brl(totalOrc)}  ·  ${pacote.length} unidades`,
@@ -418,7 +419,7 @@ export async function exportarPdf(
     texto(u.nome, m + 12, 108, { peso: 800, tamanho: 24, cor: CHL.ink });
 
     // Badge de status do desvio
-    const favoravel = u.desvioValor <= 0;
+    const favoravel = u.desvioPercentual <= 0;
     const cor = corDesvio(favoravel);
     const rotuloBadge = `${favoravel ? "FAVORÁVEL" : "DESFAVORÁVEL"} ${pct(u.desvioPercentual)}`;
     fonte(700);
@@ -505,8 +506,8 @@ export async function exportarPdf(
       columnStyles: { 6: { cellWidth: 130 }, 7: { cellWidth: 90 }, 8: { cellWidth: 90 } },
       didParseCell: (dados) => {
         if (dados.section === "body" && (dados.column.index === 3 || dados.column.index === 4)) {
-          const bruto = String(dados.cell.raw ?? "");
-          const desfavoravel = !bruto.trim().startsWith("-");
+          const percentualBruto = String(dados.row.raw?.[4] ?? "");
+          const desfavoravel = percentualBruto.trim().startsWith("+");
           dados.cell.styles.textColor = rgb(desfavoravel ? CHL.danger : CHL.success);
           dados.cell.styles.fontStyle = "bold";
         }
@@ -566,6 +567,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
   const totalReal = pacote.reduce((s, p) => s + p.unidade.payrollActual, 0);
   const totalOrc = pacote.reduce((s, p) => s + p.unidade.payrollForecast, 0);
   const desvio = totalReal - totalOrc;
+  const percentualTotal = totalOrc !== 0 ? (-desvio / Math.abs(totalOrc)) * 100 : 0;
   const F = { fontFace: FONTE } as const;
 
   // ------------------------------ Capa ------------------------------
@@ -609,13 +611,13 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     charSpacing: 1.6,
     color: hexPuro(CHL.blue300),
   });
-  capa.addText(`${brl(desvio)} (${pct((desvio / totalOrc) * 100)})`, {
+  capa.addText(`${brl(desvio)} (${pct(percentualTotal)})`, {
     ...F,
     x: 1,
     y: 4.0,
     fontSize: 22,
     bold: true,
-    color: hexPuro(desvio > 0 ? tint(CHL.danger, 0.35) : tint(CHL.success, 0.35)),
+    color: hexPuro(percentualTotal > 0 ? tint(CHL.danger, 0.35) : tint(CHL.success, 0.35)),
   });
   capa.addText(`Real ${brl(totalReal)}   ·   Orçado ${brl(totalOrc)}   ·   ${pacote.length} unidade(s)`, {
     ...F,
@@ -642,7 +644,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     });
     s.addText(u.nome, { ...F, x: 0.5, y: 0.6, w: 8, fontSize: 30, bold: true, color: hexPuro(CHL.ink) });
 
-    const favoravel = u.desvioValor <= 0;
+    const favoravel = u.desvioPercentual <= 0;
     const cor = corDesvio(favoravel);
     s.addShape(pptx.ShapeType.roundRect, {
       x: 0.5,
