@@ -11,8 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AguardandoRouteImport } from './routes/aguardando'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CartilhaRouteImport } from './routes/cartilha'
 import { Route as ConsolidadoRouteImport } from './routes/consolidado'
 import { Route as RelatorioConsolidadoRouteImport } from './routes/relatorio-consolidado'
@@ -27,16 +25,6 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AguardandoRoute = AguardandoRouteImport.update({
-  id: '/aguardando',
-  path: '/aguardando',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartilhaRoute = CartilhaRouteImport.update({
@@ -68,8 +56,6 @@ const UnidadeSlugRoute = UnidadeSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/aguardando': typeof AguardandoRoute
-  '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
@@ -79,8 +65,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/aguardando': typeof AguardandoRoute
-  '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
@@ -91,8 +75,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/aguardando': typeof AguardandoRoute
-  '/auth': typeof AuthRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
@@ -104,8 +86,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/aguardando'
-    | '/auth'
     | '/cartilha'
     | '/consolidado'
     | '/relatorio-consolidado'
@@ -115,8 +95,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
-    | '/aguardando'
-    | '/auth'
     | '/cartilha'
     | '/consolidado'
     | '/relatorio-consolidado'
@@ -126,8 +104,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
-    | '/aguardando'
-    | '/auth'
     | '/cartilha'
     | '/consolidado'
     | '/relatorio-consolidado'
@@ -138,8 +114,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  AguardandoRoute: typeof AguardandoRoute
-  AuthRoute: typeof AuthRoute
   CartilhaRoute: typeof CartilhaRoute
   ConsolidadoRoute: typeof ConsolidadoRoute
   RelatorioConsolidadoRoute: typeof RelatorioConsolidadoRoute
@@ -161,20 +135,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aguardando': {
-      id: '/aguardando'
-      path: '/aguardando'
-      fullPath: '/aguardando'
-      preLoaderRoute: typeof AguardandoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cartilha': {
@@ -218,8 +178,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  AguardandoRoute: AguardandoRoute,
-  AuthRoute: AuthRoute,
   CartilhaRoute: CartilhaRoute,
   ConsolidadoRoute: ConsolidadoRoute,
   RelatorioConsolidadoRoute: RelatorioConsolidadoRoute,
@@ -229,13 +187,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

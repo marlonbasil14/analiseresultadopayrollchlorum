@@ -7,7 +7,7 @@ import { RelatorioUnidade, type ReviewRow } from "@/components/relatorio-unidade
 import { CICLO, CICLO_LABEL, unidadesOrdenadas } from "@/data/payroll";
 import { supabase } from "@/integrations/supabase/client";
 import { brl, pct } from "@/lib/format";
-import { useAcesso } from "@/lib/acesso";
+import { BotoesExportar } from "@/components/botoes-exportar";
 
 export const Route = createFileRoute("/relatorio-consolidado")({
   component: ConsolidadoPage,
@@ -32,10 +32,8 @@ export const Route = createFileRoute("/relatorio-consolidado")({
 });
 
 function ConsolidadoPage() {
-  const { carregando, autenticado, isAdmin, perfil } = useAcesso();
 
   const { data } = useQuery({
-    enabled: Boolean(perfil?.role === "admin"),
     queryKey: ["reviews", CICLO],
     queryFn: async () => {
       const { data } = await supabase.from("unit_monthly_review").select("*").eq("ciclo", CICLO);
@@ -43,9 +41,6 @@ function ConsolidadoPage() {
     },
   });
 
-  if (carregando) return <Aviso texto="Carregando…" />;
-  if (!autenticado) return <Aviso texto="Entre com sua conta Chlorum." login />;
-  if (!isAdmin) return <Aviso texto="O consolidado das 8 unidades é restrito ao perfil admin." />;
 
   const totalActual = unidadesOrdenadas.reduce((s, u) => s + u.payrollActual, 0);
   const totalForecast = unidadesOrdenadas.reduce((s, u) => s + u.payrollForecast, 0);
@@ -67,15 +62,23 @@ function ConsolidadoPage() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold hover:bg-accent"
           >
-            <Printer className="h-4 w-4" /> Exportar consolidado
+            <Printer className="h-4 w-4" /> Imprimir
           </button>
         </div>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground print:hidden">
-        Salve como <code>Relatorio-Consolidado-Payroll-{CICLO}.pdf</code>
-      </p>
+      <div className="mt-4 print:hidden">
+        <BotoesExportar
+          compacto
+          pacote={unidadesOrdenadas.map((u) => ({
+            unidade: u,
+            review: data?.find((r) => r.unit_slug === u.slug) ?? null,
+          }))}
+          nomeBase="Relatorio-Consolidado-Payroll"
+          titulo="Relatório Consolidado de Payroll — Chlorum"
+        />
+      </div>
 
       <section className="mt-6 break-after-page rounded-xl border border-border bg-card p-6 print:break-after-page">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -116,18 +119,4 @@ function ConsolidadoPage() {
   );
 }
 
-function Aviso({ texto, login }: { texto: string; login?: boolean }) {
-  return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
-      <p className="text-sm text-muted-foreground">{texto}</p>
-      {login ? (
-        <Link
-          to="/auth"
-          className="mt-4 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-brand-foreground"
-        >
-          Entrar
-        </Link>
-      ) : null}
-    </main>
-  );
-}
+

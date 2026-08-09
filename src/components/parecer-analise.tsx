@@ -7,7 +7,9 @@ import { CICLO, CICLO_LABEL, type Unidade } from "@/data/payroll";
 import { subcontasDe } from "@/data/subcontas";
 import { supabase } from "@/integrations/supabase/client";
 import { brl } from "@/lib/format";
-import { FLUXO_LABEL, THRESHOLD_JUSTIFICATIVA, registrarAuditoria, useAcesso } from "@/lib/acesso";
+import { FLUXO_LABEL, THRESHOLD_JUSTIFICATIVA, registrarAuditoria } from "@/lib/acesso";
+import { useIdentidade } from "@/lib/identificacao";
+import { BotoesExportar } from "@/components/botoes-exportar";
 
 type Ofensor = { conta: string; resumo: string };
 type AcaoBP = { acao: string; responsavel: string; prazo: string };
@@ -68,7 +70,7 @@ const inputCls =
 export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const qc = useQueryClient();
   const [ciclo] = useState(CICLO);
-  const { perfil, email, userId } = useAcesso();
+  const { nome: nomeIdentidade } = useIdentidade();
 
   const { data, isLoading } = useQuery({
     queryKey: ["review", unidade.slug, ciclo],
@@ -98,8 +100,8 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const [salvo, setSalvo] = useState<string | null>(null);
 
   useEffect(() => {
-    if (perfil?.nome && !autor) setAutor(perfil.nome);
-  }, [perfil, autor]);
+    if (nomeIdentidade && !autor) setAutor(nomeIdentidade);
+  }, [nomeIdentidade, autor]);
 
   useEffect(() => {
     if (!data) {
@@ -132,14 +134,12 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const bloqueado = fluxo === "enviado" || fluxo === "consolidado";
 
   const auditar = async (acao: string, detalhe?: string) => {
-    if (!userId) return;
     await registrarAuditoria({
       unitSlug: unidade.slug,
       ciclo,
       acao,
       detalhe: detalhe ?? null,
-      userId,
-      email,
+      autorNome: autor || nomeIdentidade,
     });
   };
 
@@ -153,9 +153,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
         plano_de_acao: plano,
         justificativas,
         status,
-        autor: autor || null,
-        autor_email: email,
-        autor_id: userId,
+        autor: autor || nomeIdentidade || null,
         atualizado_em: new Date().toISOString(),
         ...extra,
       },
@@ -188,7 +186,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
       await gravar({
         fluxo_status: "enviado",
         enviado_em: new Date().toISOString(),
-        enviado_por: email,
+        enviado_por: autor || nomeIdentidade,
       });
       await auditar("enviado para consolidação");
     },
@@ -239,6 +237,16 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
             Ciclo {CICLO_LABEL}
           </span>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <BotoesExportar
+          compacto
+          pacote={[{ unidade, review: data ?? null }]}
+          nomeBase={`Relatorio-Payroll-${unidade.nome}`}
+          titulo={`Relatório de Payroll — ${unidade.nome}`}
+          autor={data?.autor ?? nomeIdentidade}
+        />
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -296,10 +304,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
           className="rounded-xl border border-border bg-card p-5 disabled:opacity-70"
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Sua análise
-            {perfil
-              ? ` (${perfil.role === "lider" ? "líder de operação" : perfil.role.toUpperCase()})`
-              : ""}
+            Sua análise{nomeIdentidade ? ` · ${nomeIdentidade}` : ""}
           </p>
 
           {/* Justificativas obrigatórias por conta */}
@@ -572,7 +577,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
       {salvo ? <p className="mt-2 text-xs text-muted-foreground">{salvo}</p> : null}
       {data?.atualizado_em ? (
         <p className="mt-1 text-xs text-muted-foreground">
-          Última atualização por {data.autor ?? "—"} ({data.autor_email ?? "—"}) em{" "}
+          Última atualização por {data.autor ?? "—"} em{" "}
           {new Date(data.atualizado_em).toLocaleString("pt-BR")}
         </p>
       ) : null}
