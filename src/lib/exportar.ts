@@ -506,7 +506,7 @@ export async function exportarPdf(
       columnStyles: { 6: { cellWidth: 130 }, 7: { cellWidth: 90 }, 8: { cellWidth: 90 } },
       didParseCell: (dados) => {
         if (dados.section === "body" && (dados.column.index === 3 || dados.column.index === 4)) {
-          const percentualBruto = String(dados.row.raw?.[4] ?? "");
+          const percentualBruto = String((dados.row.raw as unknown[])?.[4] ?? "");
           const desfavoravel = percentualBruto.trim().startsWith("+");
           dados.cell.styles.textColor = rgb(desfavoravel ? CHL.danger : CHL.success);
           dados.cell.styles.fontStyle = "bold";
