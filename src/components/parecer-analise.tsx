@@ -239,6 +239,16 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
         </div>
       </div>
 
+      <div className="mt-4">
+        <BotoesExportar
+          compacto
+          pacote={[{ unidade, review: data ?? null }]}
+          nomeBase={`Relatorio-Payroll-${unidade.nome}`}
+          titulo={`Relatório de Payroll — ${unidade.nome}`}
+          autor={data?.autor ?? nomeIdentidade}
+        />
+      </div>
+
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         {/* Parecer da diretoria (somente leitura) */}
         <div className="rounded-xl border border-border bg-card p-5">
@@ -567,7 +577,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
       {salvo ? <p className="mt-2 text-xs text-muted-foreground">{salvo}</p> : null}
       {data?.atualizado_em ? (
         <p className="mt-1 text-xs text-muted-foreground">
-          Última atualização por {data.autor ?? "—"} ({data.autor_email ?? "—"}) em{" "}
+          Última atualização por {data.autor ?? "—"} em{" "}
           {new Date(data.atualizado_em).toLocaleString("pt-BR")}
         </p>
       ) : null}
