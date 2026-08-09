@@ -47,33 +47,36 @@ export type Database = {
       review_audit_log: {
         Row: {
           acao: string
+          autor_nome: string | null
           ciclo: string
           criado_em: string
           detalhe: string | null
           email: string | null
           id: string
           unit_slug: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           acao: string
+          autor_nome?: string | null
           ciclo: string
           criado_em?: string
           detalhe?: string | null
           email?: string | null
           id?: string
           unit_slug: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           acao?: string
+          autor_nome?: string | null
           ciclo?: string
           criado_em?: string
           detalhe?: string | null
           email?: string | null
           id?: string
           unit_slug?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
