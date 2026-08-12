@@ -437,45 +437,91 @@ export async function exportarPdf(
     cardKpi(m + 12 + (larguraCard + 12) * 2, y, larguraCard, "Desvio R$", brl(u.desvioValor), cor);
     cardKpi(m + 12 + (larguraCard + 12) * 3, y, larguraCard, "Desvio %", pct(u.desvioPercentual), cor);
 
-    // Barras de desvio por conta
-    texto("Desvio por conta contábil", m + 12, y + 100, {
+    // ---- Geometria de duas colunas (larguras fixas e independentes) ----
+    const colEsqX = m + 12;
+    const parecerX = 500; // início da coluna direita
+    const goteira = 28;
+    const colEsqFim = parecerX - goteira; // limite rígido da coluna do gráfico
+    const colDirW = largura - m - 12 - parecerX;
+    const baseConteudo = altura - m - 40;
+
+    // Barras de desvio por conta (tudo confinado à coluna esquerda)
+    texto("Desvio por conta contábil", colEsqX, y + 100, {
       peso: 700,
       tamanho: 13,
       cor: CHL.navy800,
     });
     const contas = [...u.desvioPorConta].sort((a, b) => Math.abs(b.valor) - Math.abs(a.valor));
     const maximo = Math.max(...contas.map((c) => Math.abs(c.valor)), 1);
-    const trilhaX = m + 160;
-    const trilhaW = 300;
+    const trilhaX = colEsqX + 104;
+    const rotuloW = 120; // reserva para "R$ x (y%)"
+    const trilhaW = Math.max(colEsqFim - rotuloW - trilhaX, 60);
     contas.slice(0, 7).forEach((c, i) => {
       const linhaY = y + 124 + i * 22;
       const corBarra = corDesvio(Boolean(c.favoravel));
-      texto(c.conta, m + 12, linhaY + 9, { peso: 300, tamanho: 9, cor: CHL.gray700 });
+      texto(c.conta, colEsqX, linhaY + 9, { peso: 300, tamanho: 9, cor: CHL.gray700 });
       doc.setFillColor(...rgb(CHL.gray200));
       doc.roundedRect(trilhaX, linhaY, trilhaW, 10, 5, 5, "F");
       doc.setFillColor(...rgb(corBarra));
       doc.roundedRect(trilhaX, linhaY, Math.max((Math.abs(c.valor) / maximo) * trilhaW, 4), 10, 5, 5, "F");
-      texto(`${brl(c.valor)}  (${pct(c.percentual)})`, trilhaX + trilhaW + 12, linhaY + 9, {
+      texto(`${brl(c.valor)}  (${pct(c.percentual)})`, colEsqFim, linhaY + 9, {
         peso: 600,
         tamanho: 9,
         cor: corBarra,
+        alinhar: "right",
       });
     });
 
-    // Parecer
-    const parecerX = largura / 2 + 40;
+    // Parecer — quebra de linha dentro da própria coluna e overflow paginado
     texto("Parecer", parecerX, y + 100, { peso: 700, tamanho: 13, cor: CHL.navy800 });
     const parecer = p.review?.justificativa_bp || p.review?.parecer_diretoria || "—";
     fonte(300);
     doc.setFontSize(9.5);
+    const alturaLinha = 13;
+    const linhasParecer = doc.splitTextToSize(parecer, colDirW) as string[];
+    const inicioParecer = y + 122;
+    const cabemPrimeira = Math.max(Math.floor((baseConteudo - inicioParecer) / alturaLinha), 1);
+
     doc.setTextColor(...rgb(CHL.gray700));
-    doc.text(doc.splitTextToSize(parecer, largura - parecerX - m - 12) as string[], parecerX, y + 122);
+    doc.text(linhasParecer.slice(0, cabemPrimeira), parecerX, inicioParecer, {
+      lineHeightFactor: alturaLinha / 9.5,
+    });
+
+    let restante = linhasParecer.slice(cabemPrimeira);
+    if (restante.length > 0) {
+      texto("continua na próxima página →", parecerX, baseConteudo + 14, {
+        peso: 600,
+        tamanho: 8,
+        cor: CHL.gray500,
+      });
+    }
+
     texto(
       `Autor: ${p.review?.autor ?? "—"} · Status: ${p.review?.fluxo_status ?? "pendente"}`,
-      parecerX,
+      colEsqX,
       altura - m - 24,
       { peso: 300, tamanho: 9, cor: CHL.gray500 },
     );
+
+    while (restante.length > 0) {
+      doc.addPage();
+      cabecalhoInterno(`${u.nome} — parecer (continuação)`);
+      texto(`${u.nome} — parecer (continuação)`, colEsqX, 108, {
+        peso: 700,
+        tamanho: 16,
+        cor: CHL.ink,
+      });
+      const inicio = 132;
+      const cabem = Math.max(Math.floor((baseConteudo - inicio) / alturaLinha), 1);
+      fonte(300);
+      doc.setFontSize(9.5);
+      doc.setTextColor(...rgb(CHL.gray700));
+      // na continuação o texto usa a largura útil inteira, reprocessando a quebra
+      const bloco = doc.splitTextToSize(restante.join(" "), largura - m * 2 - 24) as string[];
+      doc.text(bloco.slice(0, cabem), colEsqX, inicio, { lineHeightFactor: alturaLinha / 9.5 });
+      restante = bloco.slice(cabem);
+    }
+
 
     // Detalhamento tabular
     doc.addPage();
