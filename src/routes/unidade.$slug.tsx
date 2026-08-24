@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, CalendarClock, Info } from "lucide-react";
 import { useState } from "react";
 
-import { ChlorumLogo } from "@/components/chlorum-logo";
+import { PILogo } from "@/components/pi-logo";
 import { DesvioBar } from "@/components/desvio-bar";
 import { KpiCard } from "@/components/kpi-card";
 import { ParecerAnalise } from "@/components/parecer-analise";
@@ -114,7 +114,7 @@ function UnidadePage() {
   return (
     <main className="min-h-screen bg-background">
       <div className="absolute inset-x-0 top-0 z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6 text-navy-foreground">
-        <ChlorumLogo />
+        <PILogo variant="reverse" size="md" />
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-navy-foreground/80 hover:text-navy-foreground"

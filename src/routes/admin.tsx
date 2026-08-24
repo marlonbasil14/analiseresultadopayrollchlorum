@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AlarmClock, FileText, History } from "lucide-react";
 
 import { BotoesExportar } from "@/components/botoes-exportar";
-import { ChlorumLogo } from "@/components/chlorum-logo";
+import { PILogo } from "@/components/pi-logo";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { CICLO, CICLO_LABEL, unidadesOrdenadas } from "@/data/payroll";
 import { supabase } from "@/integrations/supabase/client";
@@ -137,7 +137,7 @@ function AdminPage() {
     <main className="min-h-screen bg-background">
       <header className="bg-navy text-navy-foreground">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-          <ChlorumLogo className="text-navy-foreground" />
+          <PILogo variant="reverse" size="md" />
           <div className="flex items-center gap-2 text-xs font-semibold">
             <span className="text-navy-foreground/70">{identidade.nome}</span>
             <button
