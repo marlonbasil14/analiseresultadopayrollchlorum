@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText } from "lucide-react";
 import { useState } from "react";
 
-import { ChlorumLogo } from "@/components/chlorum-logo";
+import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import { CICLO_LABEL, desvioResumo, isFavoravel, unidadesOrdenadas } from "@/data/payroll";
@@ -91,7 +91,7 @@ function Index() {
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-brand-light/20 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-6 py-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <ChlorumLogo className="text-navy-foreground" />
+            <PILogo variant="reverse" size="md" />
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
               <span className="text-navy-foreground/70">
                 {identidade.nome} · {rotuloEscopo(identidade.escopo)}

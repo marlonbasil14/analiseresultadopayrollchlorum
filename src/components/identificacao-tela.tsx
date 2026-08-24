@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UserRound } from "lucide-react";
 
-import { ChlorumLogo } from "@/components/chlorum-logo";
+import { PILogo } from "@/components/pi-logo";
 import { CICLO_LABEL } from "@/data/payroll";
 import { opcoesEscopo, salvarIdentidade } from "@/lib/identificacao";
 
@@ -16,7 +16,7 @@ export function IdentificacaoTela({ aoConcluir }: { aoConcluir?: () => void }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-navy px-6 py-12 text-navy-foreground">
       <div className="w-full max-w-md">
-        <ChlorumLogo className="text-navy-foreground" />
+        <PILogo variant="reverse" size="md" />
         <div className="mt-8 rounded-2xl border border-navy-foreground/15 bg-navy-foreground/5 p-6">
           <p className="eyebrow">Payroll Intelligence · {CICLO_LABEL}</p>
           <h1 className="mt-2 text-2xl font-extrabold">Como você quer se identificar?</h1>

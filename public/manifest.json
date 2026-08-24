@@ -1,0 +1,12 @@
+{
+  "name": "Payroll Intelligence — Chlorum Solutions",
+  "short_name": "Payroll Intelligence",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#202848",
+  "theme_color": "#202848",
+  "icons": [
+    { "src": "/pi-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/pi-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
