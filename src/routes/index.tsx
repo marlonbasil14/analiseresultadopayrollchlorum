@@ -4,13 +4,31 @@ import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
-import relatorioAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
+import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
+import { dadosDoCiclo } from "@/data/ciclos";
+import type { CicloChave } from "@/data/ciclos";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { pct, seta } from "@/lib/format";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
+
+const RELATORIOS_PDF: Record<
+  CicloChave,
+  { url?: string | undefined; label: string; descricao: string }
+> = {
+  "2026-07": {
+    url: relatorioJulhoAsset.url,
+    label: "Julho/2026",
+    descricao: "Documento completo em PDF · abre em nova aba",
+  },
+  "2026-08": {
+    url: undefined,
+    label: "Agosto/2026",
+    descricao: "Relatório em preparação",
+  },
+};
 
 /** BP responsável por cada card do painel. */
 export const BP_RESPONSAVEL: Record<string, string> = {
@@ -25,6 +43,8 @@ export const BP_RESPONSAVEL: Record<string, string> = {
 };
 
 
+const CICLO_LABEL_ATUAL = dadosDoCiclo().CICLO_LABEL;
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -32,7 +52,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Ambiente de análise de desvios orçamentários de payroll: consolidado e por unidade, ciclo Julho/2026.",
+          `Ambiente de análise de desvios orçamentários de payroll: consolidado e por unidade, ciclo ${CICLO_LABEL_ATUAL}.`,
       },
       {
         property: "og:title",
@@ -51,7 +71,8 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [videoAberto, setVideoAberto] = useState(false);
   const { pronto, identidade, limpar } = useIdentidade();
-  const { CICLO_LABEL, dados } = useCicloAtivo();
+  const { ciclo, CICLO_LABEL, dados } = useCicloAtivo();
+  const relatorio = RELATORIOS_PDF[ciclo];
   const visiveis = dados.unidadesOrdenadas;
 
   if (!pronto) return null;
@@ -153,20 +174,35 @@ function Index() {
                 </p>
               </Link>
 
-              <a
-                href={relatorioAsset.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 transition-colors hover:bg-navy-foreground/10 sm:col-span-2"
-              >
-                <FileText className="h-8 w-8 text-brand-light" />
-                <p className="mt-4 text-lg font-semibold">
-                  Ler o relatório de Análise Orçamentária — Julho/2026
-                </p>
-                <p className="mt-1 text-xs text-navy-foreground/60">
-                  Documento completo em PDF · abre em nova aba
-                </p>
-              </a>
+              {relatorio.url ? (
+                <a
+                  href={relatorio.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 transition-colors hover:bg-navy-foreground/10 sm:col-span-2"
+                >
+                  <FileText className="h-8 w-8 text-brand-light" />
+                  <p className="mt-4 text-lg font-semibold">
+                    Ler o relatório de Análise Orçamentária — {relatorio.label}
+                  </p>
+                  <p className="mt-1 text-xs text-navy-foreground/60">
+                    {relatorio.descricao}
+                  </p>
+                </a>
+              ) : (
+                <div
+                  aria-disabled="true"
+                  className="rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 opacity-70 sm:col-span-2"
+                >
+                  <FileText className="h-8 w-8 text-brand-light/70" />
+                  <p className="mt-4 text-lg font-semibold">
+                    Relatório em preparação — {relatorio.label}
+                  </p>
+                  <p className="mt-1 text-xs text-navy-foreground/60">
+                    {relatorio.descricao}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
