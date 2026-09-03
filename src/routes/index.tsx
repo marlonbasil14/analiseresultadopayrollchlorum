@@ -43,6 +43,8 @@ export const BP_RESPONSAVEL: Record<string, string> = {
 };
 
 
+const CICLO_LABEL_ATUAL = dadosDoCiclo().CICLO_LABEL;
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -50,7 +52,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Ambiente de análise de desvios orçamentários de payroll: consolidado e por unidade, ciclo Julho/2026.",
+          `Ambiente de análise de desvios orçamentários de payroll: consolidado e por unidade, ciclo ${CICLO_LABEL_ATUAL}.`,
       },
       {
         property: "og:title",
