@@ -5,6 +5,7 @@ import { useState } from "react";
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
+import relatorioAgostoAsset from "@/assets/analise-orcamentaria-payroll-agosto2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
 import { dadosDoCiclo } from "@/data/ciclos";
 import type { CicloChave } from "@/data/ciclos";
@@ -24,9 +25,9 @@ const RELATORIOS_PDF: Record<
     descricao: "Documento completo em PDF · abre em nova aba",
   },
   "2026-08": {
-    url: undefined,
+    url: relatorioAgostoAsset.url,
     label: "Agosto/2026",
-    descricao: "Relatório em preparação",
+    descricao: "Documento completo em PDF · abre em nova aba",
   },
 };
 
