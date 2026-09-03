@@ -221,7 +221,7 @@ function Index() {
                     BP: {BP_RESPONSAVEL[u.slug] ?? "—"}
                   </p>
                   {u.observacaoDados ? (
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-md border border-warning/60 bg-warning/20 px-2 py-1 text-[11px] font-bold text-warning-foreground">
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-md border border-atencao/70 bg-atencao/90 px-2 py-1 text-[11px] font-bold text-atencao-foreground">
                       <AlertTriangle className="h-3 w-3" /> Atenção à base de dados
                     </span>
                   ) : null}
