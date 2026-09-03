@@ -71,7 +71,8 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [videoAberto, setVideoAberto] = useState(false);
   const { pronto, identidade, limpar } = useIdentidade();
-  const { CICLO_LABEL, dados } = useCicloAtivo();
+  const { ciclo, CICLO_LABEL, dados } = useCicloAtivo();
+  const relatorio = RELATORIOS_PDF[ciclo];
   const visiveis = dados.unidadesOrdenadas;
 
   if (!pronto) return null;
