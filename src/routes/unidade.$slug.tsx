@@ -81,11 +81,13 @@ function AreaCard({ titulo, bloco }: { titulo: string; bloco: BlocoArea }) {
 
 function UnidadePage() {
   const { slug } = Route.useParams();
-  const { CICLO_LABEL, dados } = useCicloAtivo();
-  const unidadesOrdenadas = dados.unidadesOrdenadas;
-  const u = dados.getUnidade(slug);
+  const { CICLO_LABEL, dados: cicloDados } = useCicloAtivo();
+  const unidadesOrdenadas = cicloDados.unidadesOrdenadas;
+  const u = cicloDados.getUnidade(slug);
 
   const [ytd, setYtd] = useState(false);
+  const [checks, setChecks] = useState<boolean[]>([false, true, false, false, true, false]);
+
   if (!u) {
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
@@ -95,6 +97,7 @@ function UnidadePage() {
       </main>
     );
   }
+
   const dados = janela(u, ytd);
 
   const linhas: { item: DesvioConta; nota?: string | undefined }[] = dados.desvioPorConta.map(
@@ -108,18 +111,9 @@ function UnidadePage() {
   );
   const maxPct = Math.max(...linhas.map((l) => Math.abs(l.item.percentual)), 1);
 
-  const prechecked = [
-    u.headcountReal === u.headcountOrcado,
-    true,
-    false,
-    Math.sign(u.desvioPercentual) === Math.sign(u.headcountDelta || 0),
-    true,
-    false,
-  ];
-  const [checks, setChecks] = useState<boolean[]>(prechecked);
-
   const idx = unidadesOrdenadas.findIndex((x) => x.slug === u.slug);
   const proxima = unidadesOrdenadas[(idx + 1) % unidadesOrdenadas.length]!;
+
 
   return (
     <main className="min-h-screen bg-background">
