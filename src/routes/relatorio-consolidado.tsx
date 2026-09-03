@@ -4,7 +4,7 @@ import { Printer, ArrowLeft } from "lucide-react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { RelatorioUnidade, type ReviewRow } from "@/components/relatorio-unidade";
-import { CICLO, CICLO_LABEL, unidadesOrdenadas } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
 import { supabase } from "@/integrations/supabase/client";
 import { brl, pct } from "@/lib/format";
 import { BotoesExportar } from "@/components/botoes-exportar";
@@ -32,11 +32,13 @@ export const Route = createFileRoute("/relatorio-consolidado")({
 });
 
 function ConsolidadoPage() {
+  const { ciclo, CICLO_LABEL, dados } = useCicloAtivo();
+  const unidadesOrdenadas = dados.unidadesOrdenadas;
 
   const { data } = useQuery({
-    queryKey: ["reviews", CICLO],
+    queryKey: ["reviews", ciclo],
     queryFn: async () => {
-      const { data } = await supabase.from("unit_monthly_review").select("*").eq("ciclo", CICLO);
+      const { data } = await supabase.from("unit_monthly_review").select("*").eq("ciclo", ciclo);
       return (data ?? []) as NonNullable<ReviewRow>[];
     },
   });
@@ -109,6 +111,7 @@ function ConsolidadoPage() {
       <div className="mt-6 space-y-6">
         {unidadesOrdenadas.map((u) => (
           <RelatorioUnidade
+            cicloLabel={CICLO_LABEL}
             key={u.slug}
             unidade={u}
             review={data?.find((r) => r.unit_slug === u.slug) ?? null}

@@ -4,7 +4,7 @@ import { Printer, ArrowLeft } from "lucide-react";
 
 import { ChlorumLogo } from "@/components/chlorum-logo";
 import { RelatorioUnidade, type ReviewRow } from "@/components/relatorio-unidade";
-import { CICLO, CICLO_LABEL, getUnidade } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
 import { supabase } from "@/integrations/supabase/client";
 import { BotoesExportar } from "@/components/botoes-exportar";
 
@@ -32,17 +32,18 @@ export const Route = createFileRoute("/relatorio/$slug")({
 
 function RelatorioPage() {
   const { slug } = Route.useParams();
-  const unidade = getUnidade(slug);
+  const { ciclo, CICLO_LABEL, dados } = useCicloAtivo();
+  const unidade = dados.getUnidade(slug);
 
   const { data } = useQuery({
     enabled: Boolean(unidade),
-    queryKey: ["review", slug, CICLO],
+    queryKey: ["review", slug, ciclo],
     queryFn: async () => {
       const { data } = await supabase
         .from("unit_monthly_review")
         .select("*")
         .eq("unit_slug", slug)
-        .eq("ciclo", CICLO)
+        .eq("ciclo", ciclo)
         .maybeSingle();
       return (data ?? null) as ReviewRow;
     },
@@ -82,7 +83,7 @@ function RelatorioPage() {
         <p className="mt-2 text-xs text-muted-foreground">Ciclo {CICLO_LABEL}</p>
       </div>
       <div className="mt-4">
-        <RelatorioUnidade unidade={unidade} review={data ?? null} />
+        <RelatorioUnidade unidade={unidade} review={data ?? null} cicloLabel={CICLO_LABEL} />
       </div>
     </main>
   );
