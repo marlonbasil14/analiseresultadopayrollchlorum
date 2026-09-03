@@ -1,12 +1,12 @@
 import { type Unidade } from "@/data/payroll";
 import { dadosDoCiclo } from "@/data/ciclos";
 
-let cicloAtivo = { CICLO: dadosDoCiclo().CICLO, CICLO_LABEL: dadosDoCiclo().cicloAtivo.CICLO_LABEL };
+let cicloAtivo = { CICLO: dadosDoCiclo().CICLO, CICLO_LABEL: dadosDoCiclo().CICLO_LABEL };
 
 /** Define o ciclo usado nos nomes de arquivo e cabeçalhos das exportações. */
 export function definirCicloExportacao(chave?: string) {
   const d = dadosDoCiclo(chave);
-  cicloAtivo = { CICLO: d.CICLO, CICLO_LABEL: d.cicloAtivo.CICLO_LABEL };
+  cicloAtivo = { CICLO: d.CICLO, CICLO_LABEL: d.CICLO_LABEL };
 }
 import { brl, pct } from "@/lib/format";
 import {
