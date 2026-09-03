@@ -4,13 +4,30 @@ import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
-import relatorioAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
+import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
+import type { CicloChave } from "@/data/ciclos";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { pct, seta } from "@/lib/format";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
+
+const RELATORIOS_PDF: Record<
+  CicloChave,
+  { url?: string; label: string; descricao: string }
+> = {
+  "2026-07": {
+    url: relatorioJulhoAsset.url,
+    label: "Julho/2026",
+    descricao: "Documento completo em PDF · abre em nova aba",
+  },
+  "2026-08": {
+    url: undefined,
+    label: "Agosto/2026",
+    descricao: "Relatório em preparação",
+  },
+};
 
 /** BP responsável por cada card do painel. */
 export const BP_RESPONSAVEL: Record<string, string> = {
