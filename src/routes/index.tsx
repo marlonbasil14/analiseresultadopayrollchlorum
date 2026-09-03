@@ -6,6 +6,7 @@ import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
+import { dadosDoCiclo } from "@/data/ciclos";
 import type { CicloChave } from "@/data/ciclos";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
