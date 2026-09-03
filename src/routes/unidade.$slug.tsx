@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, CalendarClock, Info } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ArrowRight, CalendarClock, Info } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
@@ -9,22 +9,21 @@ import { ParecerAnalise } from "@/components/parecer-analise";
 
 import { ParallaxHero } from "@/components/parallax-hero";
 import {
-  CICLO_LABEL,
   CONTAS_SAZONAIS,
-  getUnidade,
   janela,
-  unidadesOrdenadas,
   type BlocoArea,
   type DesvioConta,
-  type Unidade,
 } from "@/data/payroll";
+import { dadosDoCiclo } from "@/data/ciclos";
+import { useCicloAtivo } from "@/lib/ciclo";
+import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { brl, brlCompacto, pct, seta } from "@/lib/format";
 
 export const Route = createFileRoute("/unidade/$slug")({
   loader: ({ params }) => {
-    const unidade = getUnidade(params.slug);
+    const unidade = dadosDoCiclo().getUnidade(params.slug);
     if (!unidade) throw notFound();
-    return { unidade };
+    return { nome: unidade.nome };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -32,8 +31,8 @@ export const Route = createFileRoute("/unidade/$slug")({
         meta: [{ title: "Unidade não encontrada — Payroll Intelligence" }, { name: "robots", content: "noindex" }],
       };
     }
-    const nome = loaderData.unidade.nome;
-    const desc = `Desvios de payroll da unidade ${nome} no ciclo ${CICLO_LABEL}: Actual vs. Forecast, headcount e desvio por conta.`;
+    const nome = loaderData.nome;
+    const desc = `Desvios de payroll da unidade ${nome}: Actual vs. Forecast, headcount e desvio por conta, por ciclo.`;
     return {
       meta: [
         { title: `${nome} — Payroll Intelligence | Chlorum Solutions` },
@@ -81,10 +80,21 @@ function AreaCard({ titulo, bloco }: { titulo: string; bloco: BlocoArea }) {
 }
 
 function UnidadePage() {
-  const { unidade } = Route.useLoaderData();
-  const u = unidade as Unidade;
+  const { slug } = Route.useParams();
+  const { CICLO_LABEL, dados } = useCicloAtivo();
+  const unidadesOrdenadas = dados.unidadesOrdenadas;
+  const u = dados.getUnidade(slug);
 
   const [ytd, setYtd] = useState(false);
+  if (!u) {
+    return (
+      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          Unidade não disponível no ciclo {CICLO_LABEL}.
+        </p>
+      </main>
+    );
+  }
   const dados = janela(u, ytd);
 
   const linhas: { item: DesvioConta; nota?: string | undefined }[] = dados.desvioPorConta.map(
@@ -115,12 +125,15 @@ function UnidadePage() {
     <main className="min-h-screen bg-background">
       <div className="absolute inset-x-0 top-0 z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6 text-navy-foreground">
         <PILogo variant="reverse" size="md" />
+        <div className="flex items-center gap-3">
+          <SeletorCiclo variante="reverse" />
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-navy-foreground/80 hover:text-navy-foreground"
         >
           <ArrowLeft className="h-4 w-4" /> Início
         </Link>
+        </div>
       </div>
 
       <ParallaxHero imagem={u.imagem} alt={`Unidade ${u.nome}`}>
@@ -134,6 +147,12 @@ function UnidadePage() {
         <span className="mt-4 inline-block rounded-full border border-brand-light/50 bg-brand-light/20 px-4 py-1.5 text-xs font-semibold text-navy-foreground">
           {u.tagLeitura}
         </span>
+        {u.observacaoDados ? (
+          <p className="mt-3 flex max-w-3xl items-start gap-2 rounded-lg border-2 border-atencao bg-atencao px-4 py-2.5 text-xs font-bold text-atencao-foreground">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>Atenção à base de dados: {u.observacaoDados}</span>
+          </p>
+        ) : null}
       </ParallaxHero>
 
       <section className="mx-auto max-w-6xl px-6 py-10">
