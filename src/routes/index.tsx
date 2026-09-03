@@ -16,7 +16,7 @@ import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
 
 const RELATORIOS_PDF: Record<
   CicloChave,
-  { url?: string; label: string; descricao: string }
+  { url?: string | undefined; label: string; descricao: string }
 > = {
   "2026-07": {
     url: relatorioJulhoAsset.url,
