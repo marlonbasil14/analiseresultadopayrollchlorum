@@ -1,4 +1,5 @@
-import { CICLO_LABEL, janela, type Unidade } from "@/data/payroll";
+import { janela, type Unidade } from "@/data/payroll";
+import { dadosDoCiclo } from "@/data/ciclos";
 import { brl, pct, seta } from "@/lib/format";
 import { FLUXO_LABEL } from "@/lib/acesso";
 
@@ -29,7 +30,15 @@ function arr<T>(v: unknown): T[] {
 
 const dt = (v: string | null | undefined) => (v ? new Date(v).toLocaleString("pt-BR") : "—");
 
-export function RelatorioUnidade({ unidade, review }: { unidade: Unidade; review: ReviewRow }) {
+export function RelatorioUnidade({
+  unidade,
+  review,
+  cicloLabel = dadosDoCiclo().CICLO_LABEL,
+}: {
+  unidade: Unidade;
+  review: ReviewRow;
+  cicloLabel?: string;
+}) {
   const mes = janela(unidade, false);
   const justificativas = arr<{ conta: string; ofensor: string; criticidade?: string; texto: string }>(
     review?.justificativas,
@@ -48,7 +57,7 @@ export function RelatorioUnidade({ unidade, review }: { unidade: Unidade; review
         </p>
         <h2 className="mt-1 text-2xl font-extrabold">{unidade.nome}</h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Mês de referência {CICLO_LABEL} · gerado em {new Date().toLocaleString("pt-BR")} · autoria{" "}
+          Mês de referência {cicloLabel} · gerado em {new Date().toLocaleString("pt-BR")} · autoria{" "}
           {review?.autor ?? "—"} {review?.autor_email ? `(${review.autor_email})` : ""}
         </p>
       </header>

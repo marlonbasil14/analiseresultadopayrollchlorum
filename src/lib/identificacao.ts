@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { unidadesOrdenadas } from "@/data/payroll";
+import { dadosDoCiclo } from "@/data/ciclos";
 
 export type Identidade = {
   nome: string;
@@ -17,7 +17,7 @@ export const ESCOPOS_ESPECIAIS = [
 
 export function opcoesEscopo() {
   return [
-    ...unidadesOrdenadas.map((u) => ({ valor: u.slug, rotulo: u.nome })),
+    ...dadosDoCiclo().unidadesOrdenadas.map((u) => ({ valor: u.slug, rotulo: u.nome })),
     ...ESCOPOS_ESPECIAIS,
   ];
 }

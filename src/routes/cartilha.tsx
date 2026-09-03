@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
-import { CICLO_LABEL } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
 
 export const Route = createFileRoute("/cartilha")({
   head: () => ({
@@ -209,6 +209,7 @@ function Tabela({ head, rows }: { head: string[]; rows: (string | number)[][] })
 }
 
 function Cartilha() {
+  const { CICLO_LABEL } = useCicloAtivo();
   const [checks, setChecks] = useState<boolean[]>(Array(6).fill(false));
 
   return (

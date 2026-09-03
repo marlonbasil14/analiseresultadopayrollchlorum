@@ -1,4 +1,13 @@
-import { CICLO, CICLO_LABEL, type Unidade } from "@/data/payroll";
+import { type Unidade } from "@/data/payroll";
+import { dadosDoCiclo } from "@/data/ciclos";
+
+let cicloAtivo = { CICLO: dadosDoCiclo().CICLO, CICLO_LABEL: dadosDoCiclo().cicloAtivo.CICLO_LABEL };
+
+/** Define o ciclo usado nos nomes de arquivo e cabeçalhos das exportações. */
+export function definirCicloExportacao(chave?: string) {
+  const d = dadosDoCiclo(chave);
+  cicloAtivo = { CICLO: d.CICLO, CICLO_LABEL: d.cicloAtivo.CICLO_LABEL };
+}
 import { brl, pct } from "@/lib/format";
 import {
   CHL,
@@ -112,7 +121,7 @@ function baixar(blob: Blob, nome: string) {
 }
 
 export function nomeArquivo(base: string, ext: string) {
-  return `${base}-${CICLO}.${ext}`;
+  return `${base}-${cicloAtivo.CICLO}.${ext}`;
 }
 
 // ----------------------------- Excel -----------------------------
@@ -219,7 +228,7 @@ export async function exportarExcel(pacote: PacoteUnidade[], nomeBase: string) {
   for (const p of pacote) {
     const linhas = linhasDaUnidade(p.unidade, p.review);
     linhasTodas.push(...linhas);
-    montarAba(p.unidade.nome, `${p.unidade.nome} — Ciclo ${CICLO_LABEL}`, linhas, false);
+    montarAba(p.unidade.nome, `${p.unidade.nome} — Ciclo ${cicloAtivo.CICLO_LABEL}`, linhas, false);
   }
 
   if (pacote.length > 1) {
@@ -232,7 +241,7 @@ export async function exportarExcel(pacote: PacoteUnidade[], nomeBase: string) {
     }
     montarAba(
       "Consolidado",
-      `Consolidado Chlorum Solutions — Ciclo ${CICLO_LABEL}`,
+      `Consolidado Chlorum Solutions — Ciclo ${cicloAtivo.CICLO_LABEL}`,
       linhasTodas,
       true,
       logoId,
@@ -322,7 +331,7 @@ export async function exportarPdf(
 
   texto(EYEBROW, m + 36, m + 130, { peso: 700, tamanho: 11, cor: CHL.blue300, espaco: 2 });
   texto(titulo, m + 36, m + 178, { peso: 800, tamanho: 34, cor: CHL.white });
-  texto(`Ciclo ${CICLO_LABEL} · Chlorum Solutions`, m + 36, m + 208, {
+  texto(`Ciclo ${cicloAtivo.CICLO_LABEL} · Chlorum Solutions`, m + 36, m + 208, {
     peso: 300,
     tamanho: 14,
     cor: CHL.blue200,
@@ -389,7 +398,7 @@ export async function exportarPdf(
       48,
       { peso: 700, tamanho: 9, cor: CHL.blue600, espaco: 1.8 },
     );
-    texto(`Ciclo ${CICLO_LABEL} · ${new Date().toLocaleDateString("pt-BR")}`, m + 12, 64, {
+    texto(`Ciclo ${cicloAtivo.CICLO_LABEL} · ${new Date().toLocaleDateString("pt-BR")}`, m + 12, 64, {
       peso: 300,
       tamanho: 9,
       cor: CHL.gray500,
@@ -632,7 +641,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     color: hexPuro(CHL.blue300),
   });
   capa.addText(titulo, { ...F, x: 0.7, y: 1.9, w: 11.5, fontSize: 40, bold: true, color: hexPuro(CHL.white) });
-  capa.addText(`Ciclo ${CICLO_LABEL} · Chlorum Solutions`, {
+  capa.addText(`Ciclo ${cicloAtivo.CICLO_LABEL} · Chlorum Solutions`, {
     ...F,
     x: 0.7,
     y: 2.9,
