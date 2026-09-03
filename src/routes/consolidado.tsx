@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
-import { CICLO_LABEL, desvioResumo, unidades } from "@/data/payroll";
+import { desvioResumo } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
+import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { brlCompacto, pct, seta } from "@/lib/format";
 
 export const Route = createFileRoute("/consolidado")({
@@ -27,6 +29,8 @@ export const Route = createFileRoute("/consolidado")({
 type Ordenacao = "desvioPct" | "desvioValor" | "gapHC";
 
 function Consolidado() {
+  const { CICLO_LABEL, dados } = useCicloAtivo();
+  const unidades = dados.unidades;
   const [ordem, setOrdem] = useState<Ordenacao>("desvioPct");
   const [busca, setBusca] = useState("");
 
@@ -49,6 +53,9 @@ function Consolidado() {
           <p className="eyebrow mt-6">Visão agregada</p>
           <h1 className="mt-2 text-4xl font-bold">Consolidado das 8 unidades</h1>
           <p className="mt-2 text-sm text-navy-foreground/70">Ciclo: {CICLO_LABEL}</p>
+          <div className="mt-4">
+            <SeletorCiclo variante="reverse" />
+          </div>
         </div>
       </header>
 

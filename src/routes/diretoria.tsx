@@ -2,7 +2,8 @@ import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Printer } from "lucide-react";
 
-import { CICLO_LABEL } from "@/data/payroll";
+import { SeletorCiclo } from "@/components/seletor-ciclo";
+import { useCicloAtivo } from "@/lib/ciclo";
 import {
   contasDiretoria,
   diretorias,
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/diretoria")({
 function VisaoDiretoria() {
   const [periodo, setPeriodo] = useState<Periodo>("mes");
   const total = totalDiretorias(periodo);
+  const { CICLO_LABEL } = useCicloAtivo();
 
   return (
     <main className="min-h-screen bg-background">
@@ -54,6 +56,9 @@ function VisaoDiretoria() {
           <p className="mt-2 text-sm text-navy-foreground/70">
             Chlorum Solutions · Ciclo {CICLO_LABEL}
           </p>
+          <div className="mt-4">
+            <SeletorCiclo variante="reverse" />
+          </div>
         </div>
       </header>
 

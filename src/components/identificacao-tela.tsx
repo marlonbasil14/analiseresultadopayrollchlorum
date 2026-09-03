@@ -2,7 +2,7 @@ import { useState } from "react";
 import { UserRound } from "lucide-react";
 
 import { PILogo } from "@/components/pi-logo";
-import { CICLO_LABEL } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
 import { opcoesEscopo, salvarIdentidade } from "@/lib/identificacao";
 
 const inputCls =
@@ -10,6 +10,7 @@ const inputCls =
 
 /** Tela de identificação simples: nome livre + unidade/visão. Não bloqueia nada, só registra autoria. */
 export function IdentificacaoTela({ aoConcluir }: { aoConcluir?: () => void }) {
+  const { CICLO_LABEL } = useCicloAtivo();
   const [nome, setNome] = useState("");
   const [escopo, setEscopo] = useState("");
 

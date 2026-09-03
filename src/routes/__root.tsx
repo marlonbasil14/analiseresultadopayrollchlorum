@@ -73,6 +73,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  validateSearch: (search: Record<string, unknown>): { ciclo?: string } =>
+    typeof search["ciclo"] === "string" ? { ciclo: search["ciclo"] as string } : {},
   head: () => ({
     meta: [
       { charSet: "utf-8" },

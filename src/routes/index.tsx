@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
-import { CICLO_LABEL, desvioResumo, isFavoravel, unidadesOrdenadas } from "@/data/payroll";
+import { desvioResumo, isFavoravel } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
+import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { pct, seta } from "@/lib/format";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
@@ -49,7 +51,8 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [videoAberto, setVideoAberto] = useState(false);
   const { pronto, identidade, limpar } = useIdentidade();
-  const visiveis = unidadesOrdenadas;
+  const { CICLO_LABEL, dados } = useCicloAtivo();
+  const visiveis = dados.unidadesOrdenadas;
 
   if (!pronto) return null;
   if (!identidade) return <IdentificacaoTela />;
@@ -93,6 +96,7 @@ function Index() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <PILogo variant="reverse" size="md" />
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+              <SeletorCiclo variante="reverse" />
               <span className="text-navy-foreground/70">
                 {identidade.nome} · {rotuloEscopo(identidade.escopo)}
               </span>
@@ -216,6 +220,11 @@ function Index() {
                   <p className="text-xs text-navy-foreground/60">
                     BP: {BP_RESPONSAVEL[u.slug] ?? "—"}
                   </p>
+                  {u.observacaoDados ? (
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-md border border-atencao/70 bg-atencao/90 px-2 py-1 text-[11px] font-bold text-atencao-foreground">
+                      <AlertTriangle className="h-3 w-3" /> Atenção à base de dados
+                    </span>
+                  ) : null}
                   <div className="mt-2 flex items-center justify-between gap-2">
                     {d !== undefined ? (
                       <span

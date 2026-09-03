@@ -3,7 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Plus, Trash2, Send, Unlock } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { CICLO, CICLO_LABEL, type Unidade } from "@/data/payroll";
+import { type Unidade } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
 import { subcontasDe } from "@/data/subcontas";
 import { supabase } from "@/integrations/supabase/client";
 import { brl } from "@/lib/format";
@@ -69,7 +70,7 @@ const inputCls =
 
 export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const qc = useQueryClient();
-  const [ciclo] = useState(CICLO);
+  const { ciclo, CICLO_LABEL } = useCicloAtivo();
   const { nome: nomeIdentidade } = useIdentidade();
 
   const { data, isLoading } = useQuery({

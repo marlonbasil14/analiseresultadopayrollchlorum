@@ -6,7 +6,8 @@ import { AlarmClock, FileText, History } from "lucide-react";
 import { BotoesExportar } from "@/components/botoes-exportar";
 import { PILogo } from "@/components/pi-logo";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
-import { CICLO, CICLO_LABEL, unidadesOrdenadas } from "@/data/payroll";
+import { useCicloAtivo } from "@/lib/ciclo";
+import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { supabase } from "@/integrations/supabase/client";
 import { pct } from "@/lib/format";
 import { FLUXO_LABEL, diasAteVencimento } from "@/lib/acesso";
@@ -52,6 +53,8 @@ type Review = {
 
 function AdminPage() {
   const qc = useQueryClient();
+  const { ciclo: CICLO, CICLO_LABEL, dados } = useCicloAtivo();
+  const unidadesOrdenadas = dados.unidadesOrdenadas;
   const { pronto, identidade, limpar } = useIdentidade();
   const prazo = diasAteVencimento(CICLO);
   const [confirmando, setConfirmando] = useState(false);
@@ -154,6 +157,9 @@ function AdminPage() {
         </div>
         <div className="mx-auto max-w-6xl px-6 pb-10">
           <p className="eyebrow">Consolidação · {CICLO_LABEL}</p>
+          <div className="mt-3">
+            <SeletorCiclo variante="reverse" />
+          </div>
           <h1 className="mt-2 text-4xl font-extrabold">Painel do admin</h1>
           <div
             className={`mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${

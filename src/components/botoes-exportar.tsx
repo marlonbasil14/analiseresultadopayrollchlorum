@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { FileSpreadsheet, FileText, Presentation } from "lucide-react";
 
-import { exportarExcel, exportarPdf, exportarPptx, type PacoteUnidade } from "@/lib/exportar";
+import {
+  definirCicloExportacao,
+  exportarExcel,
+  exportarPdf,
+  exportarPptx,
+  type PacoteUnidade,
+} from "@/lib/exportar";
+import { useCicloAtivo } from "@/lib/ciclo";
 
 export function BotoesExportar({
   pacote,
@@ -18,11 +25,13 @@ export function BotoesExportar({
 }) {
   const [ocupado, setOcupado] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  const { ciclo } = useCicloAtivo();
 
   const rodar = async (tipo: string, fn: () => Promise<void>) => {
     setErro(null);
     setOcupado(tipo);
     try {
+      definirCicloExportacao(ciclo);
       await fn();
     } catch (e) {
       setErro(`Não foi possível exportar: ${(e as Error).message}`);
@@ -30,6 +39,7 @@ export function BotoesExportar({
       setOcupado(null);
     }
   };
+
 
   const cls = `inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 ${
     compacto ? "text-xs" : "text-sm"
