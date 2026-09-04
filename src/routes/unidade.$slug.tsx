@@ -141,12 +141,6 @@ function UnidadePage() {
         <span className="mt-4 inline-block rounded-full border border-brand-light/50 bg-brand-light/20 px-4 py-1.5 text-xs font-semibold text-navy-foreground">
           {u.tagLeitura}
         </span>
-        {u.observacaoDados ? (
-          <p className="mt-3 flex max-w-3xl items-start gap-2 rounded-lg border-2 border-atencao bg-atencao px-4 py-2.5 text-xs font-bold text-atencao-foreground">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-            <span>Atenção à base de dados: {u.observacaoDados}</span>
-          </p>
-        ) : null}
       </ParallaxHero>
 
       <section className="mx-auto max-w-6xl px-6 py-10">
