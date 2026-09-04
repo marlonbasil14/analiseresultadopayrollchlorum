@@ -2,6 +2,8 @@ import type { Unidade } from "@/data/payroll";
 import { desvioResumo, isFavoravel, janela } from "@/data/payroll";
 import * as julho from "./2026-07";
 import * as agosto from "./2026-08";
+import * as diretoriaJulho from "./diretoria-2026-07";
+import * as diretoriaAgosto from "./diretoria-2026-08";
 
 export type CicloChave = "2026-07" | "2026-08";
 
