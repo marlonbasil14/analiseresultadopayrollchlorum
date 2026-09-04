@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, AlertTriangle } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
@@ -257,11 +257,6 @@ function Index() {
                   <p className="text-xs text-navy-foreground/60">
                     BP: {BP_RESPONSAVEL[u.slug] ?? "—"}
                   </p>
-                  {u.observacaoDados ? (
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-md border border-atencao/70 bg-atencao/90 px-2 py-1 text-[11px] font-bold text-atencao-foreground">
-                      <AlertTriangle className="h-3 w-3" /> Atenção à base de dados
-                    </span>
-                  ) : null}
                   <div className="mt-2 flex items-center justify-between gap-2">
                     {d !== undefined ? (
                       <span
