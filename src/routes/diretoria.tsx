@@ -4,14 +4,8 @@ import { ArrowLeft, Printer } from "lucide-react";
 
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { useCicloAtivo } from "@/lib/ciclo";
-import {
-  contasDiretoria,
-  diretorias,
-  diretoriasComplementares,
-  totalDiretorias,
-  valores,
-  type Periodo,
-} from "@/data/diretoria";
+import { totalDiretorias, valores, type Periodo } from "@/data/diretoria";
+import { diretoriaDoCiclo } from "@/data/ciclos";
 import { brl, brlCompacto, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/diretoria")({
@@ -21,7 +15,7 @@ export const Route = createFileRoute("/diretoria")({
       {
         name: "description",
         content:
-          "Payroll dos centros de custo corporativos da Chlorum Solutions por diretoria e por conta contábil, mês e YTD, ciclo Julho/2026.",
+          "Payroll dos centros de custo corporativos da Chlorum Solutions por diretoria e por conta contábil, mês e YTD, por ciclo de análise.",
       },
       { property: "og:title", content: "Visão Diretoria — Payroll corporativo" },
       {
@@ -38,8 +32,9 @@ export const Route = createFileRoute("/diretoria")({
 
 function VisaoDiretoria() {
   const [periodo, setPeriodo] = useState<Periodo>("mes");
-  const total = totalDiretorias(periodo);
-  const { CICLO_LABEL } = useCicloAtivo();
+  const { ciclo, CICLO_LABEL } = useCicloAtivo();
+  const { diretorias, diretoriasComplementares, contasDiretoria } = diretoriaDoCiclo(ciclo);
+  const total = totalDiretorias(diretorias, periodo);
 
   return (
     <main className="min-h-screen bg-background">
