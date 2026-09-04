@@ -15,7 +15,7 @@ export const Route = createFileRoute("/diretoria")({
       {
         name: "description",
         content:
-          "Payroll dos centros de custo corporativos da Chlorum Solutions por diretoria e por conta contábil, mês e YTD, ciclo Julho/2026.",
+          "Payroll dos centros de custo corporativos da Chlorum Solutions por diretoria e por conta contábil, mês e YTD, por ciclo de análise.",
       },
       { property: "og:title", content: "Visão Diretoria — Payroll corporativo" },
       {
