@@ -32,8 +32,9 @@ export const Route = createFileRoute("/diretoria")({
 
 function VisaoDiretoria() {
   const [periodo, setPeriodo] = useState<Periodo>("mes");
-  const total = totalDiretorias(periodo);
-  const { CICLO_LABEL } = useCicloAtivo();
+  const { ciclo, CICLO_LABEL } = useCicloAtivo();
+  const { diretorias, diretoriasComplementares, contasDiretoria } = diretoriaDoCiclo(ciclo);
+  const total = totalDiretorias(diretorias, periodo);
 
   return (
     <main className="min-h-screen bg-background">
