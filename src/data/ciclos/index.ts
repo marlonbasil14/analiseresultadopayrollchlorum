@@ -42,3 +42,19 @@ export function dadosDoCiclo(chave?: string) {
     isFavoravel,
   };
 }
+
+const REGISTRO_DIRETORIA: Record<CicloChave, typeof diretoriaJulho> = {
+  "2026-07": diretoriaJulho,
+  "2026-08": diretoriaAgosto,
+};
+
+/** Dados da Visão Diretoria de um ciclo (fallback: ciclo atual). */
+export function diretoriaDoCiclo(chave?: string) {
+  const alvo: CicloChave = ehCiclo(chave) ? chave : CICLO_ATUAL;
+  const base = REGISTRO_DIRETORIA[alvo];
+  return {
+    diretorias: base.diretorias,
+    diretoriasComplementares: base.diretoriasComplementares,
+    contasDiretoria: base.contasDiretoria,
+  };
+}

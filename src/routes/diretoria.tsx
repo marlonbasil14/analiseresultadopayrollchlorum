@@ -4,14 +4,8 @@ import { ArrowLeft, Printer } from "lucide-react";
 
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { useCicloAtivo } from "@/lib/ciclo";
-import {
-  contasDiretoria,
-  diretorias,
-  diretoriasComplementares,
-  totalDiretorias,
-  valores,
-  type Periodo,
-} from "@/data/diretoria";
+import { totalDiretorias, valores, type Periodo } from "@/data/diretoria";
+import { diretoriaDoCiclo } from "@/data/ciclos";
 import { brl, brlCompacto, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/diretoria")({
