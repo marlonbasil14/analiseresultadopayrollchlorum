@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { AlertTriangle, ArrowLeft, ArrowRight, CalendarClock, Info } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarClock, Info } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";

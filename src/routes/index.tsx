@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, AlertTriangle } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
