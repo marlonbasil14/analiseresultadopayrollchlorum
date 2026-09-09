@@ -56,11 +56,14 @@ export function totalGrupo(chave: string | undefined, periodo: "mes" | "ytd") {
   );
   const hcReal = unidades.reduce((s, u) => s + u.headcountReal, 0);
   const hcOrcado = unidades.reduce((s, u) => s + u.headcountOrcado, 0);
-  const desvioValor = real - orcado;
-  const desvioPercentual = orcado !== 0 ? (desvioValor / orcado) * 100 : 0;
+  // A base guarda payroll como valor negativo (despesa); exibimos em módulo.
+  const realAbs = Math.abs(real);
+  const orcadoAbs = Math.abs(orcado);
+  const desvioValor = realAbs - orcadoAbs;
+  const desvioPercentual = orcadoAbs !== 0 ? (desvioValor / orcadoAbs) * 100 : 0;
   return {
-    real,
-    orcado,
+    real: realAbs,
+    orcado: orcadoAbs,
     desvioValor,
     desvioPercentual,
     hcReal,
