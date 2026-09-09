@@ -5,11 +5,9 @@ import palmeira from "@/assets/unidade-palmeira.jpg";
 import bahia from "@/assets/unidade-bahia.jpg";
 import uberlandia from "@/assets/unidade-uberlandia.jpg";
 import solutions from "@/assets/unidade-solutions.jpg";
-import distribuicaoAsset from "@/assets/unidade-distribuicao.png.asset.json";
+import { url as distribuicao } from "@/assets/unidade-distribuicao.png.asset.json";
 
 import type { Unidade } from "@/data/payroll";
-
-const distribuicao = distribuicaoAsset.url;
 
 export const CICLO = "2026-07";
 export const CICLO_LABEL = "Julho / 2026";
