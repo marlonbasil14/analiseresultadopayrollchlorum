@@ -89,28 +89,32 @@ function VisaoDiretoria() {
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Kpi rotulo="Payroll real" valor={brlCompacto(total.real)} />
-          <Kpi rotulo="Payroll orçado" valor={brlCompacto(total.orcado)} />
+          <Kpi rotulo="Payroll real" valor={brlCompacto(grupo.real)} />
+          <Kpi rotulo="Payroll orçado" valor={brlCompacto(grupo.orcado)} />
           <Kpi
             rotulo="Desvio"
-            valor={`${brlCompacto(total.desvio)} (${pct(total.percentual)})`}
-            favoravel={total.desvio <= 0}
+            valor={`${brlCompacto(grupo.desvioValor)} (${pct(grupo.desvioPercentual)})`}
+            favoravel={grupo.desvioValor <= 0}
           />
           <Kpi
             rotulo="Headcount (real vs. orçado)"
-            valor={`${total.hcReal} / ${total.hcOrcado}`}
-            detalhe={`Gap ${total.hcDelta > 0 ? "+" : ""}${total.hcDelta}`}
-            favoravel={total.hcDelta <= 0}
+            valor={`${grupo.hcReal} / ${grupo.hcOrcado}`}
+            detalhe={`Gap ${grupo.hcDelta > 0 ? "+" : ""}${grupo.hcDelta}`}
+            favoravel={grupo.hcDelta <= 0}
           />
         </div>
 
         <h2 className="mt-12 text-xl font-bold">Por diretoria</h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Desdobramento interno de Solutions por diretoria — não confundir com o resultado
+          consolidado da Cia acima.
+        </p>
         <Tabela
           periodo={periodo}
           linhas={diretorias}
           comHeadcount
           cia={grupo}
-          total={{ rotulo: "Total corporativo", ...total }}
+          total={{ rotulo: "Subtotal Solutions", ...total }}
         />
 
         <h3 className="mt-8 text-sm font-bold uppercase tracking-wide text-muted-foreground">

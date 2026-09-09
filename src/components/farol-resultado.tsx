@@ -63,6 +63,9 @@ export function FarolResultado({
           <p className={`mt-1 text-base font-extrabold tabular-nums ${ZONA_TEXTO[zona]}`}>
             {pct(desvioPercentual)}
           </p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            {desvioPercentual > 0 ? "acima do orçado" : desvioPercentual < 0 ? "abaixo do orçado" : "em linha"}
+          </p>
         </div>
       </div>
 
