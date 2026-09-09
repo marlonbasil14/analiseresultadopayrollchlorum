@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Análise de desvios orçamentários de payroll (Actual vs. Forecast) por unidade de negócio.",
       },
-      { name: "author", content: "Gente & Remuneração — Chlorum Solutions" },
+      { name: "author", content: "Gente & Gestão — Chlorum Solutions" },
       { property: "og:title", content: "Payroll Intelligence — Chlorum Solutions" },
       {
         property: "og:description",

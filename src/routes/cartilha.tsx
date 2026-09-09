@@ -228,7 +228,7 @@ function Cartilha() {
             Guia prático para Business Partners e Lideranças de Negócio
           </p>
           <p className="mt-2 text-xs text-navy-foreground/60">
-            Gente &amp; Remuneração | Chlorum Solutions · Ciclo de referência: {CICLO_LABEL}
+            Gente &amp; Gestão | Chlorum Solutions · Ciclo de referência: {CICLO_LABEL}
           </p>
         </div>
       </header>
@@ -269,7 +269,7 @@ function Cartilha() {
             <p>
               Esta cartilha traduz a lógica contábil e orçamentária de payroll em uma linguagem
               simples, para que BPs e líderes consigam, sozinhos, chegar à causa-raiz de um desvio
-              antes de escalar a dúvida para Gente &amp; Remuneração. Ela não substitui a análise
+              antes de escalar a dúvida para Gente &amp; Gestão. Ela não substitui a análise
               linha a linha — ela dá o mapa para fazer essa análise com método.
             </p>
           </Secao>
@@ -484,7 +484,7 @@ function Cartilha() {
         <div className="mx-auto max-w-6xl px-6">
           <p className="eyebrow">Próximos passos</p>
           <h2 className="mt-2 text-2xl font-bold md:text-3xl">
-            Antes de escalar uma dúvida para Gente &amp; Remuneração:
+            Antes de escalar uma dúvida para Gente &amp; Gestão:
           </h2>
           <ol className="mt-6 max-w-3xl list-decimal space-y-3 pl-5 text-sm text-navy-foreground/80">
             <li>Rode o roteiro de 6 perguntas (Seção 7) antes de abrir qualquer chamado.</li>
@@ -493,7 +493,7 @@ function Cartilha() {
             </li>
             <li>Compare sempre o desvio de custo com o desvio de headcount, lado a lado.</li>
             <li>
-              Escale para Gente &amp; Remuneração apenas o resíduo que sobrar depois desse roteiro.
+              Escale para Gente &amp; Gestão apenas o resíduo que sobrar depois desse roteiro.
             </li>
           </ol>
         </div>

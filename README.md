@@ -1,7 +1,7 @@
 # Payroll Insights Hub
 
 # PROMPT PARA O LOVABLE
-## Ambiente: "Payroll Intelligence" — Chlorum Solutions | Gente & Remuneração
+## Ambiente: "Payroll Intelligence" — Chlorum Solutions | Gente & Gestão
 
 Cole o conteúdo abaixo diretamente no Lovable. Ele está estruturado em blocos que podem ser enviados em sequência (visão geral → design system → telas → dados → funcionalidades) caso você prefira construir por etapas, ou como prompt único para um primeiro scaffold completo.
 
@@ -9,7 +9,7 @@ Cole o conteúdo abaixo diretamente no Lovable. Ele está estruturado em blocos 
 
 ## 1. VISÃO GERAL DO PRODUTO
 
-Construa um web app interno chamado **"Payroll Intelligence"** para a área **Gente & Remuneração** da **Chlorum Solutions** (indústria de cloro-álcalis com plantas no Brasil, Uruguai e EUA).
+Construa um web app interno chamado **"Payroll Intelligence"** para a área **Gente & Gestão** da **Chlorum Solutions** (indústria de cloro-álcalis com plantas no Brasil, Uruguai e EUA).
 
 **Propósito:** substituir a leitura manual de PDFs mensais de "Actual vs. Forecast" de payroll por um ambiente navegável, visual, que:
 1. Mostra o resultado orçamentário (real x orçado) de cada unidade de negócio;
@@ -64,7 +64,7 @@ Use shadcn/ui + Tailwind. Modo claro como padrão; dark mode opcional usando o a
 
 Layout tipo capa institucional (fundo azul-marinho, replicando a capa do PDF "Relatório de Análise de Desvios Orçamentários de Payroll"):
 
-- Eyebrow: **GENTE & REMUNERAÇÃO**
+- Eyebrow: **GENTE & GESTÃO**
 - Título grande: **Payroll Intelligence**
 - Subtítulo: **Análise de Desvios Orçamentários — Actual vs. Forecast**
 - Linha de contexto: "Consolidado e por Unidade · Ciclo: Julho / 2026"
@@ -113,7 +113,7 @@ Reproduzir a **Cartilha de Leitura Orçamentária "Payroll — Actual vs. Foreca
 - Eyebrow: CARTILHA DE LEITURA ORÇAMENTÁRIA
 - Título: **Payroll — Actual vs. Forecast**
 - Subtítulo: Guia prático para Business Partners e Lideranças de Negócio
-- Rodapé: Gente & Remuneração | Chlorum Solutions · Ciclo de referência: Julho / 2026
+- Rodapé: Gente & Gestão | Chlorum Solutions · Ciclo de referência: Julho / 2026
 
 ### Sumário (8 seções)
 01. Por que esta cartilha existe
@@ -130,7 +130,7 @@ Reproduzir a **Cartilha de Leitura Orçamentária "Payroll — Actual vs. Foreca
 
 Todo mês, cada Diretoria recebe uma planilha com o resultado do orçamento de payroll: o que foi realizado (Actual) contra o que estava previsto (Forecast). Quando os números não batem, a pergunta natural do líder de negócio é "por quê?" — e essa pergunta costuma ser respondida de forma genérica ("o custo de pessoal subiu"), quando na verdade existe uma causa técnica identificável por trás de praticamente todo desvio.
 
-Esta cartilha traduz a lógica contábil e orçamentária de payroll em uma linguagem simples, para que BPs e líderes consigam, sozinhos, chegar à causa-raiz de um desvio antes de escalar a dúvida para Gente & Remuneração. Ela não substitui a análise linha a linha — ela dá o mapa para fazer essa análise com método.
+Esta cartilha traduz a lógica contábil e orçamentária de payroll em uma linguagem simples, para que BPs e líderes consigam, sozinhos, chegar à causa-raiz de um desvio antes de escalar a dúvida para Gente & Gestão. Ela não substitui a análise linha a linha — ela dá o mapa para fazer essa análise com método.
 
 ### 02 · O mapa das contas
 **Sete famílias gerenciais escondem dezenas de contas SAP**
@@ -249,11 +249,11 @@ Três blocos lado a lado:
 Texto: "O papel do BP não é explicar o número final — é decompô-lo nessas três camadas antes de levar a conclusão à liderança."
 
 ### Próximos passos (capa de fechamento, fundo azul-marinho)
-**Antes de escalar uma dúvida para Gente & Remuneração:**
+**Antes de escalar uma dúvida para Gente & Gestão:**
 1. Rode o roteiro de 6 perguntas (Seção 7) antes de abrir qualquer chamado.
 2. Leve Férias, Rescisão e ICP para o acumulado do ano (YTD) antes de reagir ao mês.
 3. Compare sempre o desvio de custo com o desvio de headcount, lado a lado.
-4. Escale para Gente & Remuneração apenas o resíduo que sobrar depois desse roteiro.
+4. Escale para Gente & Gestão apenas o resíduo que sobrar depois desse roteiro.
 
 ---
 
