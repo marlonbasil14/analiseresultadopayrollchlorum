@@ -8,7 +8,7 @@ import { totalDiretorias, valores, type Periodo } from "@/data/diretoria";
 import { diretoriaDoCiclo, totalGrupo } from "@/data/ciclos";
 import { brl, brlCompacto, pct } from "@/lib/format";
 
-export const Route = createFileRoute("/diretoria")({
+export const Route = createFileRoute("/diretoria/")({
   head: () => ({
     meta: [
       { title: "Visão Diretoria — Payroll corporativo | Chlorum Solutions" },

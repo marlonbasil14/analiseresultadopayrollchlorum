@@ -15,6 +15,7 @@ import { Route as CartilhaRouteImport } from './routes/cartilha'
 import { Route as ConsolidadoRouteImport } from './routes/consolidado'
 import { Route as DiretoriaRouteImport } from './routes/diretoria'
 import { Route as RelatorioConsolidadoRouteImport } from './routes/relatorio-consolidado'
+import { Route as DiretoriaSlugRouteImport } from './routes/diretoria.$slug'
 import { Route as RelatorioSlugRouteImport } from './routes/relatorio.$slug'
 import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
 
@@ -48,6 +49,11 @@ const RelatorioConsolidadoRoute = RelatorioConsolidadoRouteImport.update({
   path: '/relatorio-consolidado',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiretoriaSlugRoute = DiretoriaSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => DiretoriaRoute,
+} as any)
 const RelatorioSlugRoute = RelatorioSlugRouteImport.update({
   id: '/relatorio/$slug',
   path: '/relatorio/$slug',
@@ -64,8 +70,9 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
-  '/diretoria': typeof DiretoriaRoute
+  '/diretoria': typeof DiretoriaRouteWithChildren
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
+  '/diretoria/$slug': typeof DiretoriaSlugRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
@@ -74,8 +81,9 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
-  '/diretoria': typeof DiretoriaRoute
+  '/diretoria': typeof DiretoriaRouteWithChildren
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
+  '/diretoria/$slug': typeof DiretoriaSlugRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
@@ -85,8 +93,9 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
-  '/diretoria': typeof DiretoriaRoute
+  '/diretoria': typeof DiretoriaRouteWithChildren
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
+  '/diretoria/$slug': typeof DiretoriaSlugRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/consolidado'
     | '/diretoria'
     | '/relatorio-consolidado'
+    | '/diretoria/$slug'
     | '/relatorio/$slug'
     | '/unidade/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/consolidado'
     | '/diretoria'
     | '/relatorio-consolidado'
+    | '/diretoria/$slug'
     | '/relatorio/$slug'
     | '/unidade/$slug'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/consolidado'
     | '/diretoria'
     | '/relatorio-consolidado'
+    | '/diretoria/$slug'
     | '/relatorio/$slug'
     | '/unidade/$slug'
   fileRoutesById: FileRoutesById
@@ -128,7 +140,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   CartilhaRoute: typeof CartilhaRoute
   ConsolidadoRoute: typeof ConsolidadoRoute
-  DiretoriaRoute: typeof DiretoriaRoute
+  DiretoriaRoute: typeof DiretoriaRouteWithChildren
   RelatorioConsolidadoRoute: typeof RelatorioConsolidadoRoute
   RelatorioSlugRoute: typeof RelatorioSlugRoute
   UnidadeSlugRoute: typeof UnidadeSlugRoute
@@ -178,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RelatorioConsolidadoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diretoria/$slug': {
+      id: '/diretoria/$slug'
+      path: '/$slug'
+      fullPath: '/diretoria/$slug'
+      preLoaderRoute: typeof DiretoriaSlugRouteImport
+      parentRoute: typeof DiretoriaRoute
+    }
     '/relatorio/$slug': {
       id: '/relatorio/$slug'
       path: '/relatorio/$slug'
@@ -195,12 +214,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DiretoriaRouteChildren {
+  DiretoriaSlugRoute: typeof DiretoriaSlugRoute
+}
+
+const DiretoriaRouteChildren: DiretoriaRouteChildren = {
+  DiretoriaSlugRoute: DiretoriaSlugRoute,
+}
+
+const DiretoriaRouteWithChildren = DiretoriaRoute._addFileChildren(
+  DiretoriaRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CartilhaRoute: CartilhaRoute,
   ConsolidadoRoute: ConsolidadoRoute,
-  DiretoriaRoute: DiretoriaRoute,
+  DiretoriaRoute: DiretoriaRouteWithChildren,
   RelatorioConsolidadoRoute: RelatorioConsolidadoRoute,
   RelatorioSlugRoute: RelatorioSlugRoute,
   UnidadeSlugRoute: UnidadeSlugRoute,
