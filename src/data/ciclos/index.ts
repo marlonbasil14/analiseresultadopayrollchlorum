@@ -4,6 +4,8 @@ import * as julho from "./2026-07";
 import * as agosto from "./2026-08";
 import * as diretoriaJulho from "./diretoria-2026-07";
 import * as diretoriaAgosto from "./diretoria-2026-08";
+import { contasPorDiretoria as contasDirJulho } from "./diretoria-contas-2026-07";
+import { contasPorDiretoria as contasDirAgosto } from "./diretoria-contas-2026-08";
 
 export type CicloChave = "2026-07" | "2026-08";
 
@@ -87,4 +89,21 @@ export function diretoriaDoCiclo(chave?: string) {
     diretoriasComplementares: base.diretoriasComplementares,
     contasDiretoria: base.contasDiretoria,
   };
+}
+
+const REGISTRO_CONTAS_DIRETORIA: Record<CicloChave, typeof contasDirJulho> = {
+  "2026-07": contasDirJulho,
+  "2026-08": contasDirAgosto,
+};
+
+/** Abertura por conta de uma diretoria em um ciclo (fallback: ciclo atual). */
+export function contasPorDiretoriaDoCiclo(chave: string | undefined, slugDiretoria: string) {
+  const alvo: CicloChave = ehCiclo(chave) ? chave : CICLO_ATUAL;
+  return REGISTRO_CONTAS_DIRETORIA[alvo][slugDiretoria] ?? [];
+}
+
+/** Todas as diretorias do ciclo (corporativas + complementares). */
+export function todasDiretoriasDoCiclo(chave?: string) {
+  const { diretorias, diretoriasComplementares } = diretoriaDoCiclo(chave);
+  return [...diretorias, ...diretoriasComplementares.filter((d) => d.slug !== "remediacao")];
 }
