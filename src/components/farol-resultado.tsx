@@ -33,9 +33,17 @@ export function FarolResultado({
   desvioPercentual: number;
 }) {
   const zona = zonaDe(desvioPercentual);
-  // escala de -8% a +8%, clampada
-  const limitado = Math.max(-8, Math.min(8, desvioPercentual));
-  const posicao = ((limitado + 8) / 16) * 100;
+  // Escala de 0% a 8% (desvio absoluto, clampado) alinhada às faixas 2 : 1,5 : 2,5.
+  const abs = Math.min(8, Math.abs(desvioPercentual));
+  const VERDE = (2 / 6) * 100;
+  const LARANJA = (1.5 / 6) * 100;
+  const VERMELHO = (2.5 / 6) * 100;
+  const posicao =
+    abs <= 1
+      ? (abs / 1) * VERDE
+      : abs <= 3
+        ? VERDE + ((abs - 1) / 2) * LARANJA
+        : VERDE + LARANJA + ((abs - 3) / 5) * VERMELHO;
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
