@@ -168,11 +168,21 @@ function Tabela({
   linhas,
   periodo,
   comHeadcount,
+  cia,
   total,
 }: {
   linhas: LinhaTabela[];
   periodo: Periodo;
   comHeadcount?: boolean;
+  cia?: {
+    real: number;
+    orcado: number;
+    desvioValor: number;
+    desvioPercentual: number;
+    hcReal: number;
+    hcOrcado: number;
+    hcDelta: number;
+  };
   total?: {
     rotulo: string;
     real: number;
@@ -200,6 +210,46 @@ function Tabela({
           </tr>
         </thead>
         <tbody>
+          {cia ? (
+            <tr className="border-t border-border bg-accent/40">
+              <td className="px-4 py-3">
+                <p className="font-bold">Chlorum Solutions — Cia</p>
+                <p className="text-xs text-muted-foreground">(resultado consolidado)</p>
+              </td>
+              {comHeadcount ? (
+                <td className="px-4 py-3 text-right font-semibold">{cia.hcReal}</td>
+              ) : null}
+              {comHeadcount ? (
+                <td className="px-4 py-3 text-right font-semibold">{cia.hcOrcado}</td>
+              ) : null}
+              {comHeadcount ? (
+                <td
+                  className={`px-4 py-3 text-right font-semibold ${
+                    cia.hcDelta > 0 ? "text-unfavorable" : ""
+                  }`}
+                >
+                  {cia.hcDelta > 0 ? "+" : ""}
+                  {cia.hcDelta}
+                </td>
+              ) : null}
+              <td className="px-4 py-3 text-right font-semibold">{brl(cia.real)}</td>
+              <td className="px-4 py-3 text-right font-semibold">{brl(cia.orcado)}</td>
+              <td
+                className={`px-4 py-3 text-right font-bold ${
+                  cia.desvioValor <= 0 ? "text-favorable" : "text-unfavorable"
+                }`}
+              >
+                {brl(cia.desvioValor)}
+              </td>
+              <td
+                className={`px-4 py-3 text-right font-bold ${
+                  cia.desvioValor <= 0 ? "text-favorable" : "text-unfavorable"
+                }`}
+              >
+                {pct(cia.desvioPercentual)}
+              </td>
+            </tr>
+          ) : null}
           {linhas.map((l) => {
             const v = valores(l, periodo);
             const fav = v.desvio <= 0;
