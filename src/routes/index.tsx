@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, Building2 } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
@@ -7,7 +7,8 @@ import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import relatorioAgostoAsset from "@/assets/analise-orcamentaria-payroll-agosto2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
-import { dadosDoCiclo, totalGrupo } from "@/data/ciclos";
+import { dadosDoCiclo, totalGrupo, todasDiretoriasDoCiclo } from "@/data/ciclos";
+import { valores } from "@/data/diretoria";
 import { FarolResultado } from "@/components/farol-resultado";
 import type { CicloChave } from "@/data/ciclos";
 import { useCicloAtivo } from "@/lib/ciclo";
