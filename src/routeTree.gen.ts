@@ -13,8 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CartilhaRouteImport } from './routes/cartilha'
 import { Route as ConsolidadoRouteImport } from './routes/consolidado'
-import { Route as DiretoriaRouteImport } from './routes/diretoria'
 import { Route as RelatorioConsolidadoRouteImport } from './routes/relatorio-consolidado'
+import { Route as DiretoriaIndexRouteImport } from './routes/diretoria.index'
+import { Route as DiretoriaSlugRouteImport } from './routes/diretoria.$slug'
 import { Route as RelatorioSlugRouteImport } from './routes/relatorio.$slug'
 import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
 
@@ -38,14 +39,19 @@ const ConsolidadoRoute = ConsolidadoRouteImport.update({
   path: '/consolidado',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DiretoriaRoute = DiretoriaRouteImport.update({
-  id: '/diretoria',
-  path: '/diretoria',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RelatorioConsolidadoRoute = RelatorioConsolidadoRouteImport.update({
   id: '/relatorio-consolidado',
   path: '/relatorio-consolidado',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiretoriaIndexRoute = DiretoriaIndexRouteImport.update({
+  id: '/diretoria/',
+  path: '/diretoria/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiretoriaSlugRoute = DiretoriaSlugRouteImport.update({
+  id: '/diretoria/$slug',
+  path: '/diretoria/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RelatorioSlugRoute = RelatorioSlugRouteImport.update({
@@ -64,20 +70,22 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
-  '/diretoria': typeof DiretoriaRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
+  '/diretoria/$slug': typeof DiretoriaSlugRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
+  '/diretoria/': typeof DiretoriaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
-  '/diretoria': typeof DiretoriaRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
+  '/diretoria/$slug': typeof DiretoriaSlugRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
+  '/diretoria': typeof DiretoriaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,10 +93,11 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
   '/consolidado': typeof ConsolidadoRoute
-  '/diretoria': typeof DiretoriaRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
+  '/diretoria/$slug': typeof DiretoriaSlugRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
+  '/diretoria/': typeof DiretoriaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,30 +106,33 @@ export interface FileRouteTypes {
     | '/admin'
     | '/cartilha'
     | '/consolidado'
-    | '/diretoria'
     | '/relatorio-consolidado'
+    | '/diretoria/$slug'
     | '/relatorio/$slug'
     | '/unidade/$slug'
+    | '/diretoria/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
     | '/cartilha'
     | '/consolidado'
-    | '/diretoria'
     | '/relatorio-consolidado'
+    | '/diretoria/$slug'
     | '/relatorio/$slug'
     | '/unidade/$slug'
+    | '/diretoria'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/cartilha'
     | '/consolidado'
-    | '/diretoria'
     | '/relatorio-consolidado'
+    | '/diretoria/$slug'
     | '/relatorio/$slug'
     | '/unidade/$slug'
+    | '/diretoria/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -128,10 +140,11 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   CartilhaRoute: typeof CartilhaRoute
   ConsolidadoRoute: typeof ConsolidadoRoute
-  DiretoriaRoute: typeof DiretoriaRoute
   RelatorioConsolidadoRoute: typeof RelatorioConsolidadoRoute
+  DiretoriaSlugRoute: typeof DiretoriaSlugRoute
   RelatorioSlugRoute: typeof RelatorioSlugRoute
   UnidadeSlugRoute: typeof UnidadeSlugRoute
+  DiretoriaIndexRoute: typeof DiretoriaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -164,18 +177,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsolidadoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/diretoria': {
-      id: '/diretoria'
-      path: '/diretoria'
-      fullPath: '/diretoria'
-      preLoaderRoute: typeof DiretoriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/relatorio-consolidado': {
       id: '/relatorio-consolidado'
       path: '/relatorio-consolidado'
       fullPath: '/relatorio-consolidado'
       preLoaderRoute: typeof RelatorioConsolidadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diretoria/': {
+      id: '/diretoria/'
+      path: '/diretoria'
+      fullPath: '/diretoria/'
+      preLoaderRoute: typeof DiretoriaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diretoria/$slug': {
+      id: '/diretoria/$slug'
+      path: '/diretoria/$slug'
+      fullPath: '/diretoria/$slug'
+      preLoaderRoute: typeof DiretoriaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/relatorio/$slug': {
@@ -200,10 +220,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   CartilhaRoute: CartilhaRoute,
   ConsolidadoRoute: ConsolidadoRoute,
-  DiretoriaRoute: DiretoriaRoute,
   RelatorioConsolidadoRoute: RelatorioConsolidadoRoute,
+  DiretoriaSlugRoute: DiretoriaSlugRoute,
   RelatorioSlugRoute: RelatorioSlugRoute,
   UnidadeSlugRoute: UnidadeSlugRoute,
+  DiretoriaIndexRoute: DiretoriaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

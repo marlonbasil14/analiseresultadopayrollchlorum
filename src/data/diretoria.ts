@@ -5,6 +5,7 @@
  */
 
 export type LinhaDiretoria = {
+  slug: string;
   nome: string;
   hcReal: number;
   hcOrcado: number;

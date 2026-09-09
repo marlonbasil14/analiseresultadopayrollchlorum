@@ -2,6 +2,7 @@ import type { LinhaDiretoria, ContaDiretoria } from "@/data/diretoria";
 
 export const diretorias: LinhaDiretoria[] = [
   {
+    slug: "ceo-estrategia",
     nome: "CEO e Diretoria de Estratégia",
     hcReal: 3,
     hcOrcado: 4,
@@ -11,6 +12,7 @@ export const diretorias: LinhaDiretoria[] = [
     orcadoYtd: 1500456.24,
   },
   {
+    slug: "operacoes",
     nome: "Diretoria de Operações",
     hcReal: 2,
     hcOrcado: 2,
@@ -20,6 +22,7 @@ export const diretorias: LinhaDiretoria[] = [
     orcadoYtd: 188129.92,
   },
   {
+    slug: "compras-logistica",
     nome: "Diretoria de Compras e Logística",
     hcReal: 12,
     hcOrcado: 10,
@@ -29,6 +32,7 @@ export const diretorias: LinhaDiretoria[] = [
     orcadoYtd: 2102121.19,
   },
   {
+    slug: "comercial",
     nome: "Diretoria Comercial",
     hcReal: 3,
     hcOrcado: 3,
@@ -38,6 +42,7 @@ export const diretorias: LinhaDiretoria[] = [
     orcadoYtd: 746703.61,
   },
   {
+    slug: "financeira",
     nome: "Diretoria Financeira",
     hcReal: 34,
     hcOrcado: 38,
@@ -47,6 +52,7 @@ export const diretorias: LinhaDiretoria[] = [
     orcadoYtd: 6207177.17,
   },
   {
+    slug: "juridica",
     nome: "Diretoria Jurídica",
     hcReal: 5,
     hcOrcado: 6,
@@ -56,6 +62,7 @@ export const diretorias: LinhaDiretoria[] = [
     orcadoYtd: 1780197.99,
   },
   {
+    slug: "gente-gestao",
     nome: "Diretoria de Gente e Gestão",
     hcReal: 17,
     hcOrcado: 18,
@@ -69,6 +76,7 @@ export const diretorias: LinhaDiretoria[] = [
 /** Linhas fora do total corporativo (projetos / remediação). */
 export const diretoriasComplementares: LinhaDiretoria[] = [
   {
+    slug: "remediacao",
     nome: "Remediação",
     hcReal: 0,
     hcOrcado: 0,
@@ -78,6 +86,7 @@ export const diretoriasComplementares: LinhaDiretoria[] = [
     orcadoYtd: 0,
   },
   {
+    slug: "engenharia-projetos",
     nome: "Engenharia/Projetos",
     hcReal: 4,
     hcOrcado: 6,
