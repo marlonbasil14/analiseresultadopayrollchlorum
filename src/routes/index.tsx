@@ -311,6 +311,49 @@ function Index() {
           })}
         </div>
       </section>
+
+      <section className="mx-auto max-w-6xl px-6 pb-16">
+        <p className="eyebrow-light">Diretorias corporativas</p>
+        <h2 className="mt-2 text-2xl font-bold">
+          Desdobramento interno de Solutions · {CICLO_LABEL}
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Clique em uma diretoria para ver a abertura por conta contábil.
+        </p>
+
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {diretoriasCards.map((d) => {
+            const v = valores(d, "mes");
+            const fav = v.desvio <= 0;
+            return (
+              <Link
+                key={d.slug}
+                to="/diretoria/$slug"
+                params={{ slug: d.slug }}
+                className="group relative flex h-44 flex-col justify-end overflow-hidden rounded-2xl border border-border bg-navy p-4 text-navy-foreground shadow-sm"
+              >
+                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-light/20 blur-2xl transition-transform duration-500 group-hover:scale-110" />
+                <Building2 className="absolute left-4 top-4 h-7 w-7 text-brand-light" />
+                <p className="relative text-lg font-bold leading-tight">{d.nome}</p>
+                <p className="relative text-xs text-navy-foreground/60">
+                  HC {d.hcReal} / {d.hcOrcado}
+                </p>
+                <div className="relative mt-2 flex items-center justify-between gap-2">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-bold tabular-nums ${
+                      fav ? "bg-favorable/20 text-favorable" : "bg-unfavorable/20 text-unfavorable"
+                    }`}
+                  >
+                    {seta(fav)} {pct(v.percentual)}
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-brand-light transition-transform group-hover:translate-x-1" />
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
     </main>
   );
 }
