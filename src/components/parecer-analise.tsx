@@ -254,13 +254,13 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
         {/* Parecer da diretoria (somente leitura) */}
         <div className="rounded-xl border border-border bg-card p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Parecer da Diretoria de Gente &amp; Remuneração
+            Parecer da Diretoria de Gente &amp; Gestão
           </p>
           {parecer ? (
             <p className="mt-3 text-sm leading-relaxed">{parecer}</p>
           ) : (
             <p className="mt-3 rounded-lg border border-dashed border-border bg-muted/50 p-3 text-sm text-muted-foreground">
-              Aguardando consolidação do relatório mensal de Gente &amp; Remuneração. Enquanto isso,
+              Aguardando consolidação do relatório mensal de Gente &amp; Gestão. Enquanto isso,
               os ofensores abaixo são um rascunho gerado a partir dos próprios dados do ciclo.
             </p>
           )}

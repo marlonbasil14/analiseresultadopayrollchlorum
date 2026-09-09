@@ -109,7 +109,7 @@ const CABECALHO = [
   "Status",
 ];
 
-const EYEBROW = "GENTE & REMUNERAÇÃO";
+const EYEBROW = "GENTE & GESTÃO";
 
 function baixar(blob: Blob, nome: string) {
   const url = URL.createObjectURL(blob);

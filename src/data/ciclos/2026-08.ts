@@ -5,7 +5,7 @@ import palmeira from "@/assets/unidade-palmeira.jpg";
 import bahia from "@/assets/unidade-bahia.jpg";
 import uberlandia from "@/assets/unidade-uberlandia.jpg";
 import solutions from "@/assets/unidade-solutions.jpg";
-import distribuicao from "@/assets/unidade-distribuicao.jpg";
+import { url as distribuicao } from "@/assets/unidade-distribuicao.png.asset.json";
 
 import type { Unidade } from "@/data/payroll";
 

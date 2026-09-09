@@ -50,7 +50,7 @@ const CICLO_LABEL_ATUAL = dadosDoCiclo().CICLO_LABEL;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Payroll Intelligence — Gente & Remuneração | Chlorum Solutions" },
+      { title: "Payroll Intelligence — Gente & Gestão | Chlorum Solutions" },
       {
         name: "description",
         content:
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Payroll Intelligence — Gente & Remuneração | Chlorum Solutions",
+        content: "Payroll Intelligence — Gente & Gestão | Chlorum Solutions",
       },
       {
         property: "og:description",
@@ -142,7 +142,7 @@ function Index() {
           </div>
 
           <div className="py-16 md:py-24">
-            <p className="eyebrow">Gente &amp; Remuneração</p>
+            <p className="eyebrow">Gente &amp; Gestão</p>
             <h1 className="mt-3 text-5xl font-bold md:text-7xl">Payroll Intelligence</h1>
             <p className="mt-4 max-w-2xl text-lg text-navy-foreground/80 md:text-xl">
               Análise de Desvios Orçamentários — Actual vs. Forecast
