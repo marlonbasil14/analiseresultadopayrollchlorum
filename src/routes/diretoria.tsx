@@ -5,7 +5,7 @@ import { ArrowLeft, Printer } from "lucide-react";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { totalDiretorias, valores, type Periodo } from "@/data/diretoria";
-import { diretoriaDoCiclo } from "@/data/ciclos";
+import { diretoriaDoCiclo, totalGrupo } from "@/data/ciclos";
 import { brl, brlCompacto, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/diretoria")({
@@ -35,6 +35,7 @@ function VisaoDiretoria() {
   const { ciclo, CICLO_LABEL } = useCicloAtivo();
   const { diretorias, diretoriasComplementares, contasDiretoria } = diretoriaDoCiclo(ciclo);
   const total = totalDiretorias(diretorias, periodo);
+  const grupo = totalGrupo(ciclo, periodo);
 
   return (
     <main className="min-h-screen bg-background">
@@ -108,6 +109,7 @@ function VisaoDiretoria() {
           periodo={periodo}
           linhas={diretorias}
           comHeadcount
+          cia={grupo}
           total={{ rotulo: "Total corporativo", ...total }}
         />
 
