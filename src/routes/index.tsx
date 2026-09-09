@@ -79,6 +79,8 @@ function Index() {
   const visiveis = dados.unidadesOrdenadas;
   const grupoMes = totalGrupo(ciclo, "mes");
   const grupoYtd = totalGrupo(ciclo, "ytd");
+  const diretoriasCards = todasDiretoriasDoCiclo(ciclo);
+
 
   if (!pronto) return null;
   if (!identidade) return <IdentificacaoTela />;
