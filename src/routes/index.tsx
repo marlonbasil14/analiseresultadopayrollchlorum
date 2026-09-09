@@ -7,7 +7,8 @@ import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import relatorioAgostoAsset from "@/assets/analise-orcamentaria-payroll-agosto2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
-import { dadosDoCiclo } from "@/data/ciclos";
+import { dadosDoCiclo, totalGrupo } from "@/data/ciclos";
+import { FarolResultado } from "@/components/farol-resultado";
 import type { CicloChave } from "@/data/ciclos";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
@@ -75,6 +76,8 @@ function Index() {
   const { ciclo, CICLO_LABEL, dados } = useCicloAtivo();
   const relatorio = RELATORIOS_PDF[ciclo];
   const visiveis = dados.unidadesOrdenadas;
+  const grupoMes = totalGrupo(ciclo, "mes");
+  const grupoYtd = totalGrupo(ciclo, "ytd");
 
   if (!pronto) return null;
   if (!identidade) return <IdentificacaoTela />;
@@ -206,6 +209,35 @@ function Index() {
               )}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pt-12">
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+          <p className="eyebrow-light">Gestão à vista</p>
+          <h2 className="mt-2 text-2xl font-bold">Farol de resultado — Chlorum Solutions</h2>
+          <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <FarolResultado
+              label={`Resultado do mês — ${CICLO_LABEL}`}
+              orcado={grupoMes.orcado}
+              real={grupoMes.real}
+              desvioPercentual={grupoMes.desvioPercentual}
+            />
+            <FarolResultado
+              label="Acumulado do ano — YTD"
+              orcado={grupoYtd.orcado}
+              real={grupoYtd.real}
+              desvioPercentual={grupoYtd.desvioPercentual}
+            />
+          </div>
+          <p className="mt-5 text-sm text-muted-foreground">
+            Headcount do grupo:{" "}
+            <span className="font-semibold text-foreground">
+              {grupoMes.hcReal} real / {grupoMes.hcOrcado} orçado
+            </span>{" "}
+            ({grupoMes.hcDelta > 0 ? "+" : ""}
+            {grupoMes.hcDelta})
+          </p>
         </div>
       </section>
 

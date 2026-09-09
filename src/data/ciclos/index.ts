@@ -43,6 +43,36 @@ export function dadosDoCiclo(chave?: string) {
   };
 }
 
+/** Agregação Cia (soma das 8 unidades) para o farol de resultado. */
+export function totalGrupo(chave: string | undefined, periodo: "mes" | "ytd") {
+  const { unidades } = dadosDoCiclo(chave);
+  const real = unidades.reduce(
+    (s, u) => s + (periodo === "mes" ? u.payrollActual : u.ytd.payrollActual),
+    0,
+  );
+  const orcado = unidades.reduce(
+    (s, u) => s + (periodo === "mes" ? u.payrollForecast : u.ytd.payrollForecast),
+    0,
+  );
+  const hcReal = unidades.reduce((s, u) => s + u.headcountReal, 0);
+  const hcOrcado = unidades.reduce((s, u) => s + u.headcountOrcado, 0);
+  // A base guarda payroll como valor negativo (despesa); exibimos em módulo.
+  const realAbs = Math.abs(real);
+  const orcadoAbs = Math.abs(orcado);
+  const desvioValor = realAbs - orcadoAbs;
+  const desvioPercentual = orcadoAbs !== 0 ? (desvioValor / orcadoAbs) * 100 : 0;
+  return {
+    real: realAbs,
+    orcado: orcadoAbs,
+    desvioValor,
+    desvioPercentual,
+    hcReal,
+    hcOrcado,
+    hcDelta: hcReal - hcOrcado,
+  };
+}
+
+
 const REGISTRO_DIRETORIA: Record<CicloChave, typeof diretoriaJulho> = {
   "2026-07": diretoriaJulho,
   "2026-08": diretoriaAgosto,
