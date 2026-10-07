@@ -60,11 +60,15 @@ export async function registrarAuditoria(input: {
   detalhe?: string | null;
   autorNome?: string | null;
 }) {
+  const { data } = await supabase.auth.getSession();
+  const user = data.session?.user;
   await supabase.from("review_audit_log").insert({
     unit_slug: input.unitSlug,
     ciclo: input.ciclo,
     acao: input.acao,
     detalhe: input.detalhe ?? null,
     autor_nome: input.autorNome ?? null,
+    user_id: user?.id ?? null,
+    email: user?.email ?? null,
   });
 }

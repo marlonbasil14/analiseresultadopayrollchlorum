@@ -9,6 +9,7 @@ import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { supabase } from "@/integrations/supabase/client";
+import { registrarAuditoria } from "@/lib/acesso";
 import { pct } from "@/lib/format";
 import { FLUXO_LABEL, diasAteVencimento } from "@/lib/acesso";
 import { useIdentidade } from "@/lib/identificacao";
@@ -114,11 +115,11 @@ function AdminPage() {
           .eq("unit_slug", u.slug)
           .eq("ciclo", CICLO);
         if (error) throw error;
-        await supabase.from("review_audit_log").insert({
-          unit_slug: u.slug,
+        await registrarAuditoria({
+          unitSlug: u.slug,
           ciclo: CICLO,
           acao: "consolidado",
-          autor_nome: identidade?.nome ?? null,
+          autorNome: identidade?.nome ?? null,
         });
       }
     },
