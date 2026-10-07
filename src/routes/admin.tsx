@@ -9,6 +9,7 @@ import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { supabase } from "@/integrations/supabase/client";
+import { registrarAuditoria } from "@/lib/acesso";
 import { pct } from "@/lib/format";
 import { FLUXO_LABEL, diasAteVencimento } from "@/lib/acesso";
 import { useIdentidade } from "@/lib/identificacao";
