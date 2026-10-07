@@ -114,11 +114,11 @@ function AdminPage() {
           .eq("unit_slug", u.slug)
           .eq("ciclo", CICLO);
         if (error) throw error;
-        await supabase.from("review_audit_log").insert({
-          unit_slug: u.slug,
+        await registrarAuditoria({
+          unitSlug: u.slug,
           ciclo: CICLO,
           acao: "consolidado",
-          autor_nome: identidade?.nome ?? null,
+          autorNome: identidade?.nome ?? null,
         });
       }
     },
