@@ -127,7 +127,7 @@ export function nomeArquivo(base: string, ext: string) {
 // ----------------------------- Excel -----------------------------
 
 export async function exportarExcel(pacote: PacoteUnidade[], nomeBase: string) {
-  const ExcelJS = (await import("exceljs")).default;
+  const ExcelJS = (import.meta.env.SSR ? (null as never) : (await import("exceljs")).default);
   const wb = new ExcelJS.Workbook();
   wb.creator = "Chlorum Solutions — Payroll Intelligence";
   wb.created = new Date();
@@ -267,8 +267,8 @@ export async function exportarPdf(
   titulo: string,
   autor?: string | null,
 ) {
-  const { jsPDF } = await import("jspdf");
-  const autoTable = (await import("jspdf-autotable")).default;
+  const { jsPDF } = import.meta.env.SSR ? ({} as never) : await import("jspdf");
+  const autoTable = (import.meta.env.SSR ? (null as never) : (await import("jspdf-autotable")).default);
   const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" }) as Doc;
 
   // Fontes Nunito embutidas (com fallback silencioso para helvetica).
@@ -611,7 +611,7 @@ function estiloTabela(temNunito: boolean) {
 // ------------------------------ PPTX -----------------------------
 
 export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, titulo: string) {
-  const PptxGenJS = (await import("pptxgenjs")).default;
+  const PptxGenJS = (import.meta.env.SSR ? (null as never) : (await import("pptxgenjs")).default);
   const pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_WIDE";
   pptx.theme = { headFontFace: FONTE, bodyFontFace: FONTE };
