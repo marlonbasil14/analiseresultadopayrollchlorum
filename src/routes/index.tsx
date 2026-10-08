@@ -31,6 +31,10 @@ const RELATORIOS_PDF: Record<
     label: "Agosto/2026",
     descricao: "Documento completo em PDF · abre em nova aba",
   },
+  "2026-09": {
+    label: "Setembro/2026",
+    descricao: "Relatório de setembro em elaboração",
+  },
 };
 
 /** BP responsável por cada card do painel. */
