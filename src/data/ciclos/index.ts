@@ -2,23 +2,28 @@ import type { Unidade } from "@/data/payroll";
 import { desvioResumo, isFavoravel, janela } from "@/data/payroll";
 import * as julho from "./2026-07";
 import * as agosto from "./2026-08";
+import * as setembro from "./2026-09";
 import * as diretoriaJulho from "./diretoria-2026-07";
 import * as diretoriaAgosto from "./diretoria-2026-08";
+import * as diretoriaSetembro from "./diretoria-2026-09";
 import { contasPorDiretoria as contasDirJulho } from "./diretoria-contas-2026-07";
 import { contasPorDiretoria as contasDirAgosto } from "./diretoria-contas-2026-08";
+import { contasPorDiretoria as contasDirSetembro } from "./diretoria-contas-2026-09";
 
-export type CicloChave = "2026-07" | "2026-08";
+export type CicloChave = "2026-07" | "2026-08" | "2026-09";
 
 export const CICLOS_DISPONIVEIS: { chave: CicloChave; label: string }[] = [
   { chave: "2026-07", label: "Julho / 2026" },
   { chave: "2026-08", label: "Agosto / 2026" },
+  { chave: "2026-09", label: "Setembro / 2026" },
 ];
 
-export const CICLO_ATUAL: CicloChave = "2026-08";
+export const CICLO_ATUAL: CicloChave = "2026-09";
 
 const REGISTRO: Record<CicloChave, { CICLO: string; CICLO_LABEL: string; unidades: Unidade[] }> = {
   "2026-07": { CICLO: julho.CICLO, CICLO_LABEL: julho.CICLO_LABEL, unidades: julho.unidades },
   "2026-08": { CICLO: agosto.CICLO, CICLO_LABEL: agosto.CICLO_LABEL, unidades: agosto.unidades },
+  "2026-09": { CICLO: setembro.CICLO, CICLO_LABEL: setembro.CICLO_LABEL, unidades: setembro.unidades },
 };
 
 export function ehCiclo(valor: unknown): valor is CicloChave {
@@ -78,6 +83,7 @@ export function totalGrupo(chave: string | undefined, periodo: "mes" | "ytd") {
 const REGISTRO_DIRETORIA: Record<CicloChave, typeof diretoriaJulho> = {
   "2026-07": diretoriaJulho,
   "2026-08": diretoriaAgosto,
+  "2026-09": diretoriaSetembro,
 };
 
 /** Dados da Visão Diretoria de um ciclo (fallback: ciclo atual). */
@@ -94,6 +100,7 @@ export function diretoriaDoCiclo(chave?: string) {
 const REGISTRO_CONTAS_DIRETORIA: Record<CicloChave, typeof contasDirJulho> = {
   "2026-07": contasDirJulho,
   "2026-08": contasDirAgosto,
+  "2026-09": contasDirSetembro,
 };
 
 /** Abertura por conta de uma diretoria em um ciclo (fallback: ciclo atual). */
