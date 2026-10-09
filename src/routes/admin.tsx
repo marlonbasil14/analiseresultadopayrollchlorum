@@ -134,6 +134,25 @@ function AdminPage() {
 
   if (!pronto) return null;
   if (!identidade) return <IdentificacaoTela />;
+  if (identidade.escopo !== "admin") {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-navy px-6 text-navy-foreground">
+        <div className="max-w-md text-center">
+          <PILogo variant="reverse" size="md" />
+          <h1 className="mt-8 text-2xl font-extrabold">Acesso restrito a administradores</h1>
+          <p className="mt-2 text-sm text-navy-foreground/70">
+            Seu perfil não tem permissão para abrir o painel do admin.
+          </p>
+          <Link
+            to="/"
+            className="mt-6 inline-flex rounded-lg bg-brand-light px-4 py-2.5 text-sm font-semibold text-brand-light-foreground"
+          >
+            Voltar
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   const ciclosHistorico = Array.from(new Set((historico.data ?? []).map((h) => h.ciclo)));
 
@@ -143,13 +162,15 @@ function AdminPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
           <PILogo variant="reverse" size="md" />
           <div className="flex items-center gap-2 text-xs font-semibold">
-            <span className="text-navy-foreground/70">{identidade.nome}</span>
+            <span className="text-navy-foreground/70">
+              {identidade.nome} · {rotuloEscopo(identidade.escopo)}
+            </span>
             <button
               type="button"
-              onClick={limpar}
+              onClick={() => void limpar()}
               className="rounded-lg border border-navy-foreground/30 px-3 py-1.5"
             >
-              Trocar identificação
+              Sair
             </button>
             <Link to="/" className="uppercase tracking-widest text-navy-foreground/80">
               Voltar
