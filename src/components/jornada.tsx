@@ -344,7 +344,7 @@ export function BoasVindas({
               : "Analisar os desvios da(s) sua(s) unidade(s) e enviar a análise"}{" "}
             até o 7º dia útil:{" "}
             <strong className="text-foreground">{p.alvo.toLocaleDateString("pt-BR")}</strong> (
-            {prazoTexto(ciclo)}).
+            {p.atrasado ? "prazo vencido" : p.dias === 0 ? "vence hoje" : `faltam ${p.dias} dia(s)`}).
           </p>
           <p className="mt-3 font-semibold">{isAdmin ? "Seu perfil" : "Suas unidades"}</p>
           <p className="mt-1 text-muted-foreground">
