@@ -50,7 +50,7 @@ function publicar(s: Snapshot) {
 
 async function resolver(session: Session | null) {
   if (!session) return publicar({ estado: "anonimo", identidade: null });
-  if (session.user.user_metadata?.must_change_password === true) {
+  if (session.user.user_metadata?.["must_change_password"] === true) {
     return publicar({ estado: "trocar-senha", identidade: null });
   }
   await supabase.rpc("claim_my_role");
