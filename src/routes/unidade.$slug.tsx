@@ -1,6 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, CalendarClock, Info } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { GuiaRapido } from "@/components/guia-rapido";
+import { useIdentidade } from "@/lib/identificacao";
+import { marcarPasso } from "@/lib/jornada";
 
 import { PILogo } from "@/components/pi-logo";
 import { DesvioBar } from "@/components/desvio-bar";
@@ -81,7 +85,13 @@ function AreaCard({ titulo, bloco }: { titulo: string; bloco: BlocoArea }) {
 
 function UnidadePage() {
   const { slug } = Route.useParams();
-  const { CICLO_LABEL, dados: cicloDados } = useCicloAtivo();
+  const { ciclo, CICLO_LABEL, dados: cicloDados } = useCicloAtivo();
+  const { identidade } = useIdentidade();
+  useEffect(() => {
+    if (identidade && identidade.escopo !== "admin" && identidade.unidades.includes(slug)) {
+      void marcarPasso("unidade", ciclo);
+    }
+  }, [identidade, slug, ciclo]);
   const unidadesOrdenadas = cicloDados.unidadesOrdenadas;
   const u = cicloDados.getUnidade(slug);
 
@@ -142,6 +152,8 @@ function UnidadePage() {
           {u.tagLeitura}
         </span>
       </ParallaxHero>
+
+      {identidade ? <GuiaRapido ciclo={ciclo} /> : null}
 
       <section className="mx-auto max-w-6xl px-6 py-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -275,7 +287,7 @@ function UnidadePage() {
               hash="07-roteiro-6-perguntas"
               className="rounded-lg bg-brand-light px-4 py-2 text-sm font-semibold text-brand-light-foreground"
             >
-              Abrir a Cartilha
+              Abrir o Guia Orientativo
             </Link>
             <Link
               to="/unidade/$slug"
