@@ -1,3 +1,4 @@
+import { composicaoSetembro } from "@/data/subcontas-2026-09";
 export type SubConta = { conta: string; valor: number };
 
 export type ComposicaoUnidade = {
@@ -1164,8 +1165,12 @@ export function subcontasDe(
   slug: string,
   conta: string,
   lado: "actual" | "forecast",
+  ciclo?: string,
 ): SubConta[] | null {
-  const unidade = composicaoPorUnidade[slug];
+  const fonte =
+    ciclo === "2026-09" ? composicaoSetembro : ciclo === "2026-07" ? composicaoPorUnidade : null;
+  if (!fonte) return null;
+  const unidade = fonte[slug];
   if (!unidade) return null;
   const bloco = unidade[lado];
   if (!bloco) return null;
