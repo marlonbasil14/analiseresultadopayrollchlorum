@@ -6,3 +6,4 @@
 - [x] Nova tela de login + "Crie sua senha" + "acesso não liberado"; identidade vinda do banco; botão Sair
 - [x] /admin protegido + seção Acessos
 - [x] Teste ponta a ponta + screenshots
+- [x] Experiência de chegada: nomes, jornada Primeiros passos, boas-vindas, Sua pendência, guia rápido na unidade

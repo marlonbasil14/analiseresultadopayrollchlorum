@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
 import { useCicloAtivo } from "@/lib/ciclo";
+import { marcarPasso } from "@/lib/jornada";
 
 export const Route = createFileRoute("/cartilha")({
   head: () => ({
     meta: [
-      { title: "Cartilha de Leitura Orçamentária — Payroll Actual vs. Forecast" },
+      { title: "Guia Orientativo de Leitura Orçamentária — Payroll Actual vs. Forecast" },
       {
         name: "description",
         content:
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/cartilha")({
       },
       {
         property: "og:title",
-        content: "Cartilha de Leitura Orçamentária — Payroll Actual vs. Forecast",
+        content: "Guia Orientativo de Leitura Orçamentária — Payroll Actual vs. Forecast",
       },
       {
         property: "og:description",
@@ -211,6 +212,10 @@ function Tabela({ head, rows }: { head: string[]; rows: (string | number)[][] })
 function Cartilha() {
   const { CICLO_LABEL } = useCicloAtivo();
   const [checks, setChecks] = useState<boolean[]>(Array(6).fill(false));
+  const ciclo = useCicloAtivo().ciclo;
+  useEffect(() => {
+    void marcarPasso("guia", ciclo);
+  }, [ciclo]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -222,7 +227,7 @@ function Cartilha() {
           >
             <ArrowLeft className="h-4 w-4" /> Início
           </Link>
-          <p className="eyebrow mt-8">Cartilha de Leitura Orçamentária</p>
+          <p className="eyebrow mt-8">Guia Orientativo de Leitura Orçamentária</p>
           <h1 className="mt-3 text-4xl font-bold md:text-6xl">Payroll — Actual vs. Forecast</h1>
           <p className="mt-3 text-lg text-navy-foreground/80">
             Guia prático para Business Partners e Lideranças de Negócio

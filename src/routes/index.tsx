@@ -4,9 +4,6 @@ import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
-import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
-import relatorioAgostoAsset from "@/assets/analise-orcamentaria-payroll-agosto2026.pdf.asset.json";
-import relatorioSetembroAsset from "@/assets/analise-orcamentaria-payroll-setembro2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
 import { dadosDoCiclo, totalGrupo, todasDiretoriasDoCiclo } from "@/data/ciclos";
 import { valores } from "@/data/diretoria";
@@ -17,27 +14,9 @@ import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { pct, seta } from "@/lib/format";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
-
-const RELATORIOS_PDF: Record<
-  CicloChave,
-  { url?: string | undefined; label: string; descricao: string }
-> = {
-  "2026-07": {
-    url: relatorioJulhoAsset.url,
-    label: "Julho/2026",
-    descricao: "Documento completo em PDF · abre em nova aba",
-  },
-  "2026-08": {
-    url: relatorioAgostoAsset.url,
-    label: "Agosto/2026",
-    descricao: "Documento completo em PDF · abre em nova aba",
-  },
-  "2026-09": {
-    url: relatorioSetembroAsset.url,
-    label: "Setembro/2026",
-    descricao: "Análise prévia em PDF · abre em nova aba",
-  },
-};
+import { marcarPasso } from "@/lib/jornada";
+import { RELATORIOS_PDF } from "@/lib/relatorios";
+import { BoasVindas, PrimeirosPassos, SuaPendencia } from "@/components/jornada";
 
 /** BP responsável por cada card do painel. */
 export const BP_RESPONSAVEL: Record<string, string> = {
@@ -82,11 +61,19 @@ function Index() {
   const { pronto, identidade, limpar } = useIdentidade();
   const { ciclo, CICLO_LABEL, dados } = useCicloAtivo();
   const relatorio = RELATORIOS_PDF[ciclo];
-  const visiveis = dados.unidadesOrdenadas;
+  const visiveis = [...dados.unidadesOrdenadas].sort((a, b) => {
+    const m = (slug: string) => (identidade?.escopo !== "admin" && identidade?.unidades.includes(slug) ? 0 : 1);
+    return m(a.slug) - m(b.slug);
+  });
   const grupoMes = totalGrupo(ciclo, "mes");
   const grupoYtd = totalGrupo(ciclo, "ytd");
   const diretoriasCards = todasDiretoriasDoCiclo(ciclo);
 
+
+  const abrirVideo = () => {
+    setVideoAberto(true);
+    void marcarPasso("video", ciclo);
+  };
 
   if (!pronto) return null;
   if (!identidade) return <IdentificacaoTela />;
@@ -97,7 +84,7 @@ function Index() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Vídeo explicativo do ciclo de julho"
+          aria-label="Vídeo animado do Guia Orientativo"
           className="fixed inset-0 z-50 flex items-center justify-center bg-navy/90 p-4"
           onClick={() => setVideoAberto(false)}
         >
@@ -119,6 +106,7 @@ function Index() {
               preload="metadata"
               className="w-full rounded-xl shadow-2xl"
               src={videoAsset.url}
+              onPlay={() => void marcarPasso("video", ciclo)}
             />
           </div>
         </div>
@@ -134,12 +122,14 @@ function Index() {
               <span className="text-navy-foreground/70">
                 {identidade.nome} · {rotuloEscopo(identidade.escopo)}
               </span>
-              <Link
-                to="/admin"
-                className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
-              >
-                Painel admin
-              </Link>
+              {identidade.escopo === "admin" ? (
+                <Link
+                  to="/admin"
+                  className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
+                >
+                  Painel admin
+                </Link>
+              ) : null}
               <button
                 type="button"
                 onClick={() => void limpar()}
@@ -160,66 +150,24 @@ function Index() {
               Consolidado e por Unidade · Ciclo: {CICLO_LABEL}
             </p>
 
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
-              <button
-                type="button"
-                onClick={() => setVideoAberto(true)}
-                className="group rounded-2xl border border-brand-light/40 bg-brand-light/10 p-6 text-left transition-colors hover:bg-brand-light/20"
-              >
-                <PlayCircle className="h-8 w-8 text-brand-light" />
-                <p className="mt-4 text-lg font-semibold">Assistir à visão geral animada</p>
-                <p className="mt-1 text-xs text-navy-foreground/60">
-                  Vídeo explicativo do ciclo de julho · 1min47s
-                </p>
-              </button>
-
-
-              <Link
-                to="/cartilha"
-                className="group rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 transition-colors hover:bg-navy-foreground/10"
-              >
-                <BookOpen className="h-8 w-8 text-brand-light" />
-                <p className="mt-4 text-lg font-semibold">
-                  Abrir a Cartilha de Leitura Orçamentária
-                </p>
-                <p className="mt-1 text-xs text-navy-foreground/60">
-                  Guia prático para investigar e explicar desvios, em 8 passos
-                </p>
-              </Link>
-
-              {relatorio.url ? (
-                <a
-                  href={relatorio.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 transition-colors hover:bg-navy-foreground/10 sm:col-span-2"
-                >
-                  <FileText className="h-8 w-8 text-brand-light" />
-                  <p className="mt-4 text-lg font-semibold">
-                    Ler o relatório de Análise Orçamentária — {relatorio.label}
-                  </p>
-                  <p className="mt-1 text-xs text-navy-foreground/60">
-                    {relatorio.descricao}
-                  </p>
-                </a>
-              ) : (
-                <div
-                  aria-disabled="true"
-                  className="rounded-2xl border border-navy-foreground/20 bg-navy-foreground/5 p-6 opacity-70 sm:col-span-2"
-                >
-                  <FileText className="h-8 w-8 text-brand-light/70" />
-                  <p className="mt-4 text-lg font-semibold">
-                    Relatório em preparação — {relatorio.label}
-                  </p>
-                  <p className="mt-1 text-xs text-navy-foreground/60">
-                    {relatorio.descricao}
-                  </p>
-                </div>
-              )}
-            </div>
+            <PrimeirosPassos
+              ciclo={ciclo}
+              identidade={identidade}
+              relatorio={relatorio}
+              abrirVideo={abrirVideo}
+            />
           </div>
         </div>
       </section>
+
+      <BoasVindas
+        ciclo={ciclo}
+        cicloLabel={CICLO_LABEL}
+        identidade={identidade}
+        abrirVideo={abrirVideo}
+      />
+
+      <SuaPendencia ciclo={ciclo} identidade={identidade} />
 
       <section className="mx-auto max-w-6xl px-6 pt-12">
         <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
@@ -275,6 +223,7 @@ function Index() {
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {visiveis.map((u) => {
+            const minha = identidade.escopo !== "admin" && identidade.unidades.includes(u.slug);
             const d = desvioResumo(u);
             const fav = isFavoravel(u);
             return (
@@ -282,8 +231,15 @@ function Index() {
                 key={u.slug}
                 to="/unidade/$slug"
                 params={{ slug: u.slug }}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-navy text-navy-foreground shadow-sm"
+                className={`group relative overflow-hidden rounded-2xl border border-border bg-navy text-navy-foreground shadow-sm ${
+                  minha ? "ring-4 ring-brand-light ring-offset-2 ring-offset-background" : ""
+                }`}
               >
+                {minha ? (
+                  <span className="absolute left-3 top-3 z-10 rounded-full bg-brand-light px-2.5 py-1 text-[11px] font-bold text-brand-light-foreground">
+                    Sua unidade
+                  </span>
+                ) : null}
                 <img
                   src={u.imagem}
                   alt={`Unidade ${u.nome}`}

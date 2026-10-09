@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { brl } from "@/lib/format";
 import { FLUXO_LABEL, THRESHOLD_JUSTIFICATIVA, registrarAuditoria } from "@/lib/acesso";
 import { useIdentidade } from "@/lib/identificacao";
+import { atualizarJornada } from "@/lib/jornada";
 import { BotoesExportar } from "@/components/botoes-exportar";
 
 type Ofensor = { conta: string; resumo: string };
@@ -193,6 +194,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
     },
     onSuccess: async () => {
       setSalvo("Análise enviada para consolidação do admin.");
+      void atualizarJornada({ primeiroEnvio: true, guiaRapidoRecolhido: true });
       await qc.invalidateQueries({ queryKey: ["review", unidade.slug, ciclo] });
     },
     onError: (e: Error) => setSalvo(e.message),
