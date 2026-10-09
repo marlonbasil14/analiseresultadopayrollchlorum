@@ -12,7 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { registrarAuditoria } from "@/lib/acesso";
 import { pct } from "@/lib/format";
 import { FLUXO_LABEL, diasAteVencimento } from "@/lib/acesso";
-import { useIdentidade } from "@/lib/identificacao";
+import { rotuloEscopo, useIdentidade } from "@/lib/identificacao";
+import { GestaoAcessos } from "@/components/gestao-acessos";
 import type { ReviewLike } from "@/lib/exportar";
 
 export const Route = createFileRoute("/admin")({
@@ -318,6 +319,8 @@ function AdminPage() {
           </div>
         </div>
       ) : null}
+
+      <GestaoAcessos />
 
       <section className="mx-auto max-w-6xl px-6 pb-8">
         <h2 className="text-xl font-bold">Pacote para o FP&amp;A</h2>
