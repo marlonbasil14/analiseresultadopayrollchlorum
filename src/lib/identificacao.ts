@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
 
 import { dadosDoCiclo } from "@/data/ciclos";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Identidade = {
   nome: string;
-  /** slug da unidade, ou "admin" (visão geral) / "diretoria" (visão diretoria). */
+  /** "admin" (visão geral) ou slugs das unidades separados por vírgula. */
   escopo: string;
+  email: string;
+  role: "admin" | "bp" | "lider";
+  unidades: string[];
 };
 
-const CHAVE = "payroll-identidade";
+export type EstadoAcesso = "carregando" | "anonimo" | "trocar-senha" | "sem-acesso" | "ok";
 
 export const ESCOPOS_ESPECIAIS = [
   { valor: "admin", rotulo: "Admin / Visão Geral" },
@@ -22,61 +27,96 @@ export function opcoesEscopo() {
   ];
 }
 
+export function rotuloUnidade(slug: string) {
+  return dadosDoCiclo().unidadesOrdenadas.find((u) => u.slug === slug)?.nome ?? slug;
+}
+
 export function rotuloEscopo(escopo: string) {
-  return opcoesEscopo().find((o) => o.valor === escopo)?.rotulo ?? escopo;
+  if (escopo === "admin") return "Admin";
+  const lista = escopo.split(",").filter(Boolean);
+  return `BP · ${lista.map(rotuloUnidade).join(", ")}`;
 }
 
-function ler(): Identidade | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const bruto = window.localStorage.getItem(CHAVE);
-    if (!bruto) return null;
-    const v = JSON.parse(bruto) as Identidade;
-    return v?.nome ? v : null;
-  } catch {
-    return null;
+type Snapshot = { estado: EstadoAcesso; identidade: Identidade | null };
+
+let atual: Snapshot = { estado: "carregando", identidade: null };
+let iniciado = false;
+const ouvintes = new Set<(s: Snapshot) => void>();
+
+function publicar(s: Snapshot) {
+  atual = s;
+  ouvintes.forEach((f) => f(s));
+}
+
+async function resolver(session: Session | null) {
+  if (!session) return publicar({ estado: "anonimo", identidade: null });
+  if (session.user.user_metadata?.["must_change_password"] === true) {
+    return publicar({ estado: "trocar-senha", identidade: null });
   }
+  await supabase.rpc("claim_my_role");
+  const { data } = await supabase
+    .from("user_roles")
+    .select("nome, role, unidades, email")
+    .eq("user_id", session.user.id)
+    .maybeSingle();
+  if (!data) return publicar({ estado: "sem-acesso", identidade: null });
+  const email = session.user.email ?? data.email;
+  const unidades = (data.unidades ?? []) as string[];
+  const isAdmin = data.role === "admin" || unidades.includes("*");
+  publicar({
+    estado: "ok",
+    identidade: {
+      nome: data.nome?.trim() || email.split("@")[0]!,
+      escopo: isAdmin ? "admin" : unidades.join(","),
+      email,
+      role: data.role as Identidade["role"],
+      unidades,
+    },
+  });
 }
 
-const ouvintes = new Set<() => void>();
-
-function avisar() {
-  ouvintes.forEach((f) => f());
+export async function recarregarIdentidade() {
+  const { data } = await supabase.auth.getSession();
+  await resolver(data.session);
 }
 
-export function salvarIdentidade(identidade: Identidade) {
-  window.localStorage.setItem(CHAVE, JSON.stringify(identidade));
-  avisar();
+function iniciar() {
+  if (iniciado) return;
+  iniciado = true;
+  void recarregarIdentidade();
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+      setTimeout(() => void resolver(session), 0);
+    }
+  });
 }
 
-export function limparIdentidade() {
-  window.localStorage.removeItem(CHAVE);
-  avisar();
+export async function sair() {
+  await supabase.auth.signOut();
+  publicar({ estado: "anonimo", identidade: null });
 }
 
-/** Identificação simples por nome + unidade (sem senha, sem bloqueio de acesso). */
+/** Identidade derivada da sessão + user_roles (acesso por convite). */
 export function useIdentidade() {
-  const [identidade, setIdentidade] = useState<Identidade | null>(null);
-  const [pronto, setPronto] = useState(false);
+  const [snap, setSnap] = useState<Snapshot>(atual);
 
   useEffect(() => {
-    const sincronizar = () => setIdentidade(ler());
-    sincronizar();
-    setPronto(true);
-    ouvintes.add(sincronizar);
-    window.addEventListener("storage", sincronizar);
+    iniciar();
+    setSnap(atual);
+    ouvintes.add(setSnap);
     return () => {
-      ouvintes.delete(sincronizar);
-      window.removeEventListener("storage", sincronizar);
+      ouvintes.delete(setSnap);
     };
   }, []);
 
+  const identidade = snap.identidade;
   return {
-    pronto,
+    pronto: snap.estado !== "carregando",
+    estado: snap.estado,
     identidade,
     nome: identidade?.nome ?? null,
     escopo: identidade?.escopo ?? null,
-    salvar: salvarIdentidade,
-    limpar: limparIdentidade,
+    isAdmin: identidade?.escopo === "admin",
+    limpar: sair,
   };
 }

@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Architecture rules
+- User access is managed only through admin server functions in `src/lib/acessos.functions.ts` (service role, admin check via has_role) — why: public signup is disabled and a DB trigger on auth.users rejects accounts without a user_roles row.
+- Identity (name/scope) is derived from the session + `user_roles` in `src/lib/identificacao.ts` — why: no self-declared identity; roles live only in the database.

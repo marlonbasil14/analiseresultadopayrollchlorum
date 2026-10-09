@@ -142,10 +142,10 @@ function Index() {
               </Link>
               <button
                 type="button"
-                onClick={limpar}
+                onClick={() => void limpar()}
                 className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
               >
-                Trocar identificação
+                Sair
               </button>
             </div>
           </div>

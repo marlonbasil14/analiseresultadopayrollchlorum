@@ -8,6 +8,20 @@
       "when": 1791389349403,
       "tag": "0000_restringir_review_audit_log",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791584597513,
+      "tag": "0001_convite_obrigatorio_signup",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791584920832,
+      "tag": "0002_grants_user_roles",
+      "breakpoints": true
     }
   ]
 }
