@@ -172,7 +172,7 @@ export function PrimeirosPassos({
                   <span
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
                       feito
-                        ? "bg-favorable text-favorable-foreground"
+                        ? "bg-favorable text-card"
                         : ehProximo
                           ? "bg-brand-light text-brand-light-foreground"
                           : "border border-navy-foreground/30 text-navy-foreground/80"
