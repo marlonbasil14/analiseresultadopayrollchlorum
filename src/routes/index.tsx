@@ -70,6 +70,11 @@ function Index() {
   const diretoriasCards = todasDiretoriasDoCiclo(ciclo);
 
 
+  const abrirVideo = () => {
+    setVideoAberto(true);
+    void marcarPasso("video", ciclo);
+  };
+
   if (!pronto) return null;
   if (!identidade) return <IdentificacaoTela />;
 
@@ -149,7 +154,7 @@ function Index() {
               ciclo={ciclo}
               identidade={identidade}
               relatorio={relatorio}
-              abrirVideo={() => setVideoAberto(true)}
+              abrirVideo={abrirVideo}
             />
           </div>
         </div>
@@ -159,7 +164,7 @@ function Index() {
         ciclo={ciclo}
         cicloLabel={CICLO_LABEL}
         identidade={identidade}
-        abrirVideo={() => setVideoAberto(true)}
+        abrirVideo={abrirVideo}
       />
 
       <SuaPendencia ciclo={ciclo} identidade={identidade} />

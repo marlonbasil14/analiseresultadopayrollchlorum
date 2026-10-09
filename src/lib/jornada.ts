@@ -32,10 +32,21 @@ function publicar(e: Estado) {
   ouvintes.forEach((f) => f(e));
 }
 
-async function carregar() {
-  const { data } = await supabase.auth.getUser();
+let carregando: Promise<void> | null = null;
+
+function carregar() {
+  carregando = (async () => {
+    const { data } = await supabase.auth.getUser();
   const j = data.user?.user_metadata?.["jornada"] as Jornada | undefined;
-  publicar({ carregado: !!data.user, existe: !!j, jornada: j ?? {} });
+    publicar({ carregado: !!data.user, existe: !!j, jornada: j ?? {} });
+  })();
+  return carregando;
+}
+
+/** Garante que o progresso salvo foi lido antes de qualquer gravação (evita sobrescrever). */
+async function garantir() {
+  iniciar();
+  await carregando;
 }
 
 function iniciar() {
@@ -62,6 +73,7 @@ export function passosConcluidos(j: Jornada, ciclo: string) {
 }
 
 export async function marcarPasso(passo: Passo, ciclo: string) {
+  await garantir();
   const j = { ...atual.jornada };
   if (passo === "video" || passo === "guia") {
     if (j[passo]) return;
@@ -79,6 +91,7 @@ export async function marcarPasso(passo: Passo, ciclo: string) {
 }
 
 export async function atualizarJornada(parcial: Partial<Jornada>) {
+  await garantir();
   await gravar({ ...atual.jornada, ...parcial });
 }
 
