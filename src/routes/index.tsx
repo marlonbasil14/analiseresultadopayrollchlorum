@@ -4,9 +4,6 @@ import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
-import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
-import relatorioAgostoAsset from "@/assets/analise-orcamentaria-payroll-agosto2026.pdf.asset.json";
-import relatorioSetembroAsset from "@/assets/analise-orcamentaria-payroll-setembro2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
 import { dadosDoCiclo, totalGrupo, todasDiretoriasDoCiclo } from "@/data/ciclos";
 import { valores } from "@/data/diretoria";
@@ -17,29 +14,9 @@ import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { pct, seta } from "@/lib/format";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
-import { SUBTITULO_RELATORIO, marcarPasso, tituloRelatorio } from "@/lib/jornada";
+import { marcarPasso } from "@/lib/jornada";
+import { RELATORIOS_PDF } from "@/lib/relatorios";
 import { BoasVindas, PrimeirosPassos, SuaPendencia } from "@/components/jornada";
-
-const RELATORIOS_PDF: Record<
-  CicloChave,
-  { url?: string | undefined; label: string; descricao: string }
-> = {
-  "2026-07": {
-    url: relatorioJulhoAsset.url,
-    label: tituloRelatorio("2026-07"),
-    descricao: SUBTITULO_RELATORIO,
-  },
-  "2026-08": {
-    url: relatorioAgostoAsset.url,
-    label: tituloRelatorio("2026-08"),
-    descricao: SUBTITULO_RELATORIO,
-  },
-  "2026-09": {
-    url: relatorioSetembroAsset.url,
-    label: tituloRelatorio("2026-09"),
-    descricao: SUBTITULO_RELATORIO,
-  },
-};
 
 /** BP responsável por cada card do painel. */
 export const BP_RESPONSAVEL: Record<string, string> = {

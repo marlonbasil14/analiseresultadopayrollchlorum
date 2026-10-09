@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlarmClock, FileText, History } from "lucide-react";
 
 import { BotoesExportar } from "@/components/botoes-exportar";
@@ -14,6 +14,7 @@ import { pct } from "@/lib/format";
 import { FLUXO_LABEL, diasAteVencimento } from "@/lib/acesso";
 import { rotuloEscopo, useIdentidade } from "@/lib/identificacao";
 import { GestaoAcessos } from "@/components/gestao-acessos";
+import { marcarPasso } from "@/lib/jornada";
 import type { ReviewLike } from "@/lib/exportar";
 
 export const Route = createFileRoute("/admin")({
@@ -59,6 +60,9 @@ function AdminPage() {
   const unidadesOrdenadas = dados.unidadesOrdenadas;
   const { pronto, identidade, limpar } = useIdentidade();
   const prazo = diasAteVencimento(CICLO);
+  useEffect(() => {
+    if (identidade?.escopo === "admin") void marcarPasso("unidade", CICLO);
+  }, [identidade?.escopo, CICLO]);
   const [confirmando, setConfirmando] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
