@@ -6,6 +6,7 @@ import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import relatorioJulhoAsset from "@/assets/analise-orcamentaria-payroll-julho2026.pdf.asset.json";
 import relatorioAgostoAsset from "@/assets/analise-orcamentaria-payroll-agosto2026.pdf.asset.json";
+import relatorioSetembroAsset from "@/assets/analise-orcamentaria-payroll-setembro2026.pdf.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
 import { dadosDoCiclo, totalGrupo, todasDiretoriasDoCiclo } from "@/data/ciclos";
 import { valores } from "@/data/diretoria";
@@ -32,8 +33,9 @@ const RELATORIOS_PDF: Record<
     descricao: "Documento completo em PDF · abre em nova aba",
   },
   "2026-09": {
+    url: relatorioSetembroAsset.url,
     label: "Setembro/2026",
-    descricao: "Relatório de setembro em elaboração",
+    descricao: "Análise prévia em PDF · abre em nova aba",
   },
 };
 
