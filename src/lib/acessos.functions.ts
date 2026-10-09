@@ -118,23 +118,14 @@ export const criarAcesso = createServerFn({ method: "POST" })
     if (data.perfil === "bp" && unidades.length === 0) throw new Error("Selecione ao menos uma unidade.");
     const senha = gerarSenha();
 
-    const { error: erroRole } = await admin
-      .from("user_roles")
-      .upsert({ email, nome: data.nome, role: data.perfil, unidades }, { onConflict: "email" });
-    if (erroRole) {
-      // índice único é em lower(email); faz update manual
-      const { error: e2 } = await admin
-        .from("user_roles")
-        .update({ nome: data.nome, role: data.perfil, unidades })
-        .ilike("email", email);
-      const { data: existe } = await admin.from("user_roles").select("id").ilike("email", email);
-      if (e2 || !existe?.length) {
-        const { error: e3 } = await admin
+    const { data: existe } = await admin.from("user_roles").select("id").ilike("email", email);
+    const { error: erroRole } = existe?.length
+      ? await admin
           .from("user_roles")
-          .insert({ email, nome: data.nome, role: data.perfil, unidades });
-        if (e3) throw new Error("Não foi possível gravar o perfil.");
-      }
-    }
+          .update({ nome: data.nome, role: data.perfil, unidades })
+          .ilike("email", email)
+      : await admin.from("user_roles").insert({ email, nome: data.nome, role: data.perfil, unidades });
+    if (erroRole) throw new Error("Não foi possível gravar o perfil.");
 
     const existente = await acharUsuario(admin, email);
     let userId: string;
