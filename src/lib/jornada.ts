@@ -37,7 +37,7 @@ let carregando: Promise<void> | null = null;
 function carregar() {
   carregando = (async () => {
     const { data } = await supabase.auth.getUser();
-  const j = data.user?.user_metadata?.["jornada"] as Jornada | undefined;
+    const j = data.user?.user_metadata?.["jornada"] as Jornada | undefined;
     publicar({ carregado: !!data.user, existe: !!j, jornada: j ?? {} });
   })();
   return carregando;
@@ -74,6 +74,7 @@ export function passosConcluidos(j: Jornada, ciclo: string) {
 
 export async function marcarPasso(passo: Passo, ciclo: string) {
   await garantir();
+  if (!atual.carregado) return;
   const j = { ...atual.jornada };
   if (passo === "video" || passo === "guia") {
     if (j[passo]) return;
@@ -92,6 +93,7 @@ export async function marcarPasso(passo: Passo, ciclo: string) {
 
 export async function atualizarJornada(parcial: Partial<Jornada>) {
   await garantir();
+  if (!atual.carregado) return;
   await gravar({ ...atual.jornada, ...parcial });
 }
 
