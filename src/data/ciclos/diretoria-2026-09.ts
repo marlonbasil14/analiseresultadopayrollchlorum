@@ -36,9 +36,9 @@ export const diretorias: LinhaDiretoria[] = [
     nome: "Diretoria Comercial",
     hcReal: 2,
     hcOrcado: 1,
-    realMes: 297656.47,
+    realMes: 294496.47,
     orcadoMes: 28107.23,
-    realYtd: 1506031.95,
+    realYtd: 1502871.95,
     orcadoYtd: 829504.65,
   },
   {
@@ -66,9 +66,9 @@ export const diretorias: LinhaDiretoria[] = [
     nome: "Diretoria de Gente e Gestão",
     hcReal: 17,
     hcOrcado: 18,
-    realMes: 492054.83,
+    realMes: 484454.83,
     orcadoMes: 564242.67,
-    realYtd: 4815736.49,
+    realYtd: 4808136.49,
     orcadoYtd: 4749075.59,
   },
 ];
@@ -98,11 +98,11 @@ export const diretoriasComplementares: LinhaDiretoria[] = [
 ];
 
 export const contasDiretoria: ContaDiretoria[] = [
-  { conta: "Salário", realMes: 1093015.48, orcadoMes: 1662649.15, realYtd: 9397804.28, orcadoYtd: 10847989.63 },
-  { conta: "Hora Extra", realMes: -0.0, orcadoMes: -0.0, realYtd: 183511.4, orcadoYtd: 113909.79 },
+  { conta: "Salário", realMes: 1064054.12, orcadoMes: 1662649.15, realYtd: 9368842.92, orcadoYtd: 10847989.63 },
+  { conta: "Hora Extra", realMes: 28961.36, orcadoMes: -0.0, realYtd: 212472.76, orcadoYtd: 113909.79 },
   { conta: "Férias", realMes: -23680.2, orcadoMes: 32181.83, realYtd: 1098123.6, orcadoYtd: 678633.11 },
   { conta: "Rescisão e Aviso Prévio", realMes: -0.0, orcadoMes: 23173.23, realYtd: 21912.84, orcadoYtd: 90368.25 },
   { conta: "Encargos", realMes: 379881.13, orcadoMes: 579838.19, realYtd: 3635804.19, orcadoYtd: 3946128.21 },
-  { conta: "Benefícios", realMes: 454000.75, orcadoMes: 450280.92, realYtd: 3359430.95, orcadoYtd: 3447558.42 },
+  { conta: "Benefícios", realMes: 443240.75, orcadoMes: 450280.92, realYtd: 3348670.95, orcadoYtd: 3447558.42 },
   { conta: "ICP", realMes: 284223.11, orcadoMes: 360699.18, realYtd: 3073655.47, orcadoYtd: 2592883.56 },
 ];

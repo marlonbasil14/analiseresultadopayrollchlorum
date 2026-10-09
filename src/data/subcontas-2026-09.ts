@@ -1,112 +1,105 @@
-import { composicaoSetembro } from "@/data/subcontas-2026-09";
-export type SubConta = { conta: string; valor: number };
+import type { ComposicaoUnidade } from "@/data/subcontas";
 
-export type ComposicaoUnidade = {
-  actual: Record<string, SubConta[]> | null;
-  forecast: Record<string, SubConta[]> | null;
-};
-
-export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
+/** Composição por sub-conta — Setembro/2026 (arquivo v2). Actual = Base Razão (set/26); Forecast = Base Payroll Forecast (Mês atual). */
+export const composicaoSetembro: Record<string, ComposicaoUnidade> = {
   "igarassu": {
     "actual": {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -382221.45
-        },
-        {
-          "conta": "Assistencia Medica / Odontologica",
-          "valor": -83181.86
+          "valor": -449398.18
         },
         {
           "conta": "Alimentação e refeitório",
-          "valor": -143760.24
+          "valor": -115442.43
+        },
+        {
+          "conta": "Assistencia Medica / Odontologica",
+          "valor": -65907.12
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
-          "valor": -45500.0
+          "valor": -40500.0
         },
         {
           "conta": "Auxilio Educação",
-          "valor": -32531.71
-        },
-        {
-          "conta": "Conselho de Classe",
-          "valor": -17457.88
-        },
-        {
-          "conta": "Previdência Privada",
-          "valor": -12938.57
-        },
-        {
-          "conta": "Seguro de Vida em Grupo",
-          "valor": -6616.34
-        },
-        {
-          "conta": "Auxílio Creche",
-          "valor": -2400.0
-        },
-        {
-          "conta": "Academia",
-          "valor": -210.07
-        },
-        {
-          "conta": "Lanches e Refeições",
-          "valor": 282.16
+          "valor": -23148.03
         },
         {
           "conta": "Transporte de Funcionários",
-          "valor": 916.61
+          "valor": -18889.75
+        },
+        {
+          "conta": "Conselho de Classe",
+          "valor": -18646.47
+        },
+        {
+          "conta": "Previdência Privada",
+          "valor": -9957.37
+        },
+        {
+          "conta": "Seguro de Vida em Grupo",
+          "valor": -5652.23
+        },
+        {
+          "conta": "Auxílio Creche",
+          "valor": -2600.0
+        },
+        {
+          "conta": "Academia",
+          "valor": -1461.67
         },
         {
           "conta": "Vale - Transporte",
-          "valor": 1698.45
+          "valor": -394.26
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -497954.43
+          "valor": -321090.7
         },
         {
           "conta": "FGTS",
-          "valor": -140901.91
+          "valor": -141031.75
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -221821.95
+          "valor": -130567.12
         }
       ],
       "Hora Extra": [
         {
           "conta": "Horas Extras",
-          "valor": -340390.58
+          "valor": -100919.17
         }
       ],
       "ICP": [
         {
           "conta": "Participação nos Resultados (PLR)",
-          "valor": -335809.1
+          "valor": -247057.49
         },
         {
           "conta": "Participacao Nos Resultados (PLR)",
-          "valor": 3940.21
+          "valor": 83110.82
+        }
+      ],
+      "Rescisão e Aviso Prévio": [
+        {
+          "conta": "Rescisão e Aviso Prévio",
+          "valor": -42796.41
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -1100015.45
+          "valor": -1009879.1
         },
         {
           "conta": "13º Salário",
-          "valor": -126981.92
-        },
-        {
-          "conta": "Indenizações Trabalhistas",
-          "valor": -8195.04
+          "valor": -93958.41
         }
       ]
     },
@@ -114,7 +107,7 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -436574.57
+          "valor": -568447.68
         },
         {
           "conta": "Previdência Privada",
@@ -122,19 +115,19 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
-          "valor": -43250.0
+          "valor": -43000.0
         },
         {
           "conta": "Auxílio Educação",
-          "valor": -34600.0
+          "valor": -34400.0
         },
         {
           "conta": "Seguro de Vida em Grupo",
-          "valor": -6716.14
+          "valor": -6696.75
         },
         {
           "conta": "Ajuda de Custo",
-          "valor": -6339.47
+          "valor": -6302.83
         },
         {
           "conta": "Vale - Transporte",
@@ -144,17 +137,17 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -496050.56
+          "valor": -495248.91
         },
         {
           "conta": "FGTS",
-          "valor": -112991.07
+          "valor": -112697.93
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -35737.11
+          "valor": -35647.37
         }
       ],
       "Hora Extra": [
@@ -172,17 +165,17 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Rescisão e Aviso Prévio": [
         {
           "conta": "Rescisão e Aviso Prévio",
-          "valor": -25189.02
+          "valor": -25124.4
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -1278357.13
+          "valor": -1275051.82
         },
         {
           "conta": "13º Salário",
-          "valor": -107222.06
+          "valor": -106952.81
         }
       ]
     }
@@ -192,71 +185,81 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Assistencia Medica / Odontologica",
-          "valor": -256694.79
-        },
-        {
-          "conta": "Alimentação e refeitório",
-          "valor": -76186.1
-        },
-        {
-          "conta": "Auxilio Educação",
-          "valor": -23624.22
-        },
-        {
-          "conta": "Seguro de Vida em Grupo",
-          "valor": -7851.29
-        },
-        {
-          "conta": "Transporte de Funcionários",
-          "valor": -7400.0
-        },
-        {
-          "conta": "Conselho de Classe",
-          "valor": -3078.87
-        },
-        {
-          "conta": "Auxílio Creche",
-          "valor": -600.0
+          "valor": -325458.63
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
-          "valor": 0.0
+          "valor": -77000.0
+        },
+        {
+          "conta": "Auxilio Educação",
+          "valor": -26102.58
+        },
+        {
+          "conta": "Seguro de Vida em Grupo",
+          "valor": -7943.69
+        },
+        {
+          "conta": "Combustivel",
+          "valor": -7800.0
+        },
+        {
+          "conta": "Conselho de Classe",
+          "valor": 3160.0
+        },
+        {
+          "conta": "Auxílio Creche",
+          "valor": -800.0
+        },
+        {
+          "conta": "Academia",
+          "valor": -584.52
+        },
+        {
+          "conta": "Alimentação e refeitório",
+          "valor": -571.2
         },
         {
           "conta": "Vale - Transporte",
-          "valor": 115.95
+          "valor": -140.13
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -346439.64
+          "valor": -288670.89
         },
         {
           "conta": "FGTS",
-          "valor": -102792.89
+          "valor": -91210.24
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -164902.46
+          "valor": 23680.2
         }
       ],
       "Hora Extra": [
         {
           "conta": "Horas Extras",
-          "valor": -37037.99
+          "valor": -28961.36
+        }
+      ],
+      "ICP": [
+        {
+          "conta": "Participacao Nos Resultados (PLR)",
+          "valor": -284223.11
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -992337.4
+          "valor": -1007994.08
         },
         {
           "conta": "13º Salário",
-          "valor": -102923.94
+          "valor": -45643.37
         },
         {
           "conta": "Pró labore",
@@ -268,27 +271,27 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -282083.34
+          "valor": -331298.8
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
-          "valor": -87000.0
+          "valor": -85000.0
         },
         {
           "conta": "Auxílio Educação",
-          "valor": -17400.0
+          "valor": -17000.0
         },
         {
           "conta": "Seguro de Vida em Grupo",
-          "valor": -9233.43
+          "valor": -9236.67
         },
         {
           "conta": "Vale - Combustível",
-          "valor": -4457.5
+          "valor": -4057.5
         },
         {
           "conta": "Ajuda de Custo",
-          "valor": -3188.06
+          "valor": -3114.77
         },
         {
           "conta": "Previdência Privada",
@@ -298,17 +301,17 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -485818.75
+          "valor": -485015.09
         },
         {
           "conta": "FGTS",
-          "valor": -93129.47
+          "valor": -94823.1
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -32236.26
+          "valor": -32181.83
         }
       ],
       "ICP": [
@@ -320,17 +323,17 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Rescisão e Aviso Prévio": [
         {
           "conta": "Rescisão e Aviso Prévio",
-          "valor": -23212.43
+          "valor": -23173.23
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -1565598.71
+          "valor": -1566094.01
         },
         {
           "conta": "13º Salário",
-          "valor": -96718.45
+          "valor": -96555.14
         }
       ]
     }
@@ -339,68 +342,100 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
     "actual": {
       "Benefícios": [
         {
-          "conta": "Assistencia Medica / Odontologica",
-          "valor": -83624.86
-        },
-        {
-          "conta": "Transporte de Funcionários",
-          "valor": -35688.19
+          "conta": "Assistencia Médica e Odontológica",
+          "valor": -85584.79
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
-          "valor": -32000.0
+          "valor": -32054.8
         },
         {
-          "conta": "Auxílio Creche",
-          "valor": -1600.0
+          "conta": "Transporte de Funcionários",
+          "valor": -30064.89
         },
         {
-          "conta": "Alimentação e refeitório",
-          "valor": -994.5
+          "conta": "Assistencia Medica / Odontologica",
+          "valor": -28176.36
         },
         {
           "conta": "Auxilio Educação",
-          "valor": -848.33
+          "valor": -4360.77
+        },
+        {
+          "conta": "Auxílio Creche",
+          "valor": -1000.0
         },
         {
           "conta": "Seguro de Vida em Grupo",
-          "valor": -688.19
+          "valor": -858.78
+        },
+        {
+          "conta": "Alimentação e refeitório",
+          "valor": -810.0
+        },
+        {
+          "conta": "Combustivel",
+          "valor": -473.56
+        },
+        {
+          "conta": "Academia",
+          "valor": -231.58
+        },
+        {
+          "conta": "Farmácia e Medicamentos",
+          "valor": -75.97
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -61545.88
+          "valor": -85366.94
         },
         {
           "conta": "FGTS",
-          "valor": -19093.25
+          "valor": -24509.97
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -30148.18
+          "valor": -104639.32
         }
       ],
       "Hora Extra": [
         {
           "conta": "Horas Extras",
-          "valor": -33743.73
+          "valor": -24412.92
+        }
+      ],
+      "ICP": [
+        {
+          "conta": "Participação nos Resultados (PLR)",
+          "valor": -22890.94
+        },
+        {
+          "conta": "Participacao Nos Resultados (PLR)",
+          "valor": 8297.36
+        }
+      ],
+      "Rescisão e Aviso Prévio": [
+        {
+          "conta": "Rescisão e Aviso Prévio",
+          "valor": -18610.66
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -142918.42
+          "valor": -168021.26
         },
         {
           "conta": "13º Salário",
-          "valor": -18753.18
+          "valor": -19241.97
         },
         {
           "conta": "Abono Salarial",
-          "valor": -5309.88
+          "valor": -3539.92
         }
       ]
     },
@@ -408,7 +443,7 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -79736.67
+          "valor": -101757.0
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
@@ -434,7 +469,7 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -58810.28
+          "valor": -58857.4
         },
         {
           "conta": "FGTS",
@@ -482,69 +517,77 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Vale - Refeições e Cesta básica",
-          "valor": -26456.0
+          "valor": -25000.0
         },
         {
-          "conta": "Assistencia Medica / Odontologica",
-          "valor": -20123.62
-        },
-        {
-          "conta": "Transporte de Funcionários",
-          "valor": -8902.16
+          "conta": "Assistencia Médica e Odontológica",
+          "valor": -20093.35
         },
         {
           "conta": "Auxilio Educação",
-          "valor": -2368.7
+          "valor": -2563.86
+        },
+        {
+          "conta": "Alimentação e refeitório",
+          "valor": -1417.5
+        },
+        {
+          "conta": "Combustivel",
+          "valor": -803.71
         },
         {
           "conta": "Auxílio Creche",
-          "valor": -1200.0
+          "valor": -800.0
+        },
+        {
+          "conta": "Transporte de Funcionários",
+          "valor": 782.5
         },
         {
           "conta": "Seguro de Vida em Grupo",
-          "valor": -497.79
+          "valor": -473.77
+        },
+        {
+          "conta": "Academia",
+          "valor": -213.76
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -34541.83
+          "valor": -34908.93
         },
         {
           "conta": "FGTS",
-          "valor": -10311.0
+          "valor": -10982.19
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -20496.77
+          "valor": -10954.56
         }
       ],
       "Hora Extra": [
         {
           "conta": "Horas Extras",
-          "valor": -5938.42
+          "valor": -3947.37
         }
       ],
       "ICP": [
         {
           "conta": "Participação nos Resultados (PLR)",
-          "valor": -21805.6
-        },
-        {
-          "conta": "Participacao Nos Resultados (PLR)",
-          "valor": -514.73
+          "valor": -24259.6
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -94764.45
+          "valor": -108535.8
         },
         {
           "conta": "13º Salário",
-          "valor": -11501.27
+          "valor": -9200.25
         }
       ]
     },
@@ -552,7 +595,7 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -28169.17
+          "valor": -34259.69
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
@@ -578,7 +621,7 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -38443.55
+          "valor": -38474.92
         },
         {
           "conta": "FGTS",
@@ -621,234 +664,86 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       ]
     }
   },
-  "distribuicao": {
-    "actual": {
-      "Benefícios": [
-        {
-          "conta": "Assistencia Medica / Odontologica",
-          "valor": -69715.23
-        },
-        {
-          "conta": "Vale - Refeições e Cesta básica",
-          "valor": -20000.0
-        },
-        {
-          "conta": "Transporte de Funcionários",
-          "valor": -17450.0
-        },
-        {
-          "conta": "Auxilio Educação",
-          "valor": -7086.0
-        },
-        {
-          "conta": "Seguro de Vida em Grupo",
-          "valor": -1637.62
-        },
-        {
-          "conta": "Auxílio Creche",
-          "valor": -600.0
-        }
-      ],
-      "Encargos": [
-        {
-          "conta": "INSS",
-          "valor": -97414.36
-        },
-        {
-          "conta": "FGTS",
-          "valor": -28960.48
-        }
-      ],
-      "Férias": [
-        {
-          "conta": "Férias",
-          "valor": -48848.82
-        }
-      ],
-      "Hora Extra": [
-        {
-          "conta": "Horas Extras",
-          "valor": -2316.92
-        }
-      ],
-      "ICP": [
-        {
-          "conta": "Participacao Nos Resultados (PLR)",
-          "valor": -186192.88
-        }
-      ],
-      "Salário": [
-        {
-          "conta": "Salários e Ordenados",
-          "valor": -279290.9
-        },
-        {
-          "conta": "13º Salário",
-          "valor": -31233.4
-        }
-      ]
-    },
-    "forecast": {
-      "Benefícios": [
-        {
-          "conta": "Assistencia Médica e Odontológica",
-          "valor": -64991.71
-        },
-        {
-          "conta": "Vale - Refeições e Cesta básica",
-          "valor": -19000.0
-        },
-        {
-          "conta": "Auxílio Educação",
-          "valor": -3800.0
-        },
-        {
-          "conta": "Vale - Combustível",
-          "valor": -2250.0
-        },
-        {
-          "conta": "Seguro de Vida em Grupo",
-          "valor": -1641.49
-        },
-        {
-          "conta": "Ajuda de Custo",
-          "valor": -696.24
-        }
-      ],
-      "Encargos": [
-        {
-          "conta": "INSS",
-          "valor": -103104.07
-        },
-        {
-          "conta": "FGTS",
-          "valor": -25511.44
-        }
-      ],
-      "Férias": [
-        {
-          "conta": "Férias",
-          "valor": -7814.25
-        }
-      ],
-      "Hora Extra": [
-        {
-          "conta": "Horas Extras",
-          "valor": -2005.88
-        }
-      ],
-      "ICP": [
-        {
-          "conta": "Participação nos Resultados (PLR)",
-          "valor": -80816.74
-        }
-      ],
-      "Rescisão e Aviso Prévio": [
-        {
-          "conta": "Rescisão e Aviso Prévio",
-          "valor": -5626.83
-        }
-      ],
-      "Salário": [
-        {
-          "conta": "Salários e Ordenados",
-          "valor": -285627.78
-        },
-        {
-          "conta": "13º Salário",
-          "valor": -23445.11
-        }
-      ]
-    }
-  },
   "pacatuba": {
     "actual": {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -51804.13
-        },
-        {
-          "conta": "Vale - Refeições e Cesta básica",
-          "valor": -27999.74
-        },
-        {
-          "conta": "Transporte de Funcionários",
-          "valor": -23243.29
+          "valor": -62531.51
         },
         {
           "conta": "Assistencia Medica / Odontologica",
-          "valor": -22985.82
+          "valor": -37364.29
         },
         {
-          "conta": "Viagens e Estadias",
-          "valor": -8438.79
+          "conta": "Vale - Refeições e Cesta básica",
+          "valor": -27000.0
+        },
+        {
+          "conta": "Transporte de Funcionários",
+          "valor": -24532.33
         },
         {
           "conta": "Auxilio Educação",
-          "valor": -5693.88
+          "valor": -3760.85
         },
         {
           "conta": "Seguro de Vida em Grupo",
-          "valor": -1056.05
-        },
-        {
-          "conta": "Auxílio Creche",
-          "valor": -590.0
-        },
-        {
-          "conta": "Alimentação e refeitório",
-          "valor": -360.0
+          "valor": -1040.04
         },
         {
           "conta": "Combustivel",
-          "valor": -324.5
+          "valor": -519.56
+        },
+        {
+          "conta": "Alimentação e refeitório",
+          "valor": -378.0
+        },
+        {
+          "conta": "Auxílio Creche",
+          "valor": -330.0
         },
         {
           "conta": "Academia",
-          "valor": -68.71
+          "valor": -240.48
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -60901.52
+          "valor": -58654.2
         },
         {
           "conta": "FGTS",
-          "valor": -16328.87
+          "valor": -18241.74
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -31092.58
+          "valor": -37586.76
         }
       ],
       "Hora Extra": [
         {
           "conta": "Horas Extras",
-          "valor": -13892.31
+          "valor": -7822.44
         }
       ],
       "ICP": [
         {
-          "conta": "Participacao Nos Resultados (PLR)",
-          "valor": -44819.87
+          "conta": "Participação nos Resultados (PLR)",
+          "valor": -25011.34
         },
         {
-          "conta": "Participação nos Resultados (PLR)",
-          "valor": -15073.69
+          "conta": "Participacao Nos Resultados (PLR)",
+          "valor": -3796.5
         }
       ],
       "Salário": [
         {
-          "conta": "Conta Transitória - MOD",
-          "valor": -290467.42
-        },
-        {
           "conta": "Salários e Ordenados",
-          "valor": -147862.26
+          "valor": -132498.1
         },
         {
           "conta": "Pró labore",
@@ -856,15 +751,11 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
         },
         {
           "conta": "13º Salário",
-          "valor": -17191.05
+          "valor": -18364.04
         },
         {
           "conta": "Prêmios e Gratificações",
-          "valor": -1849.59
-        },
-        {
-          "conta": "Conta Transitória - MOD Saldo",
-          "valor": 290467.42
+          "valor": -2363.82
         }
       ]
     },
@@ -872,43 +763,43 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -75226.36
+          "valor": -92697.72
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
-          "valor": -30000.0
+          "valor": -29000.0
         },
         {
           "conta": "Auxílio Educação",
-          "valor": -6000.0
+          "valor": -5800.0
         },
         {
           "conta": "Vale - Combustível",
-          "valor": -5047.26
+          "valor": -4628.21
         },
         {
           "conta": "Seguro de Vida em Grupo",
-          "valor": -1135.6
+          "valor": -1092.1
         },
         {
           "conta": "Ajuda de Custo",
-          "valor": -1099.33
+          "valor": -1062.69
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -66731.68
+          "valor": -63862.05
         },
         {
           "conta": "FGTS",
-          "valor": -14893.26
+          "valor": -14187.4
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -4687.51
+          "valor": -4471.12
         }
       ],
       "Hora Extra": [
@@ -926,17 +817,17 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Rescisão e Aviso Prévio": [
         {
           "conta": "Rescisão e Aviso Prévio",
-          "valor": -3232.7
+          "valor": -3076.88
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -208805.28
+          "valor": -200847.67
         },
         {
           "conta": "13º Salário",
-          "valor": -14063.93
+          "valor": -13414.69
         }
       ]
     }
@@ -945,60 +836,82 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
     "actual": {
       "Benefícios": [
         {
-          "conta": "Seguro de Vida em Grupo",
-          "valor": -283242.1
-        },
-        {
-          "conta": "Vale - Refeições e Cesta básica",
-          "valor": -38428.58
+          "conta": "Assistencia Médica e Odontológica",
+          "valor": -96082.96
         },
         {
           "conta": "Transporte de Funcionários",
-          "valor": -4537.08
+          "valor": -54889.01
+        },
+        {
+          "conta": "Vale - Refeições e Cesta básica",
+          "valor": -40000.0
+        },
+        {
+          "conta": "Auxilio Educação",
+          "valor": -9212.91
         },
         {
           "conta": "Assistencia Medica / Odontologica",
-          "valor": -3088.92
+          "valor": -2221.44
+        },
+        {
+          "conta": "Alimentação e refeitório",
+          "valor": -1037.8
         },
         {
           "conta": "Auxílio Creche",
           "valor": -400.0
         },
         {
-          "conta": "Auxilio Educação",
-          "valor": 113937.71
+          "conta": "Academia",
+          "valor": -302.83
+        },
+        {
+          "conta": "Seguro de Vida em Grupo",
+          "valor": -14.97
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -50800.85
+          "valor": -72343.7
         },
         {
           "conta": "FGTS",
-          "valor": -19651.46
+          "valor": -20824.27
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -55223.37
+          "valor": -17440.69
         }
       ],
       "Hora Extra": [
         {
           "conta": "Horas Extras",
-          "valor": -24344.85
+          "valor": -40474.55
+        }
+      ],
+      "ICP": [
+        {
+          "conta": "Participação nos Resultados (PLR)",
+          "valor": -158042.99
+        },
+        {
+          "conta": "Participacao Nos Resultados (PLR)",
+          "valor": 144397.86
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -152362.47
+          "valor": -173569.04
         },
         {
           "conta": "13º Salário",
-          "valor": -18355.33
+          "valor": -18540.38
         }
       ]
     },
@@ -1006,7 +919,7 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -101890.47
+          "valor": -118533.9
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
@@ -1026,23 +939,23 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
         },
         {
           "conta": "Seguro de Vida em Grupo",
-          "valor": -1015.61
+          "valor": -1066.39
         }
       ],
       "Encargos": [
         {
           "conta": "INSS",
-          "valor": -77219.66
+          "valor": -80471.18
         },
         {
           "conta": "FGTS",
-          "valor": -18055.2
+          "valor": -18831.5
         }
       ],
       "Férias": [
         {
           "conta": "Férias",
-          "valor": -5705.33
+          "valor": -5949.41
         }
       ],
       "Hora Extra": [
@@ -1060,28 +973,119 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
       "Rescisão e Aviso Prévio": [
         {
           "conta": "Rescisão e Aviso Prévio",
-          "valor": -3749.01
+          "valor": -3906.87
         }
       ],
       "Salário": [
         {
           "conta": "Salários e Ordenados",
-          "valor": -179768.15
+          "valor": -188730.14
         },
         {
           "conta": "13º Salário",
-          "valor": -17117.69
+          "valor": -17850.02
         }
       ]
     }
   },
   "uberlandia": {
-    "actual": null,
+    "actual": {
+      "Benefícios": [
+        {
+          "conta": "Assistencia Médica e Odontológica",
+          "valor": -110994.85
+        },
+        {
+          "conta": "Vale - Refeições e Cesta básica",
+          "valor": -83445.28
+        },
+        {
+          "conta": "Auxilio Educação",
+          "valor": -11242.37
+        },
+        {
+          "conta": "Transporte de Funcionários",
+          "valor": -4143.43
+        },
+        {
+          "conta": "Assistencia Medica / Odontologica",
+          "valor": -2981.9
+        },
+        {
+          "conta": "Seguro de Vida em Grupo",
+          "valor": -2480.96
+        },
+        {
+          "conta": "Auxílio Creche",
+          "valor": -1000.0
+        },
+        {
+          "conta": "Alimentação e refeitório",
+          "valor": -383.76
+        },
+        {
+          "conta": "Academia",
+          "valor": -267.21
+        },
+        {
+          "conta": "Vale - Transporte",
+          "valor": 160.24
+        }
+      ],
+      "Encargos": [
+        {
+          "conta": "INSS",
+          "valor": -104591.27
+        },
+        {
+          "conta": "FGTS",
+          "valor": -33649.78
+        }
+      ],
+      "Férias": [
+        {
+          "conta": "Férias",
+          "valor": -35575.37
+        }
+      ],
+      "Hora Extra": [
+        {
+          "conta": "Horas Extras",
+          "valor": -106929.34
+        }
+      ],
+      "ICP": [
+        {
+          "conta": "Participação nos Resultados (PLR)",
+          "valor": -272565.12
+        },
+        {
+          "conta": "Participacao Nos Resultados (PLR)",
+          "valor": 210893.9
+        }
+      ],
+      "Rescisão e Aviso Prévio": [
+        {
+          "conta": "Rescisão e Aviso Prévio",
+          "valor": -7563.33
+        }
+      ],
+      "Salário": [
+        {
+          "conta": "Salários e Ordenados",
+          "valor": -238501.97
+        },
+        {
+          "conta": "13º Salário",
+          "valor": -33350.86
+        }
+      ]
+    },
     "forecast": {
       "Benefícios": [
         {
           "conta": "Assistencia Médica e Odontológica",
-          "valor": -101619.52
+          "valor": -116592.61
         },
         {
           "conta": "Vale - Refeições e Cesta básica",
@@ -1157,24 +1161,153 @@ export const composicaoPorUnidade: Record<string, ComposicaoUnidade> = {
         }
       ]
     }
+  },
+  "distribuicao": {
+    "actual": {
+      "Benefícios": [
+        {
+          "conta": "Assistencia Medica / Odontologica",
+          "valor": -84240.79
+        },
+        {
+          "conta": "Vale - Refeições e Cesta básica",
+          "valor": -20000.0
+        },
+        {
+          "conta": "Transporte de Funcionários",
+          "valor": -15350.0
+        },
+        {
+          "conta": "Auxilio Educação",
+          "valor": -4233.07
+        },
+        {
+          "conta": "Seguro de Vida em Grupo",
+          "valor": -3104.79
+        },
+        {
+          "conta": "Combustivel",
+          "valor": -2100.0
+        },
+        {
+          "conta": "Auxílio Creche",
+          "valor": -400.0
+        },
+        {
+          "conta": "Academia",
+          "valor": -169.22
+        }
+      ],
+      "Encargos": [
+        {
+          "conta": "INSS",
+          "valor": -131794.56
+        },
+        {
+          "conta": "FGTS",
+          "valor": -41618.73
+        }
+      ],
+      "Férias": [
+        {
+          "conta": "Férias",
+          "valor": -155456.86
+        }
+      ],
+      "Hora Extra": [
+        {
+          "conta": "Horas Extras",
+          "valor": -3945.31
+        }
+      ],
+      "ICP": [
+        {
+          "conta": "Participacao Nos Resultados (PLR)",
+          "valor": -32863.28
+        }
+      ],
+      "Salário": [
+        {
+          "conta": "Salários e Ordenados",
+          "valor": -283942.5
+        },
+        {
+          "conta": "13º Salário",
+          "valor": -69469.38
+        }
+      ]
+    },
+    "forecast": {
+      "Benefícios": [
+        {
+          "conta": "Assistencia Médica e Odontológica",
+          "valor": -82178.7
+        },
+        {
+          "conta": "Vale - Refeições e Cesta básica",
+          "valor": -19000.0
+        },
+        {
+          "conta": "Auxílio Educação",
+          "valor": -3800.0
+        },
+        {
+          "conta": "Vale - Combustível",
+          "valor": -2250.0
+        },
+        {
+          "conta": "Seguro de Vida em Grupo",
+          "valor": -1723.56
+        },
+        {
+          "conta": "Ajuda de Custo",
+          "valor": -696.24
+        }
+      ],
+      "Encargos": [
+        {
+          "conta": "INSS",
+          "valor": -108116.57
+        },
+        {
+          "conta": "FGTS",
+          "valor": -26778.1
+        }
+      ],
+      "Férias": [
+        {
+          "conta": "Férias",
+          "valor": -8202.18
+        }
+      ],
+      "Hora Extra": [
+        {
+          "conta": "Horas Extras",
+          "valor": -2005.88
+        }
+      ],
+      "ICP": [
+        {
+          "conta": "Participação nos Resultados (PLR)",
+          "valor": -80816.74
+        }
+      ],
+      "Rescisão e Aviso Prévio": [
+        {
+          "conta": "Rescisão e Aviso Prévio",
+          "valor": -5906.16
+        }
+      ],
+      "Salário": [
+        {
+          "conta": "Salários e Ordenados",
+          "valor": -299909.17
+        },
+        {
+          "conta": "13º Salário",
+          "valor": -24609.0
+        }
+      ]
+    }
   }
 };
-
-
-export function subcontasDe(
-  slug: string,
-  conta: string,
-  lado: "actual" | "forecast",
-  ciclo?: string,
-): SubConta[] | null {
-  const fonte =
-    ciclo === "2026-09" ? composicaoSetembro : ciclo === "2026-07" ? composicaoPorUnidade : null;
-  if (!fonte) return null;
-  const unidade = fonte[slug];
-  if (!unidade) return null;
-  const bloco = unidade[lado];
-  if (!bloco) return null;
-  const lista = bloco[conta];
-  if (!lista || lista.length === 0) return [];
-  return [...lista].sort((a, b) => Math.abs(b.valor) - Math.abs(a.valor));
-}

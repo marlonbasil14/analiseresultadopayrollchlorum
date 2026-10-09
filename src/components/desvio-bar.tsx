@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { classificarEfeito, EFEITO_LABEL, type DesvioConta } from "@/data/payroll";
 import { subcontasDe, type SubConta } from "@/data/subcontas";
+import { useCicloAtivo } from "@/lib/ciclo";
 import { brl, pct, seta } from "@/lib/format";
 
 function ComposicaoLista({
@@ -64,13 +65,14 @@ export function DesvioBar({
   slug?: string | undefined;
 }) {
   const [aberto, setAberto] = useState(false);
+  const { ciclo } = useCicloAtivo();
   const largura = Math.max(4, Math.min(100, (Math.abs(item.percentual) / maxPct) * 100));
   const efeito = classificarEfeito(item.conta);
   const cor = item.favoravel ? "bg-favorable" : "bg-unfavorable";
   const texto = item.favoravel ? "text-favorable" : "text-unfavorable";
 
-  const actual = slug ? subcontasDe(slug, item.conta, "actual") : null;
-  const forecast = slug ? subcontasDe(slug, item.conta, "forecast") : null;
+  const actual = slug ? subcontasDe(slug, item.conta, "actual", ciclo) : null;
+  const forecast = slug ? subcontasDe(slug, item.conta, "forecast", ciclo) : null;
   const expansivel = Boolean(slug);
 
   return (

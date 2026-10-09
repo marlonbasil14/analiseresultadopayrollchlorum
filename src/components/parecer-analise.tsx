@@ -48,13 +48,13 @@ function asArray<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
 }
 
-function ofensoresSugeridos(u: Unidade): Ofensor[] {
+function ofensoresSugeridos(u: Unidade, ciclo: string): Ofensor[] {
   return [...u.desvioPorConta]
     .filter((c) => !c.favoravel)
     .sort((a, b) => Math.abs(b.valor) - Math.abs(a.valor))
     .slice(0, 2)
     .map((c) => {
-      const sub = subcontasDe(u.slug, c.conta, "actual");
+      const sub = subcontasDe(u.slug, c.conta, "actual", ciclo);
       const principal = sub && sub.length > 0 ? sub[0] : null;
       return {
         conta: c.conta,
@@ -216,7 +216,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const parecer = data?.parecer_diretoria ?? null;
   const ofensores = parecer
     ? asArray<Ofensor>(data?.ofensores_diretoria)
-    : ofensoresSugeridos(unidade);
+    : ofensoresSugeridos(unidade, ciclo);
   const acoesDiretoria = asArray<AcaoBP>(data?.acoes_recomendadas_diretoria);
 
   return (
