@@ -8,6 +8,7 @@ import { desvioResumo } from "@/data/payroll";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { brlCompacto, pct, seta } from "@/lib/format";
+import { classificarDesvio } from "@/lib/leitura-desvio";
 
 export const Route = createFileRoute("/consolidado")({
   head: () => ({
@@ -105,7 +106,7 @@ function Consolidado() {
             <tbody className="divide-y divide-border">
               {linhas.map((u) => {
                 const d = desvioResumo(u);
-                const fav = d !== undefined && d < 0;
+                const cl = classificarDesvio(d ?? 0);
                 return (
                   <tr key={u.slug} className="hover:bg-accent/50">
                     <td className="px-4 py-3 font-semibold">
@@ -124,10 +125,10 @@ function Consolidado() {
                     </td>
                     <td
                       className={`px-4 py-3 font-bold tabular-nums ${
-                        d === undefined ? "" : fav ? "text-favorable" : "text-unfavorable"
+                        d === undefined ? "" : cl.texto
                       }`}
                     >
-                      {d === undefined ? "—" : `${seta(fav)} ${pct(d)}`}
+                      {d === undefined ? "—" : `${cl.seta} ${pct(d)}`}
                     </td>
                     <td className="px-4 py-3 tabular-nums">
                       {`${u.headcountReal} / ${u.headcountOrcado}`}
