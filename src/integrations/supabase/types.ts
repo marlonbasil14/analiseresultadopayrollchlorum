@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      ciclo_unidade_dados: {
+        Row: {
+          atualizado_em: string
+          ciclo: string
+          payload: Json
+          unit_slug: string
+        }
+        Insert: {
+          atualizado_em?: string
+          ciclo: string
+          payload: Json
+          unit_slug: string
+        }
+        Update: {
+          atualizado_em?: string
+          ciclo?: string
+          payload?: Json
+          unit_slug?: string
+        }
+        Relationships: []
+      }
       login_otps: {
         Row: {
           codigo: string

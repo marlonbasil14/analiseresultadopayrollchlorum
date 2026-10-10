@@ -7,3 +7,4 @@
 - [x] /admin protegido + seção Acessos
 - [x] Teste ponta a ponta + screenshots
 - [x] Experiência de chegada: nomes, jornada Primeiros passos, boas-vindas, Sua pendência, guia rápido na unidade
+- [x] Números da folha no banco com RLS por unidade; arquivos estáticos removidos; PDFs em armazenamento privado

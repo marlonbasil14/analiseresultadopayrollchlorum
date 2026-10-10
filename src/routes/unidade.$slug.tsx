@@ -18,14 +18,14 @@ import {
   type BlocoArea,
   type DesvioConta,
 } from "@/data/payroll";
-import { dadosDoCiclo } from "@/data/ciclos";
+import { CATALOGO_UNIDADES } from "@/data/ciclos";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { brl, brlCompacto, pct, seta } from "@/lib/format";
 
 export const Route = createFileRoute("/unidade/$slug")({
   loader: ({ params }) => {
-    const unidade = dadosDoCiclo().getUnidade(params.slug);
+    const unidade = CATALOGO_UNIDADES.find((x) => x.slug === params.slug);
     if (!unidade) throw notFound();
     return { nome: unidade.nome };
   },
@@ -102,8 +102,11 @@ function UnidadePage() {
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Unidade não disponível no ciclo {CICLO_LABEL}.
+          {identidade && identidade.escopo !== "admin" && !identidade.unidades.includes(slug)
+            ? "Você não tem acesso a esta unidade. Seu acesso cobre apenas as unidades liberadas pelo admin."
+            : `Unidade não disponível no ciclo ${CICLO_LABEL}.`}
         </p>
+        <Link to="/" className="mt-4 text-sm font-semibold text-primary">Voltar ao início</Link>
       </main>
     );
   }

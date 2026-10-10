@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { temConsolidado } from "@/data/ciclos";
+import { SemPermissao } from "@/components/dados-folha-gate";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
@@ -23,7 +25,7 @@ export const Route = createFileRoute("/consolidado")({
       },
     ],
   }),
-  component: Consolidado,
+  component: () => (temConsolidado() ? <Consolidado /> : <SemPermissao />),
 });
 
 type Ordenacao = "desvioPct" | "desvioValor" | "gapHC";

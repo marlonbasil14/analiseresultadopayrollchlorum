@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { temConsolidado } from "@/data/ciclos";
+import { SemPermissao } from "@/components/dados-folha-gate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Printer } from "lucide-react";
 
@@ -27,7 +29,7 @@ export const Route = createFileRoute("/diretoria/")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: VisaoDiretoria,
+  component: () => (temConsolidado() ? <VisaoDiretoria /> : <SemPermissao />),
 });
 
 function VisaoDiretoria() {

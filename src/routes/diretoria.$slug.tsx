@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { temConsolidado } from "@/data/ciclos";
+import { SemPermissao } from "@/components/dados-folha-gate";
 import { ArrowLeft, CalendarClock } from "lucide-react";
 import { useState } from "react";
 
@@ -30,7 +32,7 @@ export const Route = createFileRoute("/diretoria/$slug")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: DiretoriaDetalhe,
+  component: () => (temConsolidado() ? <DiretoriaDetalhe /> : <SemPermissao />),
 });
 
 function DiretoriaDetalhe() {
