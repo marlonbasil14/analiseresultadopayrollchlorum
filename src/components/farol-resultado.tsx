@@ -63,7 +63,7 @@ export function FarolResultado({
       </div>
 
       <p className={`mt-3 text-xs font-semibold ${c.texto}`}>
-        {c.frase} · {c.leitura.toLowerCase()}
+        {c.frase}{c.zona === "em-linha" ? "" : ` · ${c.leitura.toLowerCase()}`}
       </p>
     </div>
   );
