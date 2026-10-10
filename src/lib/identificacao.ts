@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 
-import { dadosDoCiclo } from "@/data/ciclos";
+import { CATALOGO_UNIDADES } from "@/data/ciclos";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Identidade = {
@@ -22,13 +22,13 @@ export const ESCOPOS_ESPECIAIS = [
 
 export function opcoesEscopo() {
   return [
-    ...dadosDoCiclo().unidadesOrdenadas.map((u) => ({ valor: u.slug, rotulo: u.nome })),
+    ...[...CATALOGO_UNIDADES].sort((a, b) => parseInt(a.ordem, 10) - parseInt(b.ordem, 10)).map((u) => ({ valor: u.slug, rotulo: u.nome })),
     ...ESCOPOS_ESPECIAIS,
   ];
 }
 
 export function rotuloUnidade(slug: string) {
-  return dadosDoCiclo().unidadesOrdenadas.find((u) => u.slug === slug)?.nome ?? slug;
+  return CATALOGO_UNIDADES.find((u) => u.slug === slug)?.nome ?? slug;
 }
 
 export function rotuloEscopo(escopo: string) {

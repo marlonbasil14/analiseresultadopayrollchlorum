@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
 import { desvioResumo, isFavoravel } from "@/data/payroll";
-import { dadosDoCiclo, totalGrupo, todasDiretoriasDoCiclo } from "@/data/ciclos";
+import { totalGrupo, todasDiretoriasDoCiclo, temConsolidado } from "@/data/ciclos";
 import { valores } from "@/data/diretoria";
 import { FarolResultado } from "@/components/farol-resultado";
 import type { CicloChave } from "@/data/ciclos";
@@ -31,7 +31,7 @@ export const BP_RESPONSAVEL: Record<string, string> = {
 };
 
 
-const CICLO_LABEL_ATUAL = dadosDoCiclo().CICLO_LABEL;
+const CICLO_LABEL_ATUAL = "Setembro / 2026";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -68,6 +68,7 @@ function Index() {
   const grupoMes = totalGrupo(ciclo, "mes");
   const grupoYtd = totalGrupo(ciclo, "ytd");
   const diretoriasCards = todasDiretoriasDoCiclo(ciclo);
+  const veCia = temConsolidado(ciclo);
 
 
   const abrirVideo = () => {
@@ -169,6 +170,7 @@ function Index() {
 
       <SuaPendencia ciclo={ciclo} identidade={identidade} />
 
+      {veCia ? (
       <section className="mx-auto max-w-6xl px-6 pt-12">
         <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
           <p className="eyebrow-light">Gestão à vista</p>
@@ -197,13 +199,17 @@ function Index() {
           </p>
         </div>
       </section>
+      ) : null}
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow-light">Unidades de negócio</p>
-            <h2 className="mt-2 text-2xl font-bold">Oito unidades no ciclo {CICLO_LABEL}</h2>
+            <h2 className="mt-2 text-2xl font-bold">
+              {veCia ? "Oito unidades" : visiveis.length === 1 ? "Sua unidade" : "Suas unidades"} no ciclo {CICLO_LABEL}
+            </h2>
           </div>
+          {veCia ? (
           <div className="flex flex-wrap gap-2">
             <Link
               to="/diretoria"
@@ -218,6 +224,7 @@ function Index() {
               <BarChart3 className="h-4 w-4" /> Ver consolidado
             </Link>
           </div>
+          ) : null}
 
         </div>
 
@@ -277,6 +284,7 @@ function Index() {
         </div>
       </section>
 
+      {veCia ? (
       <section className="mx-auto max-w-6xl px-6 pb-16">
         <p className="eyebrow-light">Diretorias corporativas</p>
         <h2 className="mt-2 text-2xl font-bold">
@@ -318,6 +326,7 @@ function Index() {
           })}
         </div>
       </section>
+      ) : null}
 
     </main>
   );

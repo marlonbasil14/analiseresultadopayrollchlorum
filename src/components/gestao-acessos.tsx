@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Copy, KeyRound, Trash2, UserPlus } from "lucide-react";
 
-import { dadosDoCiclo } from "@/data/ciclos";
+import { CATALOGO_UNIDADES } from "@/data/ciclos";
 import { criarAcesso, listarAcessos, redefinirSenha, removerAcesso } from "@/lib/acessos.functions";
 import { rotuloUnidade } from "@/lib/identificacao";
 
@@ -51,7 +51,7 @@ export function GestaoAcessos() {
   const criar = useServerFn(criarAcesso);
   const redefinir = useServerFn(redefinirSenha);
   const remover = useServerFn(removerAcesso);
-  const unidades = dadosDoCiclo().unidadesOrdenadas;
+  const unidades = [...CATALOGO_UNIDADES].sort((a, b) => parseInt(a.ordem, 10) - parseInt(b.ordem, 10));
 
   const [formAberto, setFormAberto] = useState(false);
   const [nome, setNome] = useState("");
