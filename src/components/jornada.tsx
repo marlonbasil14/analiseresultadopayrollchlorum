@@ -98,7 +98,7 @@ export function PrimeirosPassos({
           : "Justifique os desvios e envie até o 7º dia útil",
       icone: ClipboardCheck,
     },
-  ] as ItemJornada[]).filter((i) => !executivo || i.id === "relatorio" || i.id === "unidade");
+  ] as ItemJornada[]);
   const total = itens.length;
   const feitos = itens.filter((i) => passos[i.id]).length;
   const concluida = feitos === total;
@@ -170,6 +170,12 @@ export function PrimeirosPassos({
           {feitos} de {total}
         </p>
       </div>
+      {executivo ? (
+        <p className="mt-1 text-xs text-navy-foreground/70">
+          Modo leitura: você não precisa preencher pareceres nem ações. Esta jornada mostra o caminho
+          percorrido por BPs e líderes.
+        </p>
+      ) : null}
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-navy-foreground/15" aria-hidden>
         <div className="h-full rounded-full bg-brand-light transition-all" style={{ width: `${(feitos / total) * 100}%` }} />
       </div>
