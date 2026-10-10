@@ -72,7 +72,7 @@ const inputCls =
 export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   const qc = useQueryClient();
   const { ciclo, CICLO_LABEL } = useCicloAtivo();
-  const { nome: nomeIdentidade } = useIdentidade();
+  const { nome: nomeIdentidade, isExecutivo } = useIdentidade();
 
   const { data, isLoading } = useQuery({
     queryKey: ["review", unidade.slug, ciclo],
@@ -133,7 +133,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
   }, [data]);
 
   const fluxo = data?.fluxo_status ?? "rascunho";
-  const bloqueado = fluxo === "enviado" || fluxo === "consolidado";
+  const bloqueado = isExecutivo || fluxo === "enviado" || fluxo === "consolidado";
 
   const auditar = async (acao: string, detalhe?: string) => {
     await registrarAuditoria({

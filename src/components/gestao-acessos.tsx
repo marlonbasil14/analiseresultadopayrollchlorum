@@ -56,7 +56,7 @@ export function GestaoAcessos() {
   const [formAberto, setFormAberto] = useState(false);
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [perfil, setPerfil] = useState<"bp" | "admin">("bp");
+  const [perfil, setPerfil] = useState<"bp" | "admin" | "executivo">("bp");
   const [sel, setSel] = useState<string[]>([]);
   const [erro, setErro] = useState<string | null>(null);
   const [senhaGerada, setSenhaGerada] = useState<{ email: string; senha: string } | null>(null);
@@ -71,7 +71,7 @@ export function GestaoAcessos() {
   };
 
   const mCriar = useMutation({
-    mutationFn: () => criar({ data: { nome, email, perfil, unidades: perfil === "admin" ? [] : sel } }),
+    mutationFn: () => criar({ data: { nome, email, perfil, unidades: perfil === "bp" ? sel : [] } }),
     onSuccess: async (r) => {
       setFormAberto(false);
       setNome("");
@@ -146,9 +146,9 @@ export function GestaoAcessos() {
               <tr key={a.email} className="border-t border-border">
                 <td className="px-4 py-2 font-semibold">{a.nome ?? "—"}</td>
                 <td className="px-4 py-2 text-xs">{a.email}</td>
-                <td className="px-4 py-2 text-xs">{a.role === "admin" ? "Admin" : "BP"}</td>
+                <td className="px-4 py-2 text-xs">{a.role === "admin" ? "Admin" : a.role === "executivo" ? "Executivo (leitura)" : "BP"}</td>
                 <td className="px-4 py-2 text-xs text-muted-foreground">
-                  {a.unidades.includes("*") ? "Todas" : a.unidades.map(rotuloUnidade).join(", ")}
+                  {a.unidades.includes("*") || a.role === "executivo" ? "Todas" : a.unidades.map(rotuloUnidade).join(", ")}
                 </td>
                 <td className="px-4 py-2 text-xs text-muted-foreground">
                   {a.ultimoAcesso ? new Date(a.ultimoAcesso).toLocaleString("pt-BR") : "Nunca"}
@@ -207,11 +207,12 @@ export function GestaoAcessos() {
             <select
               id="ac-perfil"
               value={perfil}
-              onChange={(e) => setPerfil(e.target.value as "bp" | "admin")}
+              onChange={(e) => setPerfil(e.target.value as "bp" | "admin" | "executivo")}
               className={inputCls}
             >
               <option value="bp">BP</option>
               <option value="admin">Admin</option>
+              <option value="executivo">Executivo (somente leitura · CEO)</option>
             </select>
             <fieldset>
               <legend className="text-xs font-semibold uppercase">Unidades</legend>
@@ -220,8 +221,8 @@ export function GestaoAcessos() {
                   <label key={u.slug} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      disabled={perfil === "admin"}
-                      checked={perfil === "admin" || sel.includes(u.slug)}
+                      disabled={perfil !== "bp"}
+                      checked={perfil !== "bp" || sel.includes(u.slug)}
                       onChange={(e) =>
                         setSel((s) => (e.target.checked ? [...s, u.slug] : s.filter((x) => x !== u.slug)))
                       }

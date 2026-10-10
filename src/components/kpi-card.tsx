@@ -9,12 +9,14 @@ export function KpiCard({
   rotulo: string;
   valor: ReactNode;
   detalhe?: ReactNode;
-  tom?: "neutro" | "favoravel" | "desfavoravel";
+  tom?: "neutro" | "favoravel" | "em-linha" | "desfavoravel";
 }) {
   const tomClass =
     tom === "favoravel"
       ? "text-favorable"
-      : tom === "desfavoravel"
+      : tom === "em-linha"
+        ? "text-atencao-foreground"
+        : tom === "desfavoravel"
         ? "text-unfavorable"
         : "text-foreground";
 

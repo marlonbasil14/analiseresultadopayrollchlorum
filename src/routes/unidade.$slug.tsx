@@ -22,6 +22,7 @@ import { CATALOGO_UNIDADES } from "@/data/ciclos";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { brl, brlCompacto, pct, seta } from "@/lib/format";
+import { classificarDesvio } from "@/lib/leitura-desvio";
 
 export const Route = createFileRoute("/unidade/$slug")({
   loader: ({ params }) => {
@@ -59,7 +60,7 @@ const PERGUNTAS = [
 ];
 
 function AreaCard({ titulo, bloco }: { titulo: string; bloco: BlocoArea }) {
-  const fav = (bloco.percentual ?? 0) < 0;
+  const cl = classificarDesvio(bloco.percentual ?? 0);
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{titulo}</p>
@@ -73,8 +74,8 @@ function AreaCard({ titulo, bloco }: { titulo: string; bloco: BlocoArea }) {
         {brlCompacto(bloco.actual)} vs. {brlCompacto(bloco.forecast)}
       </p>
       {bloco.percentual !== undefined ? (
-        <p className={`mt-2 text-sm font-bold tabular-nums ${fav ? "text-favorable" : "text-unfavorable"}`}>
-          {seta(fav)} {pct(bloco.percentual)}
+        <p className={`mt-2 text-sm font-bold tabular-nums ${cl.texto}`}>
+          {cl.seta} {pct(bloco.percentual)}
         </p>
       ) : (
         <p className="mt-2 text-xs font-semibold text-unfavorable">Custo real sem orçamento</p>
@@ -188,9 +189,9 @@ function UnidadePage() {
           <KpiCard rotulo="Payroll Forecast" valor={brlCompacto(dados.payrollForecast)} />
           <KpiCard
             rotulo="Desvio"
-            valor={`${seta(dados.desvioPercentual < 0)} ${pct(dados.desvioPercentual)}`}
+            valor={`${classificarDesvio(dados.desvioPercentual).seta} ${pct(dados.desvioPercentual)}`}
             detalhe={brl(dados.desvioValor)}
-            tom={dados.desvioPercentual < 0 ? "favoravel" : "desfavoravel"}
+            tom={classificarDesvio(dados.desvioPercentual).zona}
           />
           <KpiCard
             rotulo="Headcount Real / Orç."

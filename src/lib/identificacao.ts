@@ -9,7 +9,7 @@ export type Identidade = {
   /** "admin" (visão geral) ou slugs das unidades separados por vírgula. */
   escopo: string;
   email: string;
-  role: "admin" | "bp" | "lider";
+  role: "admin" | "bp" | "lider" | "executivo";
   unidades: string[];
 };
 
@@ -62,7 +62,8 @@ async function resolver(session: Session | null) {
   if (!data) return publicar({ estado: "sem-acesso", identidade: null });
   const email = session.user.email ?? data.email;
   const unidades = (data.unidades ?? []) as string[];
-  const isAdmin = data.role === "admin" || unidades.includes("*");
+  // Executivo: leitura total (vê tudo), mas sem painel admin nem edição.
+  const isAdmin = data.role === "admin" || data.role === "executivo" || unidades.includes("*");
   publicar({
     estado: "ok",
     identidade: {
@@ -116,7 +117,10 @@ export function useIdentidade() {
     identidade,
     nome: identidade?.nome ?? null,
     escopo: identidade?.escopo ?? null,
-    isAdmin: identidade?.escopo === "admin",
+    isAdmin: identidade?.role === "admin",
+    isExecutivo: identidade?.role === "executivo",
+    /** Vê todas as unidades e a visão consolidada (admin, executivo ou "*"). */
+    veTudo: identidade?.escopo === "admin",
     limpar: sair,
   };
 }

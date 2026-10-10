@@ -5,6 +5,7 @@ import { classificarEfeito, EFEITO_LABEL, type DesvioConta } from "@/data/payrol
 import { subcontasDe, type SubConta } from "@/data/subcontas";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { brl, pct, seta } from "@/lib/format";
+import { classificarDesvio } from "@/lib/leitura-desvio";
 
 function ComposicaoLista({
   titulo,
@@ -68,8 +69,9 @@ export function DesvioBar({
   const { ciclo } = useCicloAtivo();
   const largura = Math.max(4, Math.min(100, (Math.abs(item.percentual) / maxPct) * 100));
   const efeito = classificarEfeito(item.conta);
-  const cor = item.favoravel ? "bg-favorable" : "bg-unfavorable";
-  const texto = item.favoravel ? "text-favorable" : "text-unfavorable";
+  const cl = classificarDesvio(item.percentual);
+  const cor = cl.barra;
+  const texto = cl.texto;
 
   const actual = slug ? subcontasDe(slug, item.conta, "actual", ciclo) : null;
   const forecast = slug ? subcontasDe(slug, item.conta, "forecast", ciclo) : null;
@@ -105,7 +107,7 @@ export function DesvioBar({
           <div className={`flex items-baseline gap-3 tabular-nums ${texto}`}>
             <span className="text-sm font-semibold">{brl(item.valor)}</span>
             <span className="text-sm font-bold">
-              {seta(item.favoravel)} {pct(item.percentual)}
+              {cl.seta} {pct(item.percentual)}
             </span>
           </div>
         </div>

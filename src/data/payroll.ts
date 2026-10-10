@@ -1,3 +1,5 @@
+import { zonaDesvio } from "@/lib/leitura-desvio";
+
 export type EfeitoTag = "real" | "calendario" | "mapeamento";
 
 export type DesvioConta = {
@@ -94,6 +96,6 @@ export function desvioResumo(u: Unidade) {
 }
 
 export function isFavoravel(u: Unidade) {
-  return u.desvioPercentual < 0;
+  return zonaDesvio(u.desvioPercentual) === "favoravel";
 }
 

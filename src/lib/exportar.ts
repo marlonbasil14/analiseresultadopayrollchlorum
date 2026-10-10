@@ -1,3 +1,4 @@
+import { classificarDesvio } from "@/lib/leitura-desvio";
 import { type Unidade } from "@/data/payroll";
 import { dadosDoCiclo } from "@/data/ciclos";
 
@@ -196,8 +197,7 @@ export async function exportarExcel(pacote: PacoteUnidade[], nomeBase: string) {
       const row = ws.getRow(linhaAtual + i);
       row.values = comUnidade ? [l.unidade, ...valores] : valores;
       const zebra = i % 2 === 1;
-      const desfavoravel = l.desvioPercentual > 0;
-      const corStatus = desfavoravel ? CHL.danger : CHL.success;
+      const corStatus = classificarDesvio(l.desvioPercentual).corHex;
       row.eachCell({ includeEmpty: true }, (c, col) => {
         c.font = { name: FONTE, size: 10, color: { argb: argb(CHL.gray900) } };
         if (zebra) c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: argb(CHL.gray50) } };
@@ -349,7 +349,7 @@ export async function exportarPdf(
     texto(`${brl(desvioTotal)} (${pct(percentualTotal)})`, m + 56, m + 294, {
       peso: 800,
       tamanho: 22,
-      cor: percentualTotal > 0 ? tint(CHL.danger, 0.35) : tint(CHL.success, 0.35),
+      cor: tint(classificarDesvio(percentualTotal).corHex, 0.35),
     });
     texto(
       `Real ${brl(totalReal)}  ·  Orçado ${brl(totalOrc)}  ·  ${pacote.length} unidades`,
@@ -428,9 +428,9 @@ export async function exportarPdf(
     texto(u.nome, m + 12, 108, { peso: 800, tamanho: 24, cor: CHL.ink });
 
     // Badge de status do desvio
-    const favoravel = u.desvioPercentual <= 0;
-    const cor = corDesvio(favoravel);
-    const rotuloBadge = `${favoravel ? "FAVORÁVEL" : "DESFAVORÁVEL"} ${pct(u.desvioPercentual)}`;
+    const clU = classificarDesvio(u.desvioPercentual);
+    const cor = clU.corHex;
+    const rotuloBadge = `${clU.leitura.toUpperCase()} ${pct(u.desvioPercentual)}`;
     fonte(700);
     doc.setFontSize(9);
     const larguraBadge = doc.getTextWidth(rotuloBadge) + 24;
@@ -467,7 +467,7 @@ export async function exportarPdf(
     const trilhaW = Math.max(colEsqFim - rotuloW - trilhaX, 60);
     contas.slice(0, 7).forEach((c, i) => {
       const linhaY = y + 124 + i * 22;
-      const corBarra = corDesvio(Boolean(c.favoravel));
+      const corBarra = classificarDesvio(c.percentual).corHex;
       texto(c.conta, colEsqX, linhaY + 9, { peso: 300, tamanho: 9, cor: CHL.gray700 });
       doc.setFillColor(...rgb(CHL.gray200));
       doc.roundedRect(trilhaX, linhaY, trilhaW, 10, 5, 5, "F");
@@ -562,8 +562,8 @@ export async function exportarPdf(
       didParseCell: (dados) => {
         if (dados.section === "body" && (dados.column.index === 3 || dados.column.index === 4)) {
           const percentualBruto = String((dados.row.raw as unknown[])?.[4] ?? "");
-          const desfavoravel = percentualBruto.trim().startsWith("+");
-          dados.cell.styles.textColor = rgb(desfavoravel ? CHL.danger : CHL.success);
+          const num = Number(percentualBruto.replace(/[^0-9,+-]/g, "").replace(",", "."));
+          dados.cell.styles.textColor = rgb(classificarDesvio(Number.isFinite(num) ? num : 0).corHex);
           dados.cell.styles.fontStyle = "bold";
         }
       },
@@ -672,7 +672,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     y: 4.0,
     fontSize: 22,
     bold: true,
-    color: hexPuro(percentualTotal > 0 ? tint(CHL.danger, 0.35) : tint(CHL.success, 0.35)),
+    color: hexPuro(tint(classificarDesvio(percentualTotal).corHex, 0.35)),
   });
   capa.addText(`Real ${brl(totalReal)}   ·   Orçado ${brl(totalOrc)}   ·   ${pacote.length} unidade(s)`, {
     ...F,
@@ -699,8 +699,8 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
     });
     s.addText(u.nome, { ...F, x: 0.5, y: 0.6, w: 8, fontSize: 30, bold: true, color: hexPuro(CHL.ink) });
 
-    const favoravel = u.desvioPercentual <= 0;
-    const cor = corDesvio(favoravel);
+    const clU = classificarDesvio(u.desvioPercentual);
+    const cor = clU.corHex;
     s.addShape(pptx.ShapeType.roundRect, {
       x: 0.5,
       y: 1.3,
@@ -710,7 +710,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
       line: { color: hexPuro(tint(cor, 0.85)) },
       rectRadius: 0.18,
     });
-    s.addText(`${favoravel ? "FAVORÁVEL" : "DESFAVORÁVEL"} ${pct(u.desvioPercentual)}`, {
+    s.addText(`${clU.leitura.toUpperCase()} ${pct(u.desvioPercentual)}`, {
       ...F,
       x: 0.5,
       y: 1.3,
@@ -808,7 +808,7 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
           fontFace: FONTE,
           bullet: { code: "25CF" },
           fontSize: 13,
-          color: hexPuro(corDesvio(c.percentual <= 0)),
+          color: hexPuro(classificarDesvio(c.percentual).corHex),
           breakLine: true,
 },
       })),

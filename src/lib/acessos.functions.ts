@@ -106,7 +106,7 @@ export const criarAcesso = createServerFn({ method: "POST" })
       .object({
         email: z.string().max(255),
         nome: z.string().trim().min(1).max(120),
-        perfil: z.enum(["admin", "bp"]),
+        perfil: z.enum(["admin", "bp", "executivo"]),
         unidades: z.array(z.string().max(60)).max(20),
       })
       .parse(d),
@@ -114,7 +114,8 @@ export const criarAcesso = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const admin = await exigirAdmin(context as Ctx);
     const email = normalizarEmail(data.email);
-    const unidades = data.perfil === "admin" ? ["*"] : data.unidades;
+    // Executivo NÃO recebe "*": "*" daria escrita via pode_unidade; a leitura total vem do papel.
+    const unidades = data.perfil === "admin" ? ["*"] : data.perfil === "executivo" ? [] : data.unidades;
     if (data.perfil === "bp" && unidades.length === 0) throw new Error("Selecione ao menos uma unidade.");
     const senha = gerarSenha();
 
