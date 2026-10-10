@@ -27,6 +27,7 @@ import {
 type Relatorio = { url?: string | undefined };
 
 function destinoUnidade(identidade: Identidade) {
+  if (identidade.role === "executivo") return { to: "/planos" as const };
   if (identidade.escopo === "admin") return { to: "/admin" as const };
   const slug = identidade.unidades.find((u) => u !== "*");
   return slug ? { to: "/unidade/$slug" as const, params: { slug } } : { to: "/" as const };
@@ -52,17 +53,21 @@ export function PrimeirosPassos({
   relatorio: Relatorio;
   abrirVideo: () => void;
 }) {
-  const { passos, feitos, concluida, carregado } = useJornada(ciclo);
+  const { passos, carregado } = useJornada(ciclo);
+  const executivo = identidade.role === "executivo";
   const [rever, setRever] = useState(false);
   const destino = destinoUnidade(identidade);
   const isAdmin = identidade.escopo === "admin";
 
-  const itens: {
+  type ItemJornada = {
     id: Passo;
     titulo: string;
     descricao: string;
     icone: typeof PlayCircle;
-  }[] = [
+  };
+  const itensTipo: ItemJornada[] = [];
+  void itensTipo;
+  const itens: ItemJornada[] = ([
     {
       id: "video",
       titulo: "Entenda a lógica",
@@ -83,11 +88,22 @@ export function PrimeirosPassos({
     },
     {
       id: "unidade",
-      titulo: isAdmin ? "Acompanhe a consolidação" : "Faça a análise da sua unidade",
-      descricao: isAdmin ? "Abrir o painel do admin" : "Justifique os desvios e envie até o 7º dia útil",
+      titulo: executivo
+        ? "Veja os planos de ação"
+        : isAdmin
+          ? "Acompanhe a consolidação"
+          : "Faça a análise da sua unidade",
+      descricao: executivo
+        ? "Pareceres, ofensores e ações de todas as unidades"
+        : isAdmin
+          ? "Abrir o painel do admin"
+          : "Justifique os desvios e envie até o 7º dia útil",
       icone: ClipboardCheck,
     },
-  ];
+  ] as ItemJornada[]).filter((i) => !executivo || i.id === "relatorio" || i.id === "unidade");
+  const total = itens.length;
+  const feitos = itens.filter((i) => passos[i.id]).length;
+  const concluida = feitos === total;
   const proximo = itens.find((i) => !passos[i.id]);
 
   const acao = (id: Passo, children: React.ReactNode, className: string) => {
@@ -133,7 +149,7 @@ export function PrimeirosPassos({
       <div className="mt-10 space-y-4 lg:max-w-3xl">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-favorable/40 bg-favorable/10 px-5 py-3">
           <p className="flex items-center gap-2 text-sm font-semibold">
-            <Check className="h-4 w-4 text-favorable" /> Jornada concluída · {feitos} de 4
+            <Check className="h-4 w-4 text-favorable" /> Jornada concluída · {feitos} de {total}
           </p>
           <button
             type="button"
@@ -153,11 +169,11 @@ export function PrimeirosPassos({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="eyebrow">Primeiros passos</p>
         <p className="text-xs font-semibold text-navy-foreground/80" aria-live="polite">
-          {feitos} de 4
+          {feitos} de {total}
         </p>
       </div>
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-navy-foreground/15" aria-hidden>
-        <div className="h-full rounded-full bg-brand-light transition-all" style={{ width: `${(feitos / 4) * 100}%` }} />
+        <div className="h-full rounded-full bg-brand-light transition-all" style={{ width: `${(feitos / total) * 100}%` }} />
       </div>
       <ol className="mt-4 space-y-2">
         {itens.map((item, i) => {
@@ -339,7 +355,9 @@ export function BoasVindas({
         <div className="mt-5 rounded-xl border border-border bg-muted/40 p-4 text-sm">
           <p className="font-semibold">O que se espera de você em {cicloLabel}</p>
           <p className="mt-1 text-muted-foreground">
-            {isAdmin
+            {identidade.role === "executivo"
+              ? "Acompanhar o resultado da companhia e os planos de ação das unidades (somente leitura)"
+              : isAdmin
               ? "Acompanhar o envio das 8 unidades e consolidar o pacote para o FP&A"
               : "Analisar os desvios da(s) sua(s) unidade(s) e enviar a análise"}{" "}
             até o 7º dia útil:{" "}
@@ -348,7 +366,7 @@ export function BoasVindas({
           </p>
           <p className="mt-3 font-semibold">{isAdmin ? "Seu perfil" : "Suas unidades"}</p>
           <p className="mt-1 text-muted-foreground">
-            {isAdmin ? "Admin · todas as 8 unidades" : identidade.unidades.map(rotuloUnidade).join(", ")}
+            {identidade.role === "executivo" ? "Executivo · leitura de todas as unidades e diretorias" : isAdmin ? "Admin · todas as 8 unidades" : identidade.unidades.map(rotuloUnidade).join(", ")}
           </p>
         </div>
         <button
@@ -396,6 +414,7 @@ export function SuaPendencia({ ciclo, identidade }: { ciclo: string; identidade:
   });
   const prazo = prazoTexto(ciclo);
 
+  if (identidade.role === "executivo") return null;
   if (isAdmin) {
     const enviadas = (data ?? []).filter(
       (r) => r.fluxo_status === "enviado" || r.fluxo_status === "consolidado",

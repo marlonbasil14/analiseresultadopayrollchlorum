@@ -139,7 +139,7 @@ function AdminPage() {
 
   if (!pronto) return null;
   if (!identidade) return <IdentificacaoTela />;
-  if (identidade.escopo !== "admin") {
+  if (identidade.role !== "admin") {
     return (
       <main className="flex min-h-screen items-center justify-center bg-navy px-6 text-navy-foreground">
         <div className="max-w-md text-center">

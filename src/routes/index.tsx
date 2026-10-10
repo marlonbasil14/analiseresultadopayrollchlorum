@@ -122,9 +122,9 @@ function Index() {
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
               <SeletorCiclo variante="reverse" />
               <span className="text-navy-foreground/70">
-                {identidade.nome} · {rotuloEscopo(identidade.escopo)}
+                {identidade.nome} · {identidade.role === "executivo" ? "Executivo" : rotuloEscopo(identidade.escopo)}
               </span>
-              {identidade.escopo === "admin" ? (
+              {identidade.role === "admin" ? (
                 <Link
                   to="/admin"
                   className="rounded-lg border border-navy-foreground/30 px-3 py-1.5 hover:bg-navy-foreground/10"
