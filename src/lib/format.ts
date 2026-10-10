@@ -12,10 +12,14 @@ export const brlCompacto = (v: number) => {
   return brl(v);
 };
 
-export const pct = (v: number, casas = 1) =>
-  `${v > 0 ? "+" : ""}${v.toLocaleString("pt-BR", {
+/** Desvio com sinal explícito: +x% acima do orçado, −x% abaixo (sinal de menos tipográfico). */
+export const pct = (v: number, casas = 1) => {
+  const n = Math.abs(v).toLocaleString("pt-BR", {
     minimumFractionDigits: casas,
     maximumFractionDigits: casas,
-  })}%`;
+  });
+  const zero = Number(n.replace(",", ".")) === 0;
+  return `${zero ? "" : v > 0 ? "+" : "−"}${n}%`;
+};
 
 export const seta = (favoravel: boolean) => (favoravel ? "▼" : "▲");

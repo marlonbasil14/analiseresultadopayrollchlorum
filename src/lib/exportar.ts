@@ -562,7 +562,7 @@ export async function exportarPdf(
       didParseCell: (dados) => {
         if (dados.section === "body" && (dados.column.index === 3 || dados.column.index === 4)) {
           const percentualBruto = String((dados.row.raw as unknown[])?.[4] ?? "");
-          const num = Number(percentualBruto.replace(/[^0-9,+-]/g, "").replace(",", "."));
+          const num = Number(percentualBruto.replace(/−/g, "-").replace(/[^0-9,+-]/g, "").replace(",", "."));
           dados.cell.styles.textColor = rgb(classificarDesvio(Number.isFinite(num) ? num : 0).corHex);
           dados.cell.styles.fontStyle = "bold";
         }
