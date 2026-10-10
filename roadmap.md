@@ -8,3 +8,6 @@
 - [x] Teste ponta a ponta + screenshots
 - [x] Experiência de chegada: nomes, jornada Primeiros passos, boas-vindas, Sua pendência, guia rápido na unidade
 - [x] Números da folha no banco com RLS por unidade; arquivos estáticos removidos; PDFs em armazenamento privado
+- [x] Regra única de leitura de desvio (favorável / em linha até +1% / desfavorável)
+- [x] Perfil Executivo (somente leitura) + opção em Acessos
+- [x] Página Planos de Ação e Pareceres
