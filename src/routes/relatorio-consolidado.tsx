@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { temConsolidado } from "@/data/ciclos";
+import { SemPermissao } from "@/components/dados-folha-gate";
 import { useQuery } from "@tanstack/react-query";
 import { Printer, ArrowLeft } from "lucide-react";
 
@@ -10,7 +12,7 @@ import { brl, pct } from "@/lib/format";
 import { BotoesExportar } from "@/components/botoes-exportar";
 
 export const Route = createFileRoute("/relatorio-consolidado")({
-  component: ConsolidadoPage,
+  component: () => (temConsolidado() ? <ConsolidadoPage /> : <SemPermissao />),
   head: () => ({
     meta: [
       { title: "Relatório consolidado de payroll · Chlorum Solutions" },
