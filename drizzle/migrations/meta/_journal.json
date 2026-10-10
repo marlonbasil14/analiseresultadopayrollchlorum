@@ -29,6 +29,13 @@
       "when": 1791660993157,
       "tag": "0003_ciclo_unidade_dados",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791663737704,
+      "tag": "0004_perfil_executivo",
+      "breakpoints": true
     }
   ]
 }
