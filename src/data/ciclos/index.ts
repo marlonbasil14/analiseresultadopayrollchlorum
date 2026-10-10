@@ -30,14 +30,14 @@ export const CICLO_ATUAL: CicloChave = "2026-09";
 
 /** Catálogo fixo das unidades (sem valores). */
 export const CATALOGO_UNIDADES: { slug: string; nome: string; ordem: string; imagem: string }[] = [
-  { slug: "igarassu", nome: "Igarassu", ordem: "01", imagem: igarassu },
-  { slug: "solutions", nome: "Solutions", ordem: "02", imagem: solutions },
-  { slug: "bahia", nome: "Bahia", ordem: "03", imagem: bahia },
-  { slug: "codo", nome: "Codó", ordem: "04", imagem: codo },
-  { slug: "pacatuba", nome: "Pacatuba", ordem: "05", imagem: pacatuba },
-  { slug: "palmeira", nome: "Palmeira", ordem: "06", imagem: palmeira },
-  { slug: "uberlandia", nome: "Uberlândia", ordem: "07", imagem: uberlandia },
-  { slug: "distribuicao", nome: "Distribuição", ordem: "08", imagem: distribuicao },
+  { slug: "igarassu", nome: "Igarassu", ordem: "4 de 8", imagem: igarassu },
+  { slug: "solutions", nome: "Solutions", ordem: "7 de 8", imagem: solutions },
+  { slug: "bahia", nome: "Bahia", ordem: "5 de 8", imagem: bahia },
+  { slug: "codo", nome: "Codó", ordem: "1 de 8", imagem: codo },
+  { slug: "pacatuba", nome: "Pacatuba", ordem: "2 de 8", imagem: pacatuba },
+  { slug: "palmeira", nome: "Palmeira", ordem: "3 de 8", imagem: palmeira },
+  { slug: "uberlandia", nome: "Uberlândia", ordem: "6 de 8", imagem: uberlandia },
+  { slug: "distribuicao", nome: "Distribuição", ordem: "8 de 8", imagem: distribuicao },
 ];
 
 export function nomeUnidade(slug: string) {
