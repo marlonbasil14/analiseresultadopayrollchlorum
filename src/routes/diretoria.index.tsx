@@ -9,6 +9,7 @@ import { useCicloAtivo } from "@/lib/ciclo";
 import { totalDiretorias, valores, type Periodo } from "@/data/diretoria";
 import { diretoriaDoCiclo, totalGrupo } from "@/data/ciclos";
 import { brl, brlCompacto, pct } from "@/lib/format";
+import { classificarDesvio } from "@/lib/leitura-desvio";
 
 export const Route = createFileRoute("/diretoria/")({
   head: () => ({
@@ -96,13 +97,13 @@ function VisaoDiretoria() {
           <Kpi
             rotulo="Desvio"
             valor={`${brlCompacto(grupo.desvioValor)} (${pct(grupo.desvioPercentual)})`}
-            favoravel={grupo.desvioValor <= 0}
+            tomClasse={classificarDesvio(grupo.desvioPercentual).texto}
           />
           <Kpi
             rotulo="Headcount (real vs. orçado)"
             valor={`${grupo.hcReal} / ${grupo.hcOrcado}`}
             detalhe={`Gap ${grupo.hcDelta > 0 ? "+" : ""}${grupo.hcDelta}`}
-            favoravel={grupo.hcDelta <= 0}
+            tomClasse={grupo.hcDelta <= 0 ? "text-favorable" : "text-unfavorable"}
           />
         </div>
 
@@ -138,19 +139,19 @@ function Kpi({
   rotulo,
   valor,
   detalhe,
-  favoravel,
+  tomClasse,
 }: {
   rotulo: string;
   valor: string;
   detalhe?: string;
-  favoravel?: boolean;
+  tomClasse?: string;
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{rotulo}</p>
       <p
         className={`mt-2 text-xl font-extrabold ${
-          favoravel === undefined ? "" : favoravel ? "text-favorable" : "text-unfavorable"
+          tomClasse ?? ""
         }`}
       >
         {valor}
@@ -242,14 +243,14 @@ function Tabela({
               <td className="px-4 py-3 text-right font-semibold">{brl(cia.orcado)}</td>
               <td
                 className={`px-4 py-3 text-right font-bold ${
-                  cia.desvioValor <= 0 ? "text-favorable" : "text-unfavorable"
+                  classificarDesvio(cia.desvioPercentual).texto
                 }`}
               >
                 {brl(cia.desvioValor)}
               </td>
               <td
                 className={`px-4 py-3 text-right font-bold ${
-                  cia.desvioValor <= 0 ? "text-favorable" : "text-unfavorable"
+                  classificarDesvio(cia.desvioPercentual).texto
                 }`}
               >
                 {pct(cia.desvioPercentual)}
@@ -258,7 +259,7 @@ function Tabela({
           ) : null}
           {linhas.map((l) => {
             const v = valores(l, periodo);
-            const fav = v.desvio <= 0;
+            const corDesvioLinha = classificarDesvio(v.percentual).texto;
             const gap = l.hcReal - l.hcOrcado;
             return (
               <tr key={l.nome} className="border-t border-border">
@@ -275,14 +276,14 @@ function Tabela({
                 <td className="px-4 py-3 text-right">{brl(v.orcado)}</td>
                 <td
                   className={`px-4 py-3 text-right font-semibold ${
-                    fav ? "text-favorable" : "text-unfavorable"
+                    corDesvioLinha
                   }`}
                 >
                   {brl(v.desvio)}
                 </td>
                 <td
                   className={`px-4 py-3 text-right font-semibold ${
-                    fav ? "text-favorable" : "text-unfavorable"
+                    corDesvioLinha
                   }`}
                 >
                   {pct(v.percentual)}
@@ -303,14 +304,14 @@ function Tabela({
               <td className="px-4 py-3 text-right">{brl(total.orcado)}</td>
               <td
                 className={`px-4 py-3 text-right ${
-                  total.desvio <= 0 ? "text-favorable" : "text-unfavorable"
+                  classificarDesvio(total.percentual).texto
                 }`}
               >
                 {brl(total.desvio)}
               </td>
               <td
                 className={`px-4 py-3 text-right ${
-                  total.desvio <= 0 ? "text-favorable" : "text-unfavorable"
+                  classificarDesvio(total.percentual).texto
                 }`}
               >
                 {pct(total.percentual)}

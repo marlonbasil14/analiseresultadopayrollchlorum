@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
 import videoAsset from "@/assets/cartilha-payroll-animacao.mp4.asset.json";
-import { desvioResumo, isFavoravel } from "@/data/payroll";
+import { desvioResumo } from "@/data/payroll";
 import { totalGrupo, todasDiretoriasDoCiclo, temConsolidado } from "@/data/ciclos";
 import { valores } from "@/data/diretoria";
 import { FarolResultado } from "@/components/farol-resultado";
@@ -17,6 +17,7 @@ import { useIdentidade, rotuloEscopo } from "@/lib/identificacao";
 import { marcarPasso } from "@/lib/jornada";
 import { RELATORIOS_PDF } from "@/lib/relatorios";
 import { BoasVindas, PrimeirosPassos, SuaPendencia } from "@/components/jornada";
+import { classificarDesvio } from "@/lib/leitura-desvio";
 
 /** BP responsável por cada card do painel. */
 export const BP_RESPONSAVEL: Record<string, string> = {
@@ -232,7 +233,7 @@ function Index() {
           {visiveis.map((u) => {
             const minha = identidade.escopo !== "admin" && identidade.unidades.includes(u.slug);
             const d = desvioResumo(u);
-            const fav = isFavoravel(u);
+            const cl = classificarDesvio(d ?? 0);
             return (
               <Link
                 key={u.slug}
@@ -265,10 +266,11 @@ function Index() {
                     {d !== undefined ? (
                       <span
                         className={`rounded-full px-2.5 py-1 text-xs font-bold tabular-nums ${
-                          fav ? "bg-favorable/20 text-favorable" : "bg-unfavorable/20 text-unfavorable"
+                          cl.selo
                         }`}
+                        title={`${cl.leitura} · ${cl.rotulo}`}
                       >
-                        {seta(!!fav)} {pct(d)}
+                        {cl.seta} {pct(d)}
                       </span>
                     ) : (
                       <span className="rounded-full bg-navy-foreground/10 px-2.5 py-1 text-xs">
@@ -297,7 +299,7 @@ function Index() {
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {diretoriasCards.map((d) => {
             const v = valores(d, "mes");
-            const fav = v.desvio <= 0;
+            const cl = classificarDesvio(v.percentual);
             return (
               <Link
                 key={d.slug}
@@ -314,10 +316,11 @@ function Index() {
                 <div className="relative mt-2 flex items-center justify-between gap-2">
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold tabular-nums ${
-                      fav ? "bg-favorable/20 text-favorable" : "bg-unfavorable/20 text-unfavorable"
+                      cl.selo
                     }`}
+                    title={`${cl.leitura} · ${cl.rotulo}`}
                   >
-                    {seta(fav)} {pct(v.percentual)}
+                    {cl.seta} {pct(v.percentual)}
                   </span>
                   <ArrowRight className="h-4 w-4 text-brand-light transition-transform group-hover:translate-x-1" />
                 </div>

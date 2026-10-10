@@ -12,6 +12,7 @@ import { useCicloAtivo } from "@/lib/ciclo";
 import { contasPorDiretoriaDoCiclo, todasDiretoriasDoCiclo } from "@/data/ciclos";
 import { valores, type Periodo } from "@/data/diretoria";
 import { brl, brlCompacto, pct, seta } from "@/lib/format";
+import { classificarDesvio } from "@/lib/leitura-desvio";
 
 export const Route = createFileRoute("/diretoria/$slug")({
   head: () => ({
@@ -63,7 +64,7 @@ function DiretoriaDetalhe() {
       conta: c.conta,
       valor: cv.desvio,
       percentual: cv.percentual,
-      favoravel: cv.desvio <= 0,
+      favoravel: classificarDesvio(cv.percentual).favoravel,
     };
   });
   const maxPct = Math.max(...itens.map((i) => Math.abs(i.percentual)), 1);
@@ -124,9 +125,9 @@ function DiretoriaDetalhe() {
           <KpiCard rotulo="Payroll orçado" valor={brlCompacto(v.orcado)} />
           <KpiCard
             rotulo="Desvio"
-            valor={`${seta(v.desvio <= 0)} ${pct(v.percentual)}`}
+            valor={`${classificarDesvio(v.percentual).seta} ${pct(v.percentual)}`}
             detalhe={brl(v.desvio)}
-            tom={v.desvio <= 0 ? "favoravel" : "desfavoravel"}
+            tom={classificarDesvio(v.percentual).zona}
           />
           <KpiCard
             rotulo="Headcount Real / Orç."

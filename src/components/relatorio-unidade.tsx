@@ -2,6 +2,7 @@ import { janela, type Unidade } from "@/data/payroll";
 import { dadosDoCiclo } from "@/data/ciclos";
 import { brl, pct, seta } from "@/lib/format";
 import { FLUXO_LABEL } from "@/lib/acesso";
+import { classificarDesvio } from "@/lib/leitura-desvio";
 
 export type ReviewRow = {
   unit_slug: string;
@@ -81,7 +82,7 @@ export function RelatorioUnidade({
               <td className="py-1 text-right tabular-nums">{brl(mes.payrollForecast)}</td>
               <td className="py-1 text-right tabular-nums">{brl(mes.desvioValor)}</td>
               <td className="py-1 text-right tabular-nums">
-                {seta(mes.desvioPercentual < 0)} {pct(mes.desvioPercentual)}
+                <span className={classificarDesvio(mes.desvioPercentual).texto}>{classificarDesvio(mes.desvioPercentual).seta} {pct(mes.desvioPercentual)} · {classificarDesvio(mes.desvioPercentual).leitura}</span>
               </td>
             </tr>
             {mes.desvioPorConta.map((c) => (
