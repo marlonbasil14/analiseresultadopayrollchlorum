@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, Building2 } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, Building2, ClipboardList } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
@@ -151,6 +151,13 @@ function Index() {
             <p className="mt-2 text-sm text-navy-foreground/60">
               Consolidado e por Unidade · Ciclo: {CICLO_LABEL}
             </p>
+
+            <Link
+              to="/planos"
+              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-light px-4 py-2.5 text-sm font-semibold text-brand-light-foreground hover:opacity-90"
+            >
+              <ClipboardList className="h-4 w-4" /> Planos de Ação e Pareceres
+            </Link>
 
             <PrimeirosPassos
               ciclo={ciclo}
