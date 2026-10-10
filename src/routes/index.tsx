@@ -202,8 +202,8 @@ function Index() {
             <span className="font-semibold text-foreground">
               {grupoMes.hcReal} real / {grupoMes.hcOrcado} orçado
             </span>{" "}
-            ({grupoMes.hcDelta > 0 ? "+" : ""}
-            {grupoMes.hcDelta})
+            ({grupoMes.hcDelta > 0 ? "+" : grupoMes.hcDelta < 0 ? "−" : ""}
+            {Math.abs(grupoMes.hcDelta)})
           </p>
         </div>
       </section>
