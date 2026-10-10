@@ -1,3 +1,4 @@
+import { classificarDesvio } from "@/lib/leitura-desvio";
 import { type Unidade } from "@/data/payroll";
 import { dadosDoCiclo } from "@/data/ciclos";
 
@@ -10,7 +11,6 @@ export function definirCicloExportacao(chave?: string) {
 }
 import { brl, pct } from "@/lib/format";
 import {
-import { classificarDesvio } from "@/lib/leitura-desvio";
   CHL,
   FONTE,
   FONTE_FALLBACK,
