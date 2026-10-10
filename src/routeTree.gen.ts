@@ -16,6 +16,7 @@ import { Route as ConsolidadoRouteImport } from './routes/consolidado'
 import { Route as RelatorioConsolidadoRouteImport } from './routes/relatorio-consolidado'
 import { Route as DiretoriaIndexRouteImport } from './routes/diretoria.index'
 import { Route as DiretoriaSlugRouteImport } from './routes/diretoria.$slug'
+import { Route as RelatorioPdfCicloRouteImport } from './routes/relatorio-pdf.$ciclo'
 import { Route as RelatorioSlugRouteImport } from './routes/relatorio.$slug'
 import { Route as UnidadeSlugRouteImport } from './routes/unidade.$slug'
 
@@ -54,6 +55,11 @@ const DiretoriaSlugRoute = DiretoriaSlugRouteImport.update({
   path: '/diretoria/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RelatorioPdfCicloRoute = RelatorioPdfCicloRouteImport.update({
+  id: '/relatorio-pdf/$ciclo',
+  path: '/relatorio-pdf/$ciclo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RelatorioSlugRoute = RelatorioSlugRouteImport.update({
   id: '/relatorio/$slug',
   path: '/relatorio/$slug',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/consolidado': typeof ConsolidadoRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/diretoria/$slug': typeof DiretoriaSlugRoute
+  '/relatorio-pdf/$ciclo': typeof RelatorioPdfCicloRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
   '/diretoria/': typeof DiretoriaIndexRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/consolidado': typeof ConsolidadoRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/diretoria/$slug': typeof DiretoriaSlugRoute
+  '/relatorio-pdf/$ciclo': typeof RelatorioPdfCicloRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
   '/diretoria': typeof DiretoriaIndexRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/consolidado': typeof ConsolidadoRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
   '/diretoria/$slug': typeof DiretoriaSlugRoute
+  '/relatorio-pdf/$ciclo': typeof RelatorioPdfCicloRoute
   '/relatorio/$slug': typeof RelatorioSlugRoute
   '/unidade/$slug': typeof UnidadeSlugRoute
   '/diretoria/': typeof DiretoriaIndexRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/consolidado'
     | '/relatorio-consolidado'
     | '/diretoria/$slug'
+    | '/relatorio-pdf/$ciclo'
     | '/relatorio/$slug'
     | '/unidade/$slug'
     | '/diretoria/'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/consolidado'
     | '/relatorio-consolidado'
     | '/diretoria/$slug'
+    | '/relatorio-pdf/$ciclo'
     | '/relatorio/$slug'
     | '/unidade/$slug'
     | '/diretoria'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/consolidado'
     | '/relatorio-consolidado'
     | '/diretoria/$slug'
+    | '/relatorio-pdf/$ciclo'
     | '/relatorio/$slug'
     | '/unidade/$slug'
     | '/diretoria/'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   ConsolidadoRoute: typeof ConsolidadoRoute
   RelatorioConsolidadoRoute: typeof RelatorioConsolidadoRoute
   DiretoriaSlugRoute: typeof DiretoriaSlugRoute
+  RelatorioPdfCicloRoute: typeof RelatorioPdfCicloRoute
   RelatorioSlugRoute: typeof RelatorioSlugRoute
   UnidadeSlugRoute: typeof UnidadeSlugRoute
   DiretoriaIndexRoute: typeof DiretoriaIndexRoute
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiretoriaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/relatorio-pdf/$ciclo': {
+      id: '/relatorio-pdf/$ciclo'
+      path: '/relatorio-pdf/$ciclo'
+      fullPath: '/relatorio-pdf/$ciclo'
+      preLoaderRoute: typeof RelatorioPdfCicloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/relatorio/$slug': {
       id: '/relatorio/$slug'
       path: '/relatorio/$slug'
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConsolidadoRoute: ConsolidadoRoute,
   RelatorioConsolidadoRoute: RelatorioConsolidadoRoute,
   DiretoriaSlugRoute: DiretoriaSlugRoute,
+  RelatorioPdfCicloRoute: RelatorioPdfCicloRoute,
   RelatorioSlugRoute: RelatorioSlugRoute,
   UnidadeSlugRoute: UnidadeSlugRoute,
   DiretoriaIndexRoute: DiretoriaIndexRoute,
