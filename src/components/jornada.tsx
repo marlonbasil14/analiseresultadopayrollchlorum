@@ -65,8 +65,6 @@ export function PrimeirosPassos({
     descricao: string;
     icone: typeof PlayCircle;
   };
-  const itensTipo: ItemJornada[] = [];
-  void itensTipo;
   const itens: ItemJornada[] = ([
     {
       id: "video",
