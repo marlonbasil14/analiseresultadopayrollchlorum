@@ -36,6 +36,13 @@
       "when": 1791663737704,
       "tag": "0004_perfil_executivo",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791899481034,
+      "tag": "0005_ciclo_config",
+      "breakpoints": true
     }
   ]
 }
