@@ -16,12 +16,12 @@ export const Route = createFileRoute("/relatorio/$slug")({
       {
         name: "description",
         content:
-          "Relatório mensal padronizado de payroll por unidade, com parecer, ofensores, justificativas e plano de ação para o FP&A.",
+          "Relatório mensal de payroll por unidade, com parecer, ofensores, justificativas e plano de ação de Gente e Gestão.",
       },
       { property: "og:title", content: "Relatório padrão de payroll · Chlorum Solutions" },
       {
         property: "og:description",
-        content: "Documento padronizado por unidade enviado ao FP&A no 7º dia útil.",
+        content: "Documento padronizado por unidade preparado por Gente e Gestão.",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },

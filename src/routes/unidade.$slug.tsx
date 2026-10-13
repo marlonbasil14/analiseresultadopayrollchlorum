@@ -44,6 +44,8 @@ export const Route = createFileRoute("/unidade/$slug")({
         { name: "description", content: desc },
         { property: "og:title", content: `${nome} — Payroll Intelligence` },
         { property: "og:description", content: desc },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary" },
       ],
     };
   },

@@ -11,6 +11,7 @@ export const Route = createFileRoute("/relatorio-pdf/$ciclo")({
       { property: "og:title", content: "Relatório em PDF — Payroll Intelligence" },
       { property: "og:description", content: "Relatório de análise orçamentária do ciclo." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -24,6 +24,8 @@ export const Route = createFileRoute("/consolidado")({
         property: "og:description",
         content: "Ranking por desvio %, desvio R$ e gap de headcount no ciclo Julho/2026.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => (temConsolidado() ? <Consolidado /> : <SemPermissao />),

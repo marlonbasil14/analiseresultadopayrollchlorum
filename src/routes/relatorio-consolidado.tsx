@@ -10,6 +10,7 @@ import { useCicloAtivo } from "@/lib/ciclo";
 import { supabase } from "@/integrations/supabase/client";
 import { brl, pct } from "@/lib/format";
 import { BotoesExportar } from "@/components/botoes-exportar";
+import { tituloConsolidado, AUTORIA_CONSOLIDADO, NOME_ARQUIVO_CONSOLIDADO } from "@/lib/relatorio-consolidado";
 
 export const Route = createFileRoute("/relatorio-consolidado")({
   component: () => (temConsolidado() ? <ConsolidadoPage /> : <SemPermissao />),
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/relatorio-consolidado")({
       { property: "og:title", content: "Relatório consolidado de payroll · Chlorum Solutions" },
       {
         property: "og:description",
-        content: "Documento único com as 8 unidades para envio ao FP&A no 7º dia útil.",
+        content: "Análise consolidada das 8 unidades, preparada por Gente e Gestão.",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/relatorio-consolidado")({
 function ConsolidadoPage() {
   const { ciclo, CICLO_LABEL, dados } = useCicloAtivo();
   const unidadesOrdenadas = dados.unidadesOrdenadas;
+  const titulo = tituloConsolidado(ciclo);
 
   const { data } = useQuery({
     queryKey: ["reviews", ciclo],
@@ -79,16 +81,16 @@ function ConsolidadoPage() {
             unidade: u,
             review: data?.find((r) => r.unit_slug === u.slug) ?? null,
           }))}
-          nomeBase="Relatorio-Consolidado-Payroll"
-          titulo="Relatório Consolidado de Payroll — Chlorum"
+          nomeBase={NOME_ARQUIVO_CONSOLIDADO}
+          titulo={titulo}
         />
       </div>
 
       <section className="mt-6 break-after-page rounded-xl border border-border bg-card p-6 print:break-after-page">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Relatório consolidado · FP&amp;A
+        <p className="text-4xl font-extrabold text-brand">
+          {AUTORIA_CONSOLIDADO}
         </p>
-        <h1 className="mt-1 text-3xl font-extrabold">Payroll Chlorum — {CICLO_LABEL}</h1>
+        <h1 className="mt-3 text-2xl font-extrabold">{titulo}</h1>
         <p className="mt-4 text-sm">
           Actual {brl(totalActual)} vs. Forecast {brl(totalForecast)} — desvio de {brl(desvio)} (
           {pct(desvioPct)}).
