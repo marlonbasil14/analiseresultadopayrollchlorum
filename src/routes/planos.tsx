@@ -83,8 +83,7 @@ const texto = (v: unknown) => (typeof v === "string" ? v.trim() : "");
 function statusDe(bruto: unknown, prazo: string): StatusAcao {
   const s = texto(bruto);
   if (s === "concluido" || s === "concluida") return "concluida";
-  const hoje = new Date().toISOString().slice(0, 10);
-  if (prazo && /^\d{4}-\d{2}-\d{2}/.test(prazo) && prazo.slice(0, 10) < hoje) return "atrasada";
+  if (prazoVencido(prazo)) return "atrasada";
   if (s === "em_andamento") return "em_andamento";
   return "aberta";
 }

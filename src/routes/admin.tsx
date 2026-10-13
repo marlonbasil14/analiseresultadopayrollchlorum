@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { registrarAuditoria } from "@/lib/acesso";
 import { pct } from "@/lib/format";
 import { FLUXO_LABEL } from "@/lib/acesso";
-import { usePrazoCiclo, cicloConfigQuery } from "@/lib/prazo";
+import { usePrazoCiclo } from "@/lib/prazo";
 import { PrazoCicloEditor } from "@/components/prazo-ciclo-editor";
 import { rotuloEscopo, useIdentidade } from "@/lib/identificacao";
 import { GestaoAcessos } from "@/components/gestao-acessos";
@@ -201,6 +201,10 @@ function AdminPage() {
           </div>
         </div>
       </header>
+
+      <section className="mx-auto max-w-6xl px-6 pt-8">
+        <PrazoCicloEditor ciclo={CICLO} cicloLabel={CICLO_LABEL} autorNome={identidade.nome ?? null} />
+      </section>
 
       <section className="mx-auto max-w-6xl px-6 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
