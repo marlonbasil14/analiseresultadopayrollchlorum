@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
-import { diasAteVencimento } from "@/lib/acesso";
+import { usePrazoCiclo } from "@/lib/prazo";
 import { rotuloUnidade, type Identidade } from "@/lib/identificacao";
 import {
   SUBTITULO_RELATORIO,
@@ -33,13 +33,6 @@ function destinoUnidade(identidade: Identidade) {
   return slug ? { to: "/unidade/$slug" as const, params: { slug } } : { to: "/" as const };
 }
 
-function prazoTexto(ciclo: string) {
-  const p = diasAteVencimento(ciclo);
-  const data = p.alvo.toLocaleDateString("pt-BR");
-  if (p.atrasado) return `prazo venceu em ${data}`;
-  if (p.dias === 0) return `vence hoje (${data})`;
-  return `faltam ${p.dias} dia(s) · ${data}`;
-}
 
 /** Jornada "Primeiros passos" na HERO, com os 3 materiais em sequência + análise da unidade. */
 export function PrimeirosPassos({
@@ -95,7 +88,7 @@ export function PrimeirosPassos({
         ? "Pareceres, ofensores e ações de todas as unidades"
         : isAdmin
           ? "Abrir o painel do admin"
-          : "Justifique os desvios e envie até o 7º dia útil",
+          : "Justifique os desvios e envie até o prazo do ciclo",
       icone: ClipboardCheck,
     },
   ] as ItemJornada[]);
@@ -334,7 +327,7 @@ export function BoasVindas({
   if (!carregado || jornada.boasVindasVista || fechado) return null;
 
   const isAdmin = identidade.escopo === "admin";
-  const p = diasAteVencimento(ciclo);
+  const p = usePrazoCiclo(ciclo);
   const dispensar = () => {
     setFechado(true);
     void atualizarJornada({ boasVindasVista: true });
@@ -364,9 +357,8 @@ export function BoasVindas({
               : isAdmin
               ? "Acompanhar o envio das 8 unidades e consolidar o relatório de Gente e Gestão"
               : "Analisar os desvios da(s) sua(s) unidade(s) e enviar a análise"}{" "}
-            até o 7º dia útil:{" "}
-            <strong className="text-foreground">{p.alvo.toLocaleDateString("pt-BR")}</strong> (
-            {p.atrasado ? "prazo vencido" : p.dias === 0 ? "vence hoje" : `faltam ${p.dias} dia(s)`}).
+            até o prazo de consolidação das justificativas:{" "}
+            <strong className="text-foreground">{p.dataBr}</strong> ({p.texto}).
           </p>
           <p className="mt-3 font-semibold">{isAdmin ? "Seu perfil" : "Suas unidades"}</p>
           <p className="mt-1 text-muted-foreground">
@@ -416,7 +408,7 @@ export function SuaPendencia({ ciclo, identidade }: { ciclo: string; identidade:
       return (data ?? []) as ReviewStatus[];
     },
   });
-  const prazo = prazoTexto(ciclo);
+  const prazo = usePrazoCiclo(ciclo).texto;
 
   if (identidade.role === "executivo") return null;
   if (isAdmin) {
@@ -429,7 +421,7 @@ export function SuaPendencia({ ciclo, identidade }: { ciclo: string; identidade:
           <div>
             <p className="eyebrow-light">Status do ciclo</p>
             <p className="mt-1 text-xl font-bold">{enviadas} de 8 enviadas</p>
-            <p className="text-xs text-muted-foreground">7º dia útil: {prazo}</p>
+            <p className="text-xs text-muted-foreground">Prazo: {prazo}</p>
           </div>
           <Link
             to="/admin"
@@ -448,7 +440,7 @@ export function SuaPendencia({ ciclo, identidade }: { ciclo: string; identidade:
       <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
         <p className="eyebrow-light">Sua pendência</p>
         <h2 id="pendencia-titulo" className="mt-1 text-xl font-bold">
-          Análises do ciclo · 7º dia útil: {prazo}
+          Análises do ciclo · Prazo: {prazo}
         </h2>
         <ul className="mt-4 divide-y divide-border">
           {minhas.map((slug) => {

@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      ciclo_config: {
+        Row: {
+          atualizado_em: string
+          atualizado_por: string | null
+          ciclo: string
+          encerrado: boolean
+          prazo_justificativas: string
+        }
+        Insert: {
+          atualizado_em?: string
+          atualizado_por?: string | null
+          ciclo: string
+          encerrado?: boolean
+          prazo_justificativas: string
+        }
+        Update: {
+          atualizado_em?: string
+          atualizado_por?: string | null
+          ciclo?: string
+          encerrado?: boolean
+          prazo_justificativas?: string
+        }
+        Relationships: []
+      }
       ciclo_unidade_dados: {
         Row: {
           atualizado_em: string

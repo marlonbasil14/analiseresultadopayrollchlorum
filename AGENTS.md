@@ -19,3 +19,4 @@
 - The read-only `executivo` role gets full read via `e_leitor_total`/`pode_ler_unidade` in RLS and never `'*'` in unidades; writes keep using `pode_unidade` — why: `'*'` would grant write access to reviews.
 - Consolidated report titles, reference dates and filename bases are shared through `src/lib/relatorio-consolidado.ts` — why: screen, print and exported covers must use the same cycle and authorship.
 - Payroll queries include a reading-schema version and refetch on mount — why: a newly loaded release must not reuse stale financial presentation data.
+- Submission deadlines come only from `calcularPrazo`/`prazoVencido` in `src/lib/prazo.ts` (per-cycle `ciclo_config`, fallback 7th business day; overdue only after 23:59 America/Sao_Paulo) — why: home, admin, /planos and guides must agree on deadline/overdue state.
