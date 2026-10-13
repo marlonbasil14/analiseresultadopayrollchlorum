@@ -20,9 +20,10 @@ export function DadosFolhaGate({ children }: { children: ReactNode }) {
   const ok = estado === "ok" && !!identidade;
 
   const q = useQuery({
-    queryKey: ["dados-folha", identidade?.email],
+    queryKey: ["dados-folha", "leitura-desvio-v2", identidade?.email],
     enabled: ok,
     staleTime: 5 * 60 * 1000,
+    refetchOnMount: "always",
     queryFn: async () => {
       const { data, error } = await supabase
         .from("ciclo_unidade_dados")

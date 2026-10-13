@@ -17,3 +17,5 @@
 - Analysis PDFs live in the private `relatorios` storage bucket (`<ciclo>.pdf`) and open through `/relatorio-pdf/$ciclo`, which requests a short-lived signed URL from `src/lib/folha.functions.ts` — why: PDFs must not have public URLs.
 - Every favorable/unfavorable reading (color, arrow, label, exports) goes through `classificarDesvio` in `src/lib/leitura-desvio.ts`, fed with "% above budget" — why: a single rule keeps home, units, directorates, reports and exports consistent.
 - The read-only `executivo` role gets full read via `e_leitor_total`/`pode_ler_unidade` in RLS and never `'*'` in unidades; writes keep using `pode_unidade` — why: `'*'` would grant write access to reviews.
+- Consolidated report titles, reference dates and filename bases are shared through `src/lib/relatorio-consolidado.ts` — why: screen, print and exported covers must use the same cycle and authorship.
+- Payroll queries include a reading-schema version and refetch on mount — why: a newly loaded release must not reuse stale financial presentation data.

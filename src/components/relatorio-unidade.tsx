@@ -54,7 +54,7 @@ export function RelatorioUnidade({
     <article className="break-after-page rounded-xl border border-border bg-card p-6 print:break-after-page print:border-0 print:p-0">
       <header className="border-b border-border pb-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Relatório padrão de payroll · FP&amp;A
+          Relatório padrão de payroll · Gente e Gestão
         </p>
         <h2 className="mt-1 text-2xl font-extrabold">{unidade.nome}</h2>
         <p className="mt-1 text-xs text-muted-foreground">

@@ -52,6 +52,8 @@ export const Route = createFileRoute("/")({
         content:
           "Actual vs. Forecast por unidade de negócio, com cartilha de leitura orçamentária em 8 passos.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Index,

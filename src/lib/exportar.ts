@@ -1,6 +1,7 @@
 import { classificarDesvio } from "@/lib/leitura-desvio";
 import { type Unidade } from "@/data/payroll";
 import { dadosDoCiclo } from "@/data/ciclos";
+import { AUTORIA_CONSOLIDADO, tituloConsolidado } from "@/lib/relatorio-consolidado";
 
 let cicloAtivo = { CICLO: dadosDoCiclo().CICLO, CICLO_LABEL: dadosDoCiclo().CICLO_LABEL };
 
@@ -241,7 +242,7 @@ export async function exportarExcel(pacote: PacoteUnidade[], nomeBase: string) {
     }
     montarAba(
       "Consolidado",
-      `Consolidado Chlorum Solutions — Ciclo ${cicloAtivo.CICLO_LABEL}`,
+      `${AUTORIA_CONSOLIDADO} · ${tituloConsolidado(cicloAtivo.CICLO)}`,
       linhasTodas,
       true,
       logoId,
@@ -329,8 +330,19 @@ export async function exportarPdf(
     doc.addImage(logoNeg.dataUrl, "PNG", m + 36, m + 34, larguraLogo, larguraLogo / logoNeg.proporcao, "chl-neg", "FAST");
   }
 
-  texto(EYEBROW, m + 36, m + 130, { peso: 700, tamanho: 11, cor: CHL.blue300, espaco: 2 });
-  texto(titulo, m + 36, m + 178, { peso: 800, tamanho: 34, cor: CHL.white });
+  const consolidado = pacote.length > 1;
+  texto(consolidado ? AUTORIA_CONSOLIDADO : EYEBROW, m + 36, m + 130, {
+    peso: 800, tamanho: consolidado ? 34 : 11, cor: CHL.blue300,
+  });
+  fonte(800);
+  doc.setFontSize(consolidado ? 22 : 34);
+  const linhasTitulo = doc.splitTextToSize(
+    consolidado ? tituloConsolidado(cicloAtivo.CICLO) : titulo,
+    largura - m * 2 - 72,
+  ) as string[];
+  linhasTitulo.forEach((linha, i) => texto(linha, m + 36, m + 165 + i * 26, {
+    peso: 800, tamanho: consolidado ? 22 : 34, cor: CHL.white,
+  }));
   texto(`Ciclo ${cicloAtivo.CICLO_LABEL} · Chlorum Solutions`, m + 36, m + 208, {
     peso: 300,
     tamanho: 14,
@@ -631,16 +643,20 @@ export async function exportarPptx(pacote: PacoteUnidade[], nomeBase: string, ti
   if (logoNeg) {
     capa.addImage({ data: logoNeg.dataUrl, x: 0.7, y: 0.55, w: 2.1, h: 2.1 / logoNeg.proporcao });
   }
-  capa.addText(EYEBROW, {
+  const consolidado = pacote.length > 1;
+  capa.addText(consolidado ? AUTORIA_CONSOLIDADO : EYEBROW, {
     ...F,
     x: 0.7,
     y: 1.35,
-    fontSize: 12,
+    fontSize: consolidado ? 40 : 12,
     bold: true,
     charSpacing: 2,
     color: hexPuro(CHL.blue300),
   });
-  capa.addText(titulo, { ...F, x: 0.7, y: 1.9, w: 11.5, fontSize: 40, bold: true, color: hexPuro(CHL.white) });
+  capa.addText(consolidado ? tituloConsolidado(cicloAtivo.CICLO) : titulo, {
+    ...F, x: 0.7, y: 1.9, w: 11.5, h: 0.85, fontSize: consolidado ? 26 : 40,
+    bold: true, color: hexPuro(CHL.white), fit: "shrink",
+  });
   capa.addText(`Ciclo ${cicloAtivo.CICLO_LABEL} · Chlorum Solutions`, {
     ...F,
     x: 0.7,

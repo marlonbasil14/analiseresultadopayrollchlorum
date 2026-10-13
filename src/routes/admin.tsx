@@ -16,6 +16,7 @@ import { rotuloEscopo, useIdentidade } from "@/lib/identificacao";
 import { GestaoAcessos } from "@/components/gestao-acessos";
 import { marcarPasso } from "@/lib/jornada";
 import type { ReviewLike } from "@/lib/exportar";
+import { tituloConsolidado, referenciaConsolidado, NOME_ARQUIVO_CONSOLIDADO } from "@/lib/relatorio-consolidado";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/admin")({
       {
         name: "description",
         content:
-          "Consolidação das 8 unidades, status do fluxo, prazo do 7º dia útil e exportação do pacote para o FP&A.",
+          "Consolidação das 8 unidades, status do fluxo, prazo do 7º dia útil e relatório de Gente e Gestão.",
       },
       { property: "og:title", content: "Painel do admin · Payroll Intelligence Chlorum" },
       {
@@ -327,23 +328,24 @@ function AdminPage() {
       <GestaoAcessos />
 
       <section className="mx-auto max-w-6xl px-6 pb-8">
-        <h2 className="text-xl font-bold">Pacote para o FP&amp;A</h2>
+        <h2 className="text-xl font-bold">Relatório consolidado ({referenciaConsolidado(CICLO)})</h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Mesmos dados estruturados nos três formatos · Material-FPeA-Payroll-{CICLO}
+          Gente e Gestão · {referenciaConsolidado(CICLO)}
         </p>
         <div className="mt-3">
           <BotoesExportar
             pacote={pacote}
-            nomeBase="Material-FPeA-Payroll"
-            titulo="Material FP&A — Payroll Chlorum"
+            nomeBase={NOME_ARQUIVO_CONSOLIDADO}
+            titulo={tituloConsolidado(CICLO)}
             autor={identidade.nome}
           />
         </div>
         <Link
           to="/relatorio-consolidado"
+          search={{ ciclo: CICLO }}
           className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand"
         >
-          Abrir relatório consolidado na tela
+          Relatório consolidado ({referenciaConsolidado(CICLO)})
         </Link>
       </section>
 

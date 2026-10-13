@@ -362,7 +362,7 @@ export function BoasVindas({
             {identidade.role === "executivo"
               ? "Acompanhar o resultado da companhia e os planos de ação das unidades (somente leitura)"
               : isAdmin
-              ? "Acompanhar o envio das 8 unidades e consolidar o pacote para o FP&A"
+              ? "Acompanhar o envio das 8 unidades e consolidar o relatório de Gente e Gestão"
               : "Analisar os desvios da(s) sua(s) unidade(s) e enviar a análise"}{" "}
             até o 7º dia útil:{" "}
             <strong className="text-foreground">{p.alvo.toLocaleDateString("pt-BR")}</strong> (
