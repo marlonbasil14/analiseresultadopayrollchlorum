@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { BookOpen, ChevronDown, FileText, Lightbulb } from "lucide-react";
 
-import { diasAteVencimento } from "@/lib/acesso";
+import { usePrazoCiclo } from "@/lib/prazo";
 import { atualizarJornada, marcarPasso, tituloRelatorio, useJornada } from "@/lib/jornada";
 import { RELATORIOS_PDF } from "@/lib/relatorios";
 import type { CicloChave } from "@/data/ciclos";
@@ -9,17 +9,17 @@ import type { CicloChave } from "@/data/ciclos";
 /** Guia rápido recolhível no topo da página da unidade. */
 export function GuiaRapido({ ciclo }: { ciclo: CicloChave }) {
   const { carregado, jornada } = useJornada(ciclo);
+  const prazo = usePrazoCiclo(ciclo).dataBr;
   if (!carregado) return null;
   const aberto =
     jornada.guiaRapidoRecolhido !== undefined ? !jornada.guiaRapidoRecolhido : !jornada.primeiroEnvio;
   const relatorio = RELATORIOS_PDF[ciclo];
-  const prazo = diasAteVencimento(ciclo).alvo.toLocaleDateString("pt-BR");
 
   const passos = [
     "Leia o parecer prévio de Gente e Gestão (mais abaixo, em “Análise da unidade”).",
     "Abra as contas com desvio ≥ 5% e veja a composição por sub-conta (clique na conta).",
     "Justifique cada conta crítica e registre as ações.",
-    `Salve o rascunho e envie para consolidação até o 7º dia útil (${prazo}).`,
+    `Salve o rascunho e envie para consolidação até o prazo do ciclo (${prazo}).`,
   ];
 
   return (

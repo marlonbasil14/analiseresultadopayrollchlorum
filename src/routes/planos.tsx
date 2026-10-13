@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCicloAtivo } from "@/lib/ciclo";
 import { useIdentidade } from "@/lib/identificacao";
 import { marcarPasso } from "@/lib/jornada";
+import { prazoVencido } from "@/lib/prazo";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({

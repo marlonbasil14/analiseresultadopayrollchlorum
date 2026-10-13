@@ -11,7 +11,9 @@ import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { supabase } from "@/integrations/supabase/client";
 import { registrarAuditoria } from "@/lib/acesso";
 import { pct } from "@/lib/format";
-import { FLUXO_LABEL, diasAteVencimento } from "@/lib/acesso";
+import { FLUXO_LABEL } from "@/lib/acesso";
+import { usePrazoCiclo, cicloConfigQuery } from "@/lib/prazo";
+import { PrazoCicloEditor } from "@/components/prazo-ciclo-editor";
 import { rotuloEscopo, useIdentidade } from "@/lib/identificacao";
 import { GestaoAcessos } from "@/components/gestao-acessos";
 import { marcarPasso } from "@/lib/jornada";
@@ -26,12 +28,12 @@ export const Route = createFileRoute("/admin")({
       {
         name: "description",
         content:
-          "Consolidação das 8 unidades, status do fluxo, prazo do 7º dia útil e relatório de Gente e Gestão.",
+          "Consolidação das 8 unidades, status do fluxo, prazo de consolidação das justificativas e relatório de Gente e Gestão.",
       },
       { property: "og:title", content: "Painel do admin · Payroll Intelligence Chlorum" },
       {
         property: "og:description",
-        content: "Status por unidade, prazo do 7º dia útil e geração do relatório consolidado.",
+        content: "Status por unidade, prazo de consolidação das justificativas e geração do relatório consolidado.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -60,7 +62,7 @@ function AdminPage() {
   const { ciclo: CICLO, CICLO_LABEL, dados } = useCicloAtivo();
   const unidadesOrdenadas = dados.unidadesOrdenadas;
   const { pronto, identidade, limpar } = useIdentidade();
-  const prazo = diasAteVencimento(CICLO);
+  const prazo = usePrazoCiclo(CICLO);
   useEffect(() => {
     if (identidade?.escopo === "admin") void marcarPasso("unidade", CICLO);
   }, [identidade?.escopo, CICLO]);
@@ -195,9 +197,7 @@ function AdminPage() {
             }`}
           >
             <AlarmClock className="h-4 w-4" />
-            {prazo.atrasado
-              ? `Prazo do 7º dia útil vencido em ${prazo.alvo.toLocaleDateString("pt-BR")}`
-              : `Faltam ${prazo.dias} dia(s) para o 7º dia útil (${prazo.alvo.toLocaleDateString("pt-BR")})`}
+            {`Prazo de consolidação das justificativas: ${prazo.texto}`}
           </div>
         </div>
       </header>
