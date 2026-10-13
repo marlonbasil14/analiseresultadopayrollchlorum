@@ -11,6 +11,6 @@
 - [x] Regra única de leitura de desvio (favorável / em linha até +1% / desfavorável)
 - [x] Perfil Executivo (somente leitura) + opção em Acessos
 - [x] Página Planos de Ação e Pareceres
-- [ ] A: autoria e capa do relatório consolidado sem menções a FP&A
-- [ ] B: classificação com dados do banco e layout mobile; revisão de cache
+- [x] A: autoria e capa do relatório consolidado sem menções a FP&A
+- [x] B: classificação e layout isolado com dados do banco; cache versionado e recarga ao abrir
 - [ ] C: verificar jornada executiva com conta temporária (depende de sessão admin autorizada)

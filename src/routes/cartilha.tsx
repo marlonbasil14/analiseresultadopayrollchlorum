@@ -22,6 +22,8 @@ export const Route = createFileRoute("/cartilha")({
         property: "og:description",
         content: "Guia prático em 8 seções para investigar e explicar desvios de payroll.",
       },
+      { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Cartilha,
