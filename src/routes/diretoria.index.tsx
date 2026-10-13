@@ -1,4 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FileDown } from "lucide-react";
+import { OnePagerDiretoria, nomeArquivoOnePager } from "@/components/one-pager-diretoria";
+import { useIdentidade } from "@/lib/identificacao";
+import { usePrazoCiclo } from "@/lib/prazo";
+import { registrarAuditoria } from "@/lib/acesso";
 import { temConsolidado } from "@/data/ciclos";
 import { SemPermissao } from "@/components/dados-folha-gate";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -39,9 +44,59 @@ function VisaoDiretoria() {
   const { diretorias, diretoriasComplementares, contasDiretoria } = diretoriaDoCiclo(ciclo);
   const total = totalDiretorias(diretorias, periodo);
   const grupo = totalGrupo(ciclo, periodo);
+  const { identidade } = useIdentidade();
+  const podeOnePager = identidade?.role === "admin" || identidade?.role === "executivo";
+  const prazo = usePrazoCiclo(ciclo);
+  const [onePager, setOnePager] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (!onePager) return;
+    const tituloAntigo = document.title;
+    document.title = nomeArquivoOnePager(ciclo);
+    const fim = () => {
+      document.title = tituloAntigo;
+      setOnePager(null);
+    };
+    window.addEventListener("afterprint", fim, { once: true });
+    const t = window.setTimeout(() => window.print(), 300);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("afterprint", fim);
+      document.title = tituloAntigo;
+    };
+  }, [onePager, ciclo]);
+
+  const gerarOnePager = () => {
+    void registrarAuditoria({
+      unitSlug: "_consolidado",
+      ciclo,
+      acao: "one_pager_diretoria",
+      detalhe: `${nomeArquivoOnePager(ciclo)}.pdf`,
+      autorNome: identidade?.nome ?? null,
+    });
+    setOnePager(new Date());
+  };
 
   return (
-    <main className="min-h-screen bg-background">
+    <>
+    {onePager ? (
+      <>
+        <style>{"@page { size: A4 landscape; margin: 8mm; } @media print { html, body { background: #fff; } }"}</style>
+        <div className="hidden print:block">
+          <OnePagerDiretoria
+            ciclo={ciclo}
+            cicloLabel={CICLO_LABEL}
+            diretorias={diretorias}
+            mes={totalGrupo(ciclo, "mes")}
+            ytd={totalGrupo(ciclo, "ytd")}
+            autor={identidade?.nome ?? "—"}
+            geradoEm={onePager}
+            prazoTexto={prazo.texto}
+          />
+        </div>
+      </>
+    ) : null}
+    <main className={`min-h-screen bg-background ${onePager ? "print:hidden" : ""}`}>
       <header className="bg-navy py-10 text-navy-foreground print:hidden">
         <div className="mx-auto max-w-6xl px-6">
           <Link
@@ -82,6 +137,7 @@ function VisaoDiretoria() {
               </button>
             ))}
           </div>
+          <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => window.print()}
@@ -89,6 +145,16 @@ function VisaoDiretoria() {
           >
             <Printer className="h-4 w-4" /> Imprimir
           </button>
+          {podeOnePager ? (
+            <button
+              type="button"
+              onClick={gerarOnePager}
+              className="inline-flex items-center gap-2 rounded-lg bg-brand px-3 py-2 text-xs font-semibold text-brand-foreground hover:opacity-90"
+            >
+              <FileDown className="h-4 w-4" /> Gerar one pager (PDF)
+            </button>
+          ) : null}
+          </div>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -132,6 +198,7 @@ function VisaoDiretoria() {
         />
       </section>
     </main>
+    </>
   );
 }
 
