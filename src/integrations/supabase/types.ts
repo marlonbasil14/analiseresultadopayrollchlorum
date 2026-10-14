@@ -59,6 +59,39 @@ export type Database = {
         }
         Relationships: []
       }
+      indicadores_operacionais: {
+        Row: {
+          atualizado_em: string
+          fonte: string | null
+          id: string
+          mes: string
+          producao: number | null
+          producao_unidade: string | null
+          unit_slug: string
+          venda: number | null
+        }
+        Insert: {
+          atualizado_em?: string
+          fonte?: string | null
+          id?: string
+          mes: string
+          producao?: number | null
+          producao_unidade?: string | null
+          unit_slug: string
+          venda?: number | null
+        }
+        Update: {
+          atualizado_em?: string
+          fonte?: string | null
+          id?: string
+          mes?: string
+          producao?: number | null
+          producao_unidade?: string | null
+          unit_slug?: string
+          venda?: number | null
+        }
+        Relationships: []
+      }
       login_otps: {
         Row: {
           codigo: string
@@ -86,6 +119,36 @@ export type Database = {
           id?: string
           tentativas?: number
           usado?: boolean
+        }
+        Relationships: []
+      }
+      orcamento_anual: {
+        Row: {
+          atualizado_em: string
+          diretoria_slug: string | null
+          fonte: string | null
+          id: string
+          mes: string
+          orcado: number
+          unit_slug: string
+        }
+        Insert: {
+          atualizado_em?: string
+          diretoria_slug?: string | null
+          fonte?: string | null
+          id?: string
+          mes: string
+          orcado: number
+          unit_slug: string
+        }
+        Update: {
+          atualizado_em?: string
+          diretoria_slug?: string | null
+          fonte?: string | null
+          id?: string
+          mes?: string
+          orcado?: number
+          unit_slug?: string
         }
         Relationships: []
       }
@@ -136,6 +199,11 @@ export type Database = {
           ciclo: string
           consolidado_em: string | null
           consolidado_por: string | null
+          desvio_contabil: boolean
+          desvio_contabil_marcado_em: string | null
+          desvio_contabil_marcado_por: string | null
+          desvio_contabil_nota: string | null
+          desvio_contabil_valor: number | null
           enviado_em: string | null
           enviado_por: string | null
           fluxo_status: string
@@ -159,6 +227,11 @@ export type Database = {
           ciclo: string
           consolidado_em?: string | null
           consolidado_por?: string | null
+          desvio_contabil?: boolean
+          desvio_contabil_marcado_em?: string | null
+          desvio_contabil_marcado_por?: string | null
+          desvio_contabil_nota?: string | null
+          desvio_contabil_valor?: number | null
           enviado_em?: string | null
           enviado_por?: string | null
           fluxo_status?: string
@@ -182,6 +255,11 @@ export type Database = {
           ciclo?: string
           consolidado_em?: string | null
           consolidado_por?: string | null
+          desvio_contabil?: boolean
+          desvio_contabil_marcado_em?: string | null
+          desvio_contabil_marcado_por?: string | null
+          desvio_contabil_nota?: string | null
+          desvio_contabil_valor?: number | null
           enviado_em?: string | null
           enviado_por?: string | null
           fluxo_status?: string

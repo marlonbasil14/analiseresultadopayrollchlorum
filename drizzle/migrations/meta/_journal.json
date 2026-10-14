@@ -43,6 +43,13 @@
       "when": 1791899481034,
       "tag": "0005_ciclo_config",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792014798819,
+      "tag": "0006_visao_ceo",
+      "breakpoints": true
     }
   ]
 }
