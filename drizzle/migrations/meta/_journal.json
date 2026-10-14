@@ -50,6 +50,13 @@
       "when": 1792014798819,
       "tag": "0006_visao_ceo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792016367575,
+      "tag": "0007_restrict_ceo_reference_reads",
+      "breakpoints": true
     }
   ]
 }
