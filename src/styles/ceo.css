@@ -1,0 +1,33 @@
+.ceo { letter-spacing: 0; }
+.ceo h1, .ceo h2, .ceo h3 { letter-spacing: 0; }
+.ceo-table th { padding: 12px 10px; text-align: right; font-size: 11px; font-weight: 600; color: var(--muted-foreground); border-bottom: 1px solid var(--border); }
+.ceo-table td { padding: 16px 10px; text-align: right; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--border); }
+.ceo-table th:first-child, .ceo-table td:first-child { text-align: left; width: 28%; }
+.ceo-table tfoot { background: var(--muted); font-weight: 700; }
+.ceo-print { display: none; }
+@page { size: A4 landscape; margin: 8mm; }
+@media print {
+  html, body { background: var(--background); }
+  body:has(.ceo) > * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .ceo-screen, [role="dialog"], [data-radix-popper-content-wrapper] { display: none !important; }
+  .ceo-print { display: flex; flex-direction: column; gap: 8px; width: 281mm; height: 192mm; padding: 0; font-size: 10px; break-inside: avoid; }
+  .ceo-kpis { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px; }
+  .ceo-kpis article { padding: 12px; }
+  .ceo-kpis .text-3xl { font-size: 22px; line-height: 1.2; }
+  .ceo-kpis .my-4 { margin-top: 8px; margin-bottom: 8px; }
+  .ceo-kpis .mt-4 { margin-top: 8px; }
+  .ceo-kpis .text-sm { font-size: 10px; line-height: 1.35; }
+  .ceo-kpis .text-lg { font-size: 13px; }
+  .ceo-kpis .text-xs { font-size: 9px; }
+  .ceo-print-columns { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; }
+  .ceo-chart-print { height: 168px; width: 100%; }
+  .ceo-print .ceo-table { display: block; }
+  .ceo-print .ceo-table table { font-size: 9px; }
+  .ceo-print .ceo-table td, .ceo-print .ceo-table th { padding: 5px 6px; }
+  .ceo-print .ceo-table .text-xs { font-size: 8px; }
+  .ceo-print .ceo-table .text-sm { font-size: 9px; }
+  .ceo-print .ceo-table button { font-size: 9px; color: var(--foreground); text-decoration: none; }
+  .ceo-print .ceo-table button svg { display: none; }
+  .ceo-print .ceo-table th:first-child, .ceo-print .ceo-table td:first-child { width: 26%; }
+  .ceo-print section { break-inside: avoid; }
+}
