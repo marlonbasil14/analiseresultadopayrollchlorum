@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { leituraCeo, totalCeo, resumoPlano, estiloCeo, type LinhaCeo, type ReviewCeo } from "./ceo-model";
+import { leituraCeo, totalCeo, resumoPlano, estiloCeo, type LinhaCeo, type ReviewCeo } from "../src/lib/ceo-model";
 
 const linha: LinhaCeo = { chave: "teste", nome: "Teste", mesR: 120, mesO: 100, ytdR: 900, ytdO: 800, hcR: 11, hcO: 10, ajuste: 30, fyO: 1200, fyRF: 1300, venda: null, producao: null };
 describe("CEO financial presentation", () => {
