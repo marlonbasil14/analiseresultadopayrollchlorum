@@ -1,3 +1,4 @@
+import { ImportacoesVisaoCeo } from "@/components/importar-csv-ceo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -330,6 +331,7 @@ function AdminPage() {
       ) : null}
 
       <GestaoAcessos />
+      <ImportacoesVisaoCeo />
 
       <section className="mx-auto max-w-6xl px-6 pb-8">
         <h2 className="text-xl font-bold">Relatório consolidado ({referenciaConsolidado(CICLO)})</h2>

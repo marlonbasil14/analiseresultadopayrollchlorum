@@ -1,3 +1,4 @@
+import { MarcacaoContabil } from "@/components/marcacao-contabil";
 import { useEffect, useState } from "react";
 import { FileDown } from "lucide-react";
 import { OnePagerDiretoria, nomeArquivoOnePager } from "@/components/one-pager-diretoria";
@@ -197,6 +198,21 @@ function VisaoDiretoria() {
           linhas={contasDiretoria.map((c) => ({ ...c, nome: c.conta, hcReal: 0, hcOrcado: 0 }))}
         />
       </section>
+      {identidade?.role === "admin" ? (
+        <section className="mx-auto max-w-6xl px-6 pb-10 print:hidden">
+          <details className="rounded-xl border border-border bg-card p-4">
+            <summary className="cursor-pointer text-sm font-bold">Marcar desvio contábil por diretoria (admin)</summary>
+            <div className="mt-3 space-y-3">
+              {diretorias.map((d) => (
+                <div key={d.slug}>
+                  <p className="text-xs font-semibold">{d.nome}</p>
+                  <MarcacaoContabil slug={`diretoria:${d.slug}`} ciclo={ciclo} compacto />
+                </div>
+              ))}
+            </div>
+          </details>
+        </section>
+      ) : null}
     </main>
     </>
   );

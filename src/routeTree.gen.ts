@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CartilhaRouteImport } from './routes/cartilha'
+import { Route as CeoRouteImport } from './routes/ceo'
 import { Route as ConsolidadoRouteImport } from './routes/consolidado'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as RelatorioConsolidadoRouteImport } from './routes/relatorio-consolidado'
@@ -34,6 +35,11 @@ const AdminRoute = AdminRouteImport.update({
 const CartilhaRoute = CartilhaRouteImport.update({
   id: '/cartilha',
   path: '/cartilha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CeoRoute = CeoRouteImport.update({
+  id: '/ceo',
+  path: '/ceo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsolidadoRoute = ConsolidadoRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
+  '/ceo': typeof CeoRoute
   '/consolidado': typeof ConsolidadoRoute
   '/planos': typeof PlanosRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
+  '/ceo': typeof CeoRoute
   '/consolidado': typeof ConsolidadoRoute
   '/planos': typeof PlanosRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/cartilha': typeof CartilhaRoute
+  '/ceo': typeof CeoRoute
   '/consolidado': typeof ConsolidadoRoute
   '/planos': typeof PlanosRoute
   '/relatorio-consolidado': typeof RelatorioConsolidadoRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/cartilha'
+    | '/ceo'
     | '/consolidado'
     | '/planos'
     | '/relatorio-consolidado'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/cartilha'
+    | '/ceo'
     | '/consolidado'
     | '/planos'
     | '/relatorio-consolidado'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/cartilha'
+    | '/ceo'
     | '/consolidado'
     | '/planos'
     | '/relatorio-consolidado'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CartilhaRoute: typeof CartilhaRoute
+  CeoRoute: typeof CeoRoute
   ConsolidadoRoute: typeof ConsolidadoRoute
   PlanosRoute: typeof PlanosRoute
   RelatorioConsolidadoRoute: typeof RelatorioConsolidadoRoute
@@ -194,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/cartilha'
       fullPath: '/cartilha'
       preLoaderRoute: typeof CartilhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ceo': {
+      id: '/ceo'
+      path: '/ceo'
+      fullPath: '/ceo'
+      preLoaderRoute: typeof CeoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consolidado': {
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CartilhaRoute: CartilhaRoute,
+  CeoRoute: CeoRoute,
   ConsolidadoRoute: ConsolidadoRoute,
   PlanosRoute: PlanosRoute,
   RelatorioConsolidadoRoute: RelatorioConsolidadoRoute,
