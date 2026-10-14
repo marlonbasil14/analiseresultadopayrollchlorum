@@ -32,11 +32,12 @@
 .ceo-print {
   display: none;
 }
-@page {
+@page ceo {
   size: A4 landscape;
   margin: 8mm;
 }
 @media print {
+  .ceo { page: ceo; min-height: 0; }
   html,
   body {
     background: var(--background);
@@ -55,7 +56,7 @@
     flex-direction: column;
     gap: 8px;
     width: 281mm;
-    height: 192mm;
+    height: 190mm;
     padding: 0;
     font-size: 10px;
     break-inside: avoid;
@@ -66,7 +67,7 @@
     gap: 10px;
   }
   .ceo-kpis article {
-    padding: 12px;
+    padding: 9px;
   }
   .ceo-kpis .text-3xl {
     font-size: 22px;
@@ -80,8 +81,8 @@
     margin-top: 8px;
   }
   .ceo-kpis .text-sm {
-    font-size: 10px;
-    line-height: 1.35;
+    font-size: 9px;
+    line-height: 1.25;
   }
   .ceo-kpis .text-lg {
     font-size: 13px;
@@ -106,10 +107,12 @@
   }
   .ceo-print .ceo-table td,
   .ceo-print .ceo-table th {
-    padding: 5px 6px;
+    padding: 3px 6px;
+    line-height: 1.25;
   }
   .ceo-print .ceo-table .text-xs {
-    font-size: 8px;
+    font-size: 7px;
+    line-height: 1.2;
   }
   .ceo-print .ceo-table .text-sm {
     font-size: 9px;
@@ -119,6 +122,10 @@
     color: var(--foreground);
     text-decoration: none;
   }
+  .ceo-print .ceo-table .py-1 { padding-top: 2px; padding-bottom: 2px; }
+  .ceo-print .ceo-table .text-\[11px\] { font-size: 8px; line-height: 1.2; }
+  .ceo-print .ceo-table .mt-1 { margin-top: 2px; }
+  .ceo-print .ceo-table .h-3\.5 { display: none; }
   .ceo-print .ceo-table button svg {
     display: none;
   }
