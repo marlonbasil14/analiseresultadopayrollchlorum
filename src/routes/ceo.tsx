@@ -211,19 +211,19 @@ function Conteudo({ nome, isAdmin }: { nome: string; isAdmin: boolean }) {
     .filter((x) => Math.abs(x.p) >= 5 || x.p > 1)
     .sort((a, b) => Math.abs(b.desvio) - Math.abs(a.desvio));
   const situacao = (r?: Review) => {
-    if (!r) return "sem";
+    if (!r) return "sem" as const;
     const temJust = !!txt(r.justificativa_bp) || arr(r.justificativas).some((j) => txt(j["texto"]));
     const plano = arr(r.plano_de_acao).filter((p) => txt(p["item"]));
-    if (plano.length && plano.every((p) => ["concluido", "concluida"].includes(txt(p["status"])))) return "concluido";
-    if (plano.length || temJust) return "andamento";
-    return "sem";
+    if (plano.length && plano.every((p) => ["concluido", "concluida"].includes(txt(p["status"])))) return "concluido" as const;
+    if (plano.length || temJust) return "andamento" as const;
+    return "sem" as const;
   };
   const contagem = relevantes.reduce(
     (acc, x) => {
       acc[situacao(reviews.find((r) => r.unit_slug === x.l.chave))] += 1;
       return acc;
     },
-    { concluido: 0, andamento: 0, sem: 0 } as Record<string, number>,
+    { concluido: 0, andamento: 0, sem: 0 } as { concluido: number; andamento: number; sem: number },
   );
 
   useEffect(() => {
@@ -511,7 +511,7 @@ function IndicadoresOps({ linhas, indDe }: { linhas: Linha[]; indDe: (slug: stri
   );
 }
 
-function CardDesvio({ linha, desvio, p, review, situacao, prazo, ciclo, isAdmin }: { linha: Linha; desvio: number; p: number; review?: Review; situacao: string; prazo: string; ciclo: string; isAdmin: boolean }) {
+function CardDesvio({ linha, desvio, p, review, situacao, prazo, ciclo, isAdmin }: { linha: Linha; desvio: number; p: number; review: Review | undefined; situacao: string; prazo: string; ciclo: string; isAdmin: boolean }) {
   const [aberto, setAberto] = useState(false);
   const ofensores = useMemo(() => {
     if (!review) return [];
