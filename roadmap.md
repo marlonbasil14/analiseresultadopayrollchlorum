@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Redesign CEO: três KPIs, quadro único, detalhes laterais, tendência e PDF fixo
+- [ ] Conferir e restringir RLS das cargas CEO e edição contábil
+- [ ] Validar seletores, impressão, desktop/mobile e verificações automáticas
+
 - [x] Login só por convite (e-mail + senha): cadastro público off, HIBP, remover RESEND_API_KEY
 - [x] Função de administração de acessos (listar/criar/redefinir/remover) com auditoria
 - [x] Banco: só cria conta quem tem linha em user_roles
