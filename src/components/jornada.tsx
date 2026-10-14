@@ -27,7 +27,7 @@ import {
 type Relatorio = { url?: string | undefined };
 
 function destinoUnidade(identidade: Identidade) {
-  if (identidade.role === "executivo") return { to: "/planos" as const };
+  if (identidade.role === "executivo") return { to: "/ceo" as const };
   if (identidade.escopo === "admin") return { to: "/admin" as const };
   const slug = identidade.unidades.find((u) => u !== "*");
   return slug ? { to: "/unidade/$slug" as const, params: { slug } } : { to: "/" as const };

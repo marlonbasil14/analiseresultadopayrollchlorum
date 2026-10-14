@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, Building2, ClipboardList } from "lucide-react";
+import { BookOpen, PlayCircle, ArrowRight, BarChart3, X, FileText, Building2, ClipboardList, Gauge } from "lucide-react";
 import { useState } from "react";
 
 import { PILogo } from "@/components/pi-logo";
@@ -160,6 +160,14 @@ function Index() {
             >
               <ClipboardList className="h-4 w-4" /> Planos de Ação e Pareceres
             </Link>
+            {identidade.role === "admin" || identidade.role === "executivo" ? (
+              <Link
+                to="/ceo"
+                className="ml-3 mt-6 inline-flex items-center gap-2 rounded-lg bg-navy-foreground px-4 py-2.5 text-sm font-semibold text-navy hover:opacity-90"
+              >
+                <Gauge className="h-4 w-4" /> Visão CEO
+              </Link>
+            ) : null}
 
             <PrimeirosPassos
               ciclo={ciclo}

@@ -1,3 +1,4 @@
+import { MarcacaoContabil } from "@/components/marcacao-contabil";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Plus, Trash2, Send, Unlock } from "lucide-react";
@@ -577,6 +578,7 @@ export function ParecerAnalise({ unidade }: { unidade: Unidade }) {
         </div>
       ) : null}
 
+      <MarcacaoContabil slug={unidade.slug} ciclo={ciclo} />
       {salvo ? <p className="mt-2 text-xs text-muted-foreground">{salvo}</p> : null}
       {data?.atualizado_em ? (
         <p className="mt-1 text-xs text-muted-foreground">

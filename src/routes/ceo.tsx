@@ -8,7 +8,7 @@ import { PILogo } from "@/components/pi-logo";
 import { SeletorCiclo } from "@/components/seletor-ciclo";
 import { IdentificacaoTela } from "@/components/identificacao-tela";
 import { MarcacaoContabil, useMarcacoesContabeis } from "@/components/marcacao-contabil";
-import { CICLOS_DISPONIVEIS, dadosDoCiclo, diretoriaDoCiclo, nomeUnidade, totalGrupo } from "@/data/ciclos";
+import { CICLOS_DISPONIVEIS, dadosDoCiclo, diretoriaDoCiclo, totalGrupo } from "@/data/ciclos";
 import { valores } from "@/data/diretoria";
 import { supabase } from "@/integrations/supabase/client";
 import { registrarAuditoria } from "@/lib/acesso";
@@ -576,4 +576,3 @@ function Bloco({ t, v }: { t: string; v: string | null | undefined }) {
   );
 }
 
-export { nomeUnidade };
