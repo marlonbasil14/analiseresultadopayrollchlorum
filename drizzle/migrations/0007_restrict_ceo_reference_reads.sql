@@ -1,0 +1,2 @@
+ALTER POLICY "executivo e admin leem orcamento" ON public.orcamento_anual USING (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'executivo'::public.app_role));
+ALTER POLICY "executivo e admin leem indicadores" ON public.indicadores_operacionais USING (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'executivo'::public.app_role));
